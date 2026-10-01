@@ -1,0 +1,12 @@
+import {z} from 'zod';
+import {offsetDate} from './course';
+export const sentenceSchema=z.object({text:z.string().trim().min(10).max(600),target:z.string().trim().min(1).max(80),meaning:z.string().trim().min(1).max(120),translation:z.string().trim().min(1).max(600),distractors:z.array(z.string().trim().min(1).max(120)).length(3)}).superRefine((s,c)=>{if(!s.text.toLowerCase().includes(s.target.toLowerCase()))c.addIssue({code:'custom',message:'例句必须包含标记的目标词'});if(new Set([s.meaning,...s.distractors]).size!==4)c.addIssue({code:'custom',message:'正确释义与三个干扰项不得重复'})});
+export const wordSchema=z.object({id:z.string().min(1).max(100),word:z.string().trim().min(1).max(80),phonetic:z.string().max(200),meaning:z.string().trim().min(1).max(500),frequency:z.number().int().min(0),categories:z.array(z.string().max(40)).min(1).max(8),pages:z.array(z.number().int().min(1).max(29)),enabled:z.boolean(),contextSentences:z.array(z.object({text:z.string().min(10).max(600),target:z.string().min(1).max(80)})).length(3).optional(),sentences:z.array(sentenceSchema).max(8)}).superRefine((w,c)=>{if(w.enabled&&w.sentences.length<3)c.addIssue({code:'custom',message:'启用前请至少准备三个例句'});if(new Set(w.sentences.map(s=>s.text.toLowerCase())).size!==w.sentences.length)c.addIssue({code:'custom',message:'例句不可重复'})});
+export type VocabularySentence=z.infer<typeof sentenceSchema>;
+export type VocabularyWord=z.infer<typeof wordSchema>;
+export const reviewIntervals=[1,3,7,14,30,60];
+export function scheduleReview(day:string,streak:number,remembered:boolean){const nextStreak=remembered?streak+1:0;return {streak:nextStreak,nextDue:offsetDate(day,remembered?reviewIntervals[Math.min(nextStreak-1,reviewIntervals.length-1)]:1)}}
+export type WordCard={id:string;word:string;category:string;sentence:string;target:string;options:string[];isNew:boolean;round:number};
+export type WordFeedback={correct:boolean;remembered:boolean;answer:string;translation:string;meaning:string;phonetic:string;nextDue:string;streak:number;chosen:number|null;unsure:boolean};
+export type WordProgress={id:string;word:string;categories:string[];enabled:boolean;status:'未学习'|'学习中'|'长期巩固';reviews:number;streak:number;lapses:number;lastDay:string|null;nextDue:string|null};
+export type VocabularyState={role:'teacher'|'student';day:string;dailyNew:number;cards:WordCard[];done:number;due:number;newAvailable:number;learned:number;stable:number;tomorrow:number;progress:WordProgress[];words?:VocabularyWord[];recent?:{word:string;nextDue:string;streak:number;lapses:number}[];enabledCount:number;totalCount:number};

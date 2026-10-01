@@ -1,0 +1,59 @@
+/* Phone layouts are kept after the shared theme so breakpoint rules stay consistent. */
+@media (max-width: 767px) {
+  .topbar { height: auto; min-height: 76px; }
+  .topbar-left, .topbar-right, .app-body, .main-content { min-width: 0; }
+  .topbar-right { gap: 8px; }
+  .paper-logout { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex-shrink: 0; }
+  .paper-navigation { min-width: 0; max-width: 100%; overflow-y: hidden; }
+  .reader-drawer { min-height: min(240px, 44dvh); }
+  .reader-options label .selectable-text, .answer-option .selectable-text { min-width: 0; overflow-wrap: anywhere; }
+  .reader-selection { max-height: 28dvh; overflow-y: auto; }
+  .retell-practice, .knowledge-content, .vocabulary-content { overflow-wrap: anywhere; }
+  .retell-actions, .practice-actions { padding-bottom: max(12px, env(safe-area-inset-bottom)) !important; }
+  .reader-drawer { padding-bottom: env(safe-area-inset-bottom); }
+  input:not([type=checkbox]):not([type=radio]):not([type=range]), textarea, select { font-size: 16px !important; min-width: 0; }
+  input[type=file] { max-width: 100%; }
+  [data-slot=dialog-content] { max-height: 92dvh; overflow-y: auto; overflow-x: hidden; }
+  [data-slot=dialog-content] [data-slot=dialog-header] { padding-right: 18px; }
+  .dialog-actions { flex-wrap: wrap; gap: 10px; }
+  .dialog-actions .btn { flex: 1; min-width: 0; }
+  [data-slot=dialog-content] [role=tablist] { display: flex; flex-wrap: wrap; height: auto; overflow: visible; gap: 8px; max-width: 100%; }
+  [data-slot=dialog-content] [role=tablist] > [role=tab] { flex: 1 1 calc(50% - 8px); min-width: 0; white-space: normal; }
+  body:has([data-slot=dialog-content][data-state=open]) .theme-toggle { visibility: hidden; }
+  .filter-tabs { overflow-y: hidden; }
+  .form-grid > *, .form-stack > *, .editor-form > * { min-width: 0; }
+  .bank-toolbar, .favorites-toolbar, .date-controls, .settings-actions { min-width: 0; flex-wrap: wrap; }
+}
+
+@media (max-width: 390px) {
+  .paper-brand { font-size: 20px !important; }
+  .topbar { padding-inline: 14px; gap: 8px !important; }
+  .preview-toggle { padding-inline: 8px !important; }
+}
+
+/* Long playback controls must not remove the answer area on a short screen. */
+@media (max-width: 767px) and (max-height: 640px) {
+  .practice-page[data-kind] { height: auto; min-height: 100dvh; overflow: visible; }
+  .practice-page[data-kind] .practice-page-content,
+  .practice-page[data-kind] .practice-layout { display: block; overflow: visible; }
+  .practice-page[data-kind] .practice-layout > .reading-pane,
+  .practice-page[data-kind] .practice-layout > .answer-pane { height: auto; min-height: 0; overflow: visible; }
+  .practice-page[data-kind] .reading-pane { padding-bottom: 150px !important; }
+  .reader-topbar { height: 96px; }
+  .reader-tools { top: 44px; }
+  .reader-article-scroll { padding-top: 115px; }
+  .reading-workspace > .reader-selection { top: 96px; }
+}
+
+@media (max-width: 700px) {
+  .vocab-library-progress .vocab-progress-table { overflow: visible; }
+  .vocab-library-progress .vocab-progress-table table { display: block; min-width: 0; }
+  .vocab-library-progress .vocab-progress-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .vocab-library-progress .vocab-progress-table tbody { display: block; }
+  .vocab-library-progress .vocab-progress-table tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 12px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .vocab-library-progress .vocab-progress-table td { min-width: 0; padding: 4px 0; border: 0; overflow-wrap: anywhere; }
+  .vocab-library-progress .vocab-progress-table td:nth-child(2)::before { content: '认对进度'; color: var(--muted-foreground); font-size: 12px; }
+  .vocab-library-progress .vocab-progress-table td:nth-child(4)::before { content: '下次复习'; display: block; color: var(--muted-foreground); font-size: 12px; }
+  .vocab-library-progress .vocab-progress-table progress { min-width: 0; }
+}
+

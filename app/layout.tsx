@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./theme.css";
+import "./dark.css";
+import "./vocabulary.css";
+import "./mobile.css";
+import {AppTheme} from "./theme-provider";
 
 export const metadata: Metadata = {
   title: "English Daily · 英语每日练习",
@@ -16,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
-      <body className="antialiased">{children}</body>
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body className="antialiased"><AppTheme>{children}</AppTheme></body>
     </html>
   );
 }

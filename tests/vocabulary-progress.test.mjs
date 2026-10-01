@@ -1,0 +1,60 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtemp,mkdir,readFile} from 'node:fs/promises';
+import {DatabaseSync} from 'node:sqlite';
+import {build} from 'esbuild';
+import path from 'node:path';
+import {pathToFileURL} from 'node:url';
+
+test('full context import, safe upgrade and shared per-word progress',async()=>{
+ await mkdir('work',{recursive:true});
+ const dir=await mkdtemp(path.resolve('work/vocabulary-progress-'));
+ process.env.DATA_DIR=path.join(dir,'data');
+ await build({entryPoints:['lib/vocabulary-store.ts'],bundle:true,platform:'node',format:'esm',outfile:path.join(dir,'store.mjs')});
+ const store=await import(pathToFileURL(path.join(dir,'store.mjs')));
+ store.ensureVocabulary();
+ const seed=JSON.parse(await readFile('data-content/beijing-cd-vocabulary.json','utf8'));
+ assert.equal(seed.length,424);
+ assert.equal(seed.reduce((n,w)=>n+w.contextSentences.length,0),1272);
+ for(const w of seed)for(const s of w.contextSentences)assert.ok(s.text.includes(s.target));
+ const db=new DatabaseSync(path.join(process.env.DATA_DIR,'english-daily.sqlite'));
+ const first=store.vocabularyState('student',true,'2026-10-02');
+ assert.equal(first.learned,0);assert.equal(first.stable,0);
+ assert.equal(first.progress.length,424);assert.equal(first.enabledCount,32);
+ assert.ok(first.progress.every(p=>p.status==='未学习'&&p.nextDue===null));
+ // Simulate the previous seed and teacher edits; upgrading must only add context data.
+ const word=first.words.find(w=>w.enabled);
+ const old={...word,meaning:'教师核对后的释义'};delete old.contextSentences;
+ db.prepare('UPDATE vocabulary_words SET data=? WHERE id=?').run(JSON.stringify(old),word.id);
+ db.prepare('UPDATE vocabulary_settings SET seed_version=1 WHERE id=1').run();
+ store.ensureVocabulary();store.ensureVocabulary();
+ const upgraded=store.vocabularyState('student',true,'2026-10-02').words.find(w=>w.id===word.id);
+ assert.equal(upgraded.meaning,old.meaning);assert.deepEqual(upgraded.sentences,old.sentences);
+ assert.deepEqual(upgraded.contextSentences,word.contextSentences);
+ assert.equal(store.vocabularyState('student',true).totalCount,424);
+ store.setVocabularyDaily(1);
+ let day='2026-10-02',last;
+ for(let i=0;i<4;i++){
+  const state=store.startVocabulary('student',day),card=state.cards.find(c=>c.word===word.word);
+  const meaning=word.sentences[i%3].meaning;
+  last=store.answerVocabulary('student',card.id,card.options.indexOf(meaning),false,day);
+  assert.deepEqual(store.answerVocabulary('student',card.id,null,true,day),last);
+  const progress=store.vocabularyState('student',false,day).progress.find(p=>p.id===word.id);
+  assert.equal(progress.reviews,i+1);assert.equal(progress.streak,i+1);
+  assert.equal(progress.status,i===3?'长期巩固':'学习中');
+  day=last.nextDue;
+ }
+ let student=store.vocabularyState('student',false,day),teacher=store.vocabularyState('student',true,day);
+ assert.deepEqual(student.progress,teacher.progress);assert.equal(student.stable,1);
+ assert.equal(student.words,undefined);assert.equal(student.progress[0].sentences,undefined);
+ assert.equal(store.vocabularyState('other',false,day).learned,0);
+ const due=store.startVocabulary('student',day).cards.find(c=>c.word===word.word);
+ store.answerVocabulary('student',due.id,null,true,day);
+ student=store.vocabularyState('student',false,day);
+ const failed=student.progress.find(p=>p.id===word.id);
+ assert.equal(failed.status,'学习中');assert.equal(failed.reviews,5);assert.equal(failed.lapses,1);assert.equal(student.stable,0);
+ store.saveVocabularyWord({...upgraded,enabled:false});
+ const paused=store.vocabularyState('student',false,day).progress.find(p=>p.id===word.id);
+ assert.equal(paused.enabled,false);assert.equal(paused.reviews,5);
+ db.close();
+});
