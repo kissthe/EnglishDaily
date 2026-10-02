@@ -116,7 +116,7 @@ test('self-hosted initialization, durable SQLite/media, role isolation and dicta
   assert.equal((await get('vocabulary')).enabledCount,32);
   rewriteContext=true;await post('vocabulary',{op:'generate',word:importedWord.word,meaning:importedWord.meaning,contextSentences:contexts},502);
  }finally{globalThis.fetch=vocabFetch}
- await post('vocabulary',{op:'settings',dailyNew:2});await post('vocabulary',{op:'settings',dailyNew:31},400);
+ await post('vocabulary',{op:'settings',dailyNew:2});await post('vocabulary',{op:'settings',dailyNew:1001},400);
  const activeWord=vocabTeacher.words.find(w=>w.enabled);await post('vocabulary',{op:'save',word:{...activeWord,sentences:[]}},400);
  identify(student);await post('vocabulary',{op:'settings',dailyNew:20},403);await post('vocabulary',{op:'generate',word:'device',meaning:'设备'},403);
  let vocab=await get('vocabulary');assert.equal(vocab.words,undefined);assert.equal(vocab.recent,undefined);
@@ -139,7 +139,7 @@ test('self-hosted initialization, durable SQLite/media, role isolation and dicta
  identify(vocabTeacherCookie);const editable=(await get('vocabulary')).words.find(w=>w.id===source.id);await post('vocabulary',{op:'save',word:{...editable,enabled:false,meaning:editable.meaning+'（已核对）'}});store.ensureVocabulary();const retained=(await get('vocabulary')).words.find(w=>w.id===source.id);assert.equal(retained.enabled,false);assert.match(retained.meaning,/已核对/);assert.equal(store.startVocabulary(studentId,nextDay).cards.some(c=>c.word===source.word),false);
  identify(vocabTeacherCookie);await post('vocabulary',{op:'start'},403);await post('vocabulary',{op:'settings',dailyNew:8});
  await post('auth',{op:'saveStudent',username:'student',password:'student-reset-password',teacherPassword:'teacher-long-password'});identify(student);await get('course',401);
- const persisted=execFileSync(process.execPath,['--input-type=module','-e',"import {openDatabase,env} from './lib/runtime.mjs';const d=openDatabase();console.log(JSON.stringify({submissions:d.prepare('SELECT count(*) AS n FROM submissions').get().n,migrations:d.prepare('SELECT count(*) AS n FROM selfhost_migrations').get().n}));"],{env:process.env,encoding:'utf8'});assert.deepEqual(JSON.parse(persisted),{submissions:5,migrations:8});
+ const persisted=execFileSync(process.execPath,['--input-type=module','-e',"import {openDatabase,env} from './lib/runtime.mjs';const d=openDatabase();console.log(JSON.stringify({submissions:d.prepare('SELECT count(*) AS n FROM submissions').get().n,migrations:d.prepare('SELECT count(*) AS n FROM selfhost_migrations').get().n}));"],{env:process.env,encoding:'utf8'});assert.deepEqual(JSON.parse(persisted),{submissions:5,migrations:9});
  const {env}=await import('../lib/runtime.mjs');await assert.rejects(env.BUCKET.get('../etc/passwd'));await assert.rejects(env.DB.batch([env.DB.prepare("INSERT INTO materials VALUES ('rollback','{}','today')"),env.DB.prepare('INVALID SQL')]));assert.equal(await env.DB.prepare("SELECT * FROM materials WHERE id='rollback'").first(),null);
  try{await rm(dir,{recursive:true,force:true})}catch(e){if(e.code!=='EBUSY')throw e}
 });

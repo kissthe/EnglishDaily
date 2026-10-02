@@ -1,4 +1,17 @@
 /* Night surfaces keep content, controls and feedback legible. */
+.dark :is(.student-week,.student-empty){background:var(--surface)!important;color:var(--ink)!important;border-color:var(--border)!important}
+.dark .student-complete{background:#16372b!important;color:#9cdebb!important}
+html.dark{--desk:#101620;--secondary:#253046;--secondary-foreground:#d5deee;--accent:#302b4b;--accent-foreground:#ded8ff;--destructive:#f18b8b;--ring:#b2a8ff;--sidebar:#192231;--sidebar-foreground:#aab6ca;--sidebar-primary:#9687ff;--sidebar-primary-foreground:#141024;--sidebar-accent:#302b4b;--sidebar-accent-foreground:#ded8ff;--sidebar-border:#354157;--sidebar-ring:#b2a8ff;--chart-1:#b2a8ff;--chart-2:#9cdebb;--chart-3:#e8cc83;--chart-4:#aab6ca;--chart-5:#f0abab}
+
+/* Only animate paint properties during a switch; layout and control motion stay intact. */
+@media (prefers-reduced-motion: no-preference) {
+  html.theme-changing, html.theme-changing body,
+  html.theme-changing body *, html.theme-changing body *::before,
+  html.theme-changing body *::after {
+    transition: background-color 220ms ease, color 220ms ease,
+      border-color 220ms ease, box-shadow 220ms ease, fill 220ms ease, stroke 220ms ease !important;
+  }
+}
 html.dark{color-scheme:dark;--background:#101620;--foreground:#e5eaf3;--paper:#101620;--ink:#e5eaf3;--pencil:#a6b1c5;--rust:#b2a8ff;--border:#354157;--input:#354157;--muted:#222d40;--muted-foreground:#aab6ca;--primary:#9687ff;--primary-foreground:#141024;--surface:#192231;--card:#192231;--card-foreground:#e5eaf3;--popover:#192231;--popover-foreground:#e5eaf3;--shadow-soft:0 8px 32px #0002}
 .dark body{background:var(--paper);color:var(--ink)}
 .dark :is(.panel,.material-card,.task-card,.metric,.completion-card,.settings-form,.favorite-card,.student-notice,.login-card,.retell-card,.reader-drawer,.reader-tools,.reader-tool-popover,.culture-stage,.culture-facts article,.culture-notes article,.culture-question,.answer-pane,.reading-pane,.record,.student-task,[data-slot=dialog-content],[data-slot=select-content],.knowledge-intro){background:var(--surface)!important;border-color:var(--border)!important;color:var(--ink)!important}
@@ -20,4 +33,4 @@ html.dark{color-scheme:dark;--background:#101620;--foreground:#e5eaf3;--paper:#1
 .dark :is(.reading-text,.reader-prose,.paper-article-title,.paper-handlabel,.login-brand,.record b,.record-state,.student-task h3,.skill-row b,.culture-facts b,.culture-question legend,.culture-question label,.culture-complete h2){color:var(--ink)!important}
 .dark :is(.login-message>p,.login-features,.login-card>p,.login-help,.metric-note,.metric>div>span,.metric strong small,.completion-card p,.completion-card>div:first-child,.record small,.student-task p,.culture-steps button,.culture-notes article p,.culture-vocabulary,.ai-prompt-editor>p,.settings-actions>span){color:var(--muted-foreground)!important}
 .dark :is(.preview-toggle,.task-go,.student-task-action,.login-icon,.top-avatar){background:#302b4b!important;color:#c4baff!important;border-color:var(--border)!important}
-.dark .paper-navigation button:hover{background:#253046}.dark .week-strip button b{color:#d4dbea}.dark [data-slot=tabs-trigger][data-state=active]{background:#302b4b;color:#ded8ff}.dark .culture-notes article{border-color:var(--border)}.dark .retell-point{background:#222d40!important;color:var(--ink)!important}.dark .reader-tool-popover button{color:var(--ink)}.dark .reader-tools button{border-radius:99px}.dark .culture-stage-title>div h3{color:var(--ink)}
+.dark .paper-navigation button:hover{background:#253046}.dark .week-strip button b{color:#d4dbea}.dark [data-slot=tabs-trigger][data-state=active]{background:#302b4b!important;color:#ded8ff!important}.dark .culture-notes article{border-color:var(--border)}.dark .retell-point{background:#222d40!important;color:var(--ink)!important}.dark .reader-tool-popover button{color:var(--ink)}.dark .reader-tools button{border-radius:99px}.dark .culture-stage-title>div h3{color:var(--ink)}
