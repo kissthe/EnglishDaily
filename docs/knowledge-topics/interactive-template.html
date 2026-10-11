@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Topic Title · Interactive</title>
+<!--
+  English Daily 互动页面起始模板
+  用法：复制本文件，替换每个区块中的内容；不需要的区块整段删除。
+  规则摘要（完整说明见 互动页面规范.md）：
+  1. 所有 CSS / JS 写在本文件里，不引用外部脚本、字体或 CDN。
+  2. 图片、音频、视频先在“页面媒体”上传，再用 data-media="名称" 引用。
+  3. 颜色只用下面的 CSS 变量，html.dark 下自动切换夜间配色。
+  4. 学生完成一个活动时调用 ED.done('活动名')，平台会记录。
+  5. 不要用 100vh 设置高度，平台会自动适配页面高度。
+-->
+<style>
+:root{--bg:#faf8f3;--card:#ffffff;--ink:#22304a;--muted:#5f6b80;--line:#e2e5ec;--accent:#5b4ee6;--accent-soft:#eeecff;--warm:#f4a340;--ok:#1f8a5b;--ok-soft:#e3f5ec;--bad:#c2410c;--bad-soft:#fdebe1}
+html.dark{--bg:#111827;--card:#1b2435;--ink:#e6eaf2;--muted:#a9b4c6;--line:#334055;--accent:#9d93ff;--accent-soft:#2a2952;--warm:#f6b35c;--ok:#4ccf93;--ok-soft:#173a2c;--bad:#ff9a6b;--bad-soft:#40241a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.75 Georgia,"Times New Roman",serif;transition:background .2s,color .2s}
+main{max-width:980px;margin:0 auto;padding:28px 20px 40px}
+.label{font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.1;margin:10px 0 12px}
+h2{font-size:28px;line-height:1.25;margin:6px 0 10px}
+p{margin:0 0 12px}
+.zh{font:15px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+section{margin:30px 0;padding:26px;border:1px solid var(--line);border-radius:22px;background:var(--card)}
+.hero{background:linear-gradient(135deg,var(--accent-soft),var(--card))}
+button{font:600 16px/1.2 system-ui,sans-serif;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:11px 16px}
+button:hover{border-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.feedback{min-height:28px;font:16px/1.6 system-ui,sans-serif}
+.good{color:var(--ok)}.bad{color:var(--bad)}
+/* 翻转卡 */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.flip{position:relative;min-height:150px;padding:0;border-radius:18px;perspective:800px;text-align:left}
+.flip .inner{position:absolute;inset:0;transition:transform .45s;transform-style:preserve-3d}
+.flip.open .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;padding:18px;border-radius:18px;backface-visibility:hidden;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.flip .front{background:var(--accent-soft)}
+.flip .front b{font:700 24px/1.2 Georgia,serif}
+.flip .back{background:var(--card);border:1px solid var(--accent);transform:rotateY(180deg);font:15px/1.6 system-ui,"PingFang SC",sans-serif}
+/* 媒体 */
+figure{margin:0}figure img,figure video{width:100%;border-radius:14px;display:block}audio{width:100%}
+figcaption{font:14px system-ui,sans-serif;color:var(--muted);margin-top:6px}
+[data-media-error]{display:none}
+/* 选择题 */
+.quiz{display:grid;gap:18px}
+.q p{font-weight:700}
+.q button{display:block;width:100%;text-align:left;margin:6px 0}
+.q button.right{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.q button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+/* 排序 */
+.order{display:grid;gap:8px;padding:0;margin:14px 0;list-style:none}
+.order li{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.order li span{flex:1}
+.order li button{padding:6px 10px}
+/* 表达 */
+textarea{width:100%;min-height:120px;font:17px/1.6 Georgia,serif;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink)}
+.starters{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.starters button{font-weight:500;padding:7px 12px;border-radius:99px}
+.source{font:13px/1.6 system-ui,sans-serif;color:var(--muted)}
+@media(max-width:680px){main{padding:16px 14px 30px}section{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+
+<!-- 区块 1：大问题 + 先猜一猜。把问题换成本主题的核心问题。 -->
+<section class="hero">
+  <span class="label">Category · A2 · 20 min</span>
+  <h1>Topic Title</h1>
+  <p>Big question: <b>Why do people around the world know this song?</b></p>
+  <p class="zh">先猜一猜，再往下探索。</p>
+  <div class="row" id="poll">
+    <button data-correct="true">Answer A</button>
+    <button>Answer B</button>
+  </div>
+  <p class="feedback" id="poll-feedback" aria-live="polite"></p>
+</section>
+
+<!-- 区块 2：翻转卡。适合关键事实、人物、词汇。正面写英文，背面写解释。 -->
+<section>
+  <span class="label">01 · Fast facts</span>
+  <h2>Three things to know</h2>
+  <p class="zh">点击卡片翻面。</p>
+  <div class="cards" id="cards">
+    <button class="flip"><span class="inner"><span class="face front"><small class="label">WHO</small><b>Fact one</b></span><span class="face back">One short English sentence. 一句中文提示。</span></span></button>
+    <button class="flip"><span class="inner"><span class="face front"><small class="label">WHEN</small><b>Fact two</b></span><span class="face back">One short English sentence. 一句中文提示。</span></span></button>
+    <button class="flip"><span class="inner"><span class="face front"><small class="label">WHY</small><b>Fact three</b></span><span class="face back">One short English sentence. 一句中文提示。</span></span></button>
+  </div>
+</section>
+
+<!-- 区块 3：媒体。名称必须与“页面媒体”里上传的名称一致；没上传时元素会自动隐藏。 -->
+<section>
+  <span class="label">02 · Look and listen</span>
+  <h2>Listen to a short clip</h2>
+  <figure><img data-media="cover-image" alt="Describe the picture"><figcaption>Picture caption · source</figcaption></figure>
+  <p class="zh">听片段时，注意一个词：<b>friendship</b>。</p>
+  <audio data-media="song-clip" controls></audio>
+  <!-- 视频：<video data-media="film-clip" controls playsinline></video> -->
+</section>
+
+<!-- 区块 4：选择题，即时反馈。全部答对时记录 quiz。 -->
+<section>
+  <span class="label">03 · Quick check</span>
+  <h2>How much do you remember?</h2>
+  <div class="quiz" id="quiz">
+    <div class="q"><p>1. Question one?</p><button data-correct="true">Right answer</button><button>Wrong answer</button><button>Wrong answer</button></div>
+    <div class="q"><p>2. Question two?</p><button>Wrong answer</button><button data-correct="true">Right answer</button><button>Wrong answer</button></div>
+  </div>
+  <p class="feedback" id="quiz-feedback" aria-live="polite"></p>
+</section>
+
+<!-- 区块 5：排序。适合故事情节、历史时间线、歌曲段落。data-step 为正确顺序。 -->
+<section>
+  <span class="label">04 · Put in order</span>
+  <h2>What happened first?</h2>
+  <ol class="order" id="order">
+    <li data-step="3"><span>Third event</span><button aria-label="Move up">↑</button><button aria-label="Move down">↓</button></li>
+    <li data-step="1"><span>First event</span><button aria-label="Move up">↑</button><button aria-label="Move down">↓</button></li>
+    <li data-step="2"><span>Second event</span><button aria-label="Move up">↑</button><button aria-label="Move down">↓</button></li>
+  </ol>
+  <button id="check-order">Check my order</button>
+  <p class="feedback" id="order-feedback" aria-live="polite"></p>
+</section>
+
+<!-- 区块 6：表达。提供句架，学生写两三句。页面内容不保存，正式写作请用 Culture Lab 的“表达”步骤。 -->
+<section>
+  <span class="label">05 · Your turn</span>
+  <h2>Say what you think</h2>
+  <p class="zh">点击句子开头，把它补充完整。</p>
+  <div class="starters" id="starters"><button>I like it because…</button><button>It reminds me of…</button><button>In China, we…</button></div>
+  <textarea id="express" maxlength="800" placeholder="Write two or three sentences."></textarea>
+  <p class="feedback" id="express-feedback"></p>
+</section>
+
+<p class="source">Sources: … · Images and audio used with permission: … · Adapted by the teacher.</p>
+</main>
+
+<script>
+// 平台提供 EnglishDaily；直接用浏览器打开文件预览时使用空实现。
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+
+// 大问题
+document.querySelectorAll('#poll button').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var f = document.getElementById('poll-feedback'), right = b.dataset.correct === 'true';
+    f.className = 'feedback ' + (right ? 'good' : 'bad');
+    f.textContent = right ? 'Good guess! Let us find out more.' : 'Interesting guess. Keep reading to check.';
+    ED.done('big-question');
+  });
+});
+
+// 翻转卡：全部翻过一次记录 facts
+var flipped = {};
+document.querySelectorAll('.flip').forEach(function (card, i) {
+  card.addEventListener('click', function () {
+    card.classList.toggle('open');
+    flipped[i] = true;
+    if (Object.keys(flipped).length === document.querySelectorAll('.flip').length) ED.done('facts');
+  });
+});
+
+// 音频播放结束记录 listen
+var clip = document.querySelector('audio[data-media]');
+if (clip) clip.addEventListener('ended', function () { ED.done('listen'); });
+
+// 选择题
+var answered = 0, correct = 0, total = document.querySelectorAll('.q').length;
+document.querySelectorAll('.q').forEach(function (q) {
+  q.querySelectorAll('button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (q.dataset.done) return;
+      q.dataset.done = '1'; answered++;
+      if (b.dataset.correct === 'true') { b.classList.add('right'); correct++; }
+      else { b.classList.add('wrong'); q.querySelector('[data-correct=true]').classList.add('right'); }
+      if (answered === total) {
+        var f = document.getElementById('quiz-feedback');
+        f.className = 'feedback ' + (correct === total ? 'good' : '');
+        f.textContent = 'You got ' + correct + ' / ' + total + '.';
+        if (correct === total) ED.done('quiz');
+      }
+    });
+  });
+});
+
+// 排序
+var list = document.getElementById('order');
+list.addEventListener('click', function (e) {
+  var b = e.target.closest('button'); if (!b) return;
+  var li = b.closest('li');
+  if (b.textContent === '↑' && li.previousElementSibling) list.insertBefore(li, li.previousElementSibling);
+  if (b.textContent === '↓' && li.nextElementSibling) list.insertBefore(li.nextElementSibling, li);
+});
+document.getElementById('check-order').addEventListener('click', function () {
+  var ok = Array.prototype.every.call(list.children, function (li, i) { return Number(li.dataset.step) === i + 1; });
+  var f = document.getElementById('order-feedback');
+  f.className = 'feedback ' + (ok ? 'good' : 'bad');
+  f.textContent = ok ? 'Perfect order!' : 'Not yet. Try moving the events again.';
+  if (ok) ED.done('order');
+});
+
+// 表达
+var box = document.getElementById('express');
+document.querySelectorAll('#starters button').forEach(function (b) {
+  b.addEventListener('click', function () { box.value += (box.value ? ' ' : '') + b.textContent.replace('…', ' '); box.focus(); });
+});
+box.addEventListener('input', function () {
+  var words = box.value.trim().split(/\s+/).filter(Boolean).length;
+  document.getElementById('express-feedback').textContent = words + ' words';
+  if (words >= 15) ED.done('express');
+});
+</script>
+</body>
+</html>

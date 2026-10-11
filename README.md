@@ -257,3 +257,14 @@ Next.js App Router、React、TypeScript、现有 shadcn/Radix 组件。后端沿
 右下角月亮/太阳按钮切换日间与黑夜模式，默认跟随系统，手动选择保存在当前浏览器。学习页、教师页与 HTML 内容同步切换。HTML 中的图片保留原色；夜间会覆盖正文的亮色背景和文字，以保持可读性。
 
 第一轮六个主题和课堂活动见 [主题课程设计](docs/knowledge-topics/主题课程设计.md)。可上传使用的原创示例：[California 与 Los Angeles](docs/knowledge-topics/california-los-angeles.html)。在“知识拓展 → 新建知识拓展”上传 HTML、核对来源与发布设置后发布；也可启用五步学习流程，增加检测和表达任务。示例未自动发布到现有课程。
+
+### 互动知识拓展页面
+
+知识拓展的 HTML 分为“静态页面”和“互动页面”两种。互动页面可以运行页面里的脚本（地图点选、翻卡、排序、小游戏），上限 1MB。页面在不带本站身份的沙箱 iframe 中运行（`sandbox="allow-scripts"`，不加 `allow-same-origin`），并由 CSP 禁止一切网络请求，所以页面脚本读不到登录 Cookie，也不能调用 `/api` 或加载外部资源。
+
+- 图片、音频（20MB 以内）、视频可以上传为“页面媒体”，在 HTML 中用 `data-media="名称"` 引用。平台验证学生登录后加载文件，再交给页面；学生只能读取已发布主题引用的媒体。
+- 页面调用 `EnglishDaily.done('活动名')` 记录学生完成的活动，保存在 `culture_progress` 中；平台通过 `html.dark` 通知页面切换夜间模式，切换时页面不会重新加载。
+- 学生的课程列表不再包含知识拓展正文，打开主题时通过 `/api/knowledge?id=` 单独加载。
+- 静态页面保持原有的清洗和划线批注方式。无须数据库迁移。
+
+写法与 AI 提示词见 [互动页面规范](docs/knowledge-topics/互动页面规范.md)，起始模板见 [interactive-template.html](docs/knowledge-topics/interactive-template.html)，示例见 [California 与 Los Angeles 互动版](docs/knowledge-topics/california-los-angeles-interactive.html)，主题清单见 [主题库](docs/knowledge-topics/主题库.md)。

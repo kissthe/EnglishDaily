@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>California & Los Angeles · Interactive</title>
+<style>
+:root{--bg:#faf8f3;--card:#ffffff;--ink:#22304a;--muted:#5f6b80;--line:#e2e5ec;--accent:#5b4ee6;--accent-soft:#eeecff;--sun:#f4a340;--sea:#3b8fd9;--land:#f6e7c8;--ok:#1f8a5b;--ok-soft:#e3f5ec;--bad:#c2410c;--bad-soft:#fdebe1}
+html.dark{--bg:#111827;--card:#1b2435;--ink:#e6eaf2;--muted:#a9b4c6;--line:#334055;--accent:#9d93ff;--accent-soft:#2a2952;--sun:#f6b35c;--sea:#5aa8ec;--land:#3a3424;--ok:#4ccf93;--ok-soft:#173a2c;--bad:#ff9a6b;--bad-soft:#40241a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.75 Georgia,"Times New Roman",serif;transition:background .2s,color .2s}
+main{max-width:980px;margin:0 auto;padding:28px 20px 40px}
+.label{font:600 12px/1.4 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.08;margin:10px 0 12px}
+h2{font-size:28px;line-height:1.25;margin:6px 0 10px}
+p{margin:0 0 12px}
+.zh{font:15px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+section{margin:34px 0;padding:26px;border:1px solid var(--line);border-radius:22px;background:var(--card)}
+.hero{background:linear-gradient(135deg,var(--accent-soft),var(--card));}
+button{font:600 16px/1.2 system-ui,sans-serif;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:11px 16px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.feedback{min-height:28px;font:16px/1.6 system-ui,sans-serif;margin-top:6px}
+.good{color:var(--ok)}.bad{color:var(--bad)}
+/* 层级卡 */
+.levels{display:grid;gap:12px;margin-top:16px}
+.level{display:flex;gap:14px;align-items:center;text-align:left;width:100%;padding:16px 18px}
+.level .tag{flex:none;font:700 12px/1 system-ui,sans-serif;letter-spacing:.1em;padding:7px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+.level .name{font:700 22px/1.2 Georgia,serif}
+.level .more{display:none;font:15px/1.6 system-ui,sans-serif;color:var(--muted);margin-left:auto;max-width:48%}
+.level.open .more{display:block}
+.level:nth-child(2){margin-left:24px;width:calc(100% - 24px)}.level:nth-child(3){margin-left:48px;width:calc(100% - 48px)}.level:nth-child(4){margin-left:72px;width:calc(100% - 72px)}
+/* 地图 */
+.map-wrap{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:22px;align-items:start}
+svg{width:100%;height:auto;display:block}
+.state{fill:var(--land);stroke:var(--ink);stroke-width:2}
+.ocean{fill:var(--sea);opacity:.18}
+.ocean-label{font:700 11px system-ui,sans-serif;letter-spacing:.2em;fill:var(--sea)}
+.pin{cursor:pointer}
+.pin circle{fill:var(--sun);stroke:var(--card);stroke-width:3;transition:r .15s}
+.pin.capital circle{fill:var(--accent)}
+.pin.seen circle{stroke:var(--ok)}
+.pin:hover circle,.pin:focus circle{r:12}
+.pin text{font:700 13px system-ui,sans-serif;fill:var(--ink)}
+.place-card{padding:18px;border-radius:16px;background:var(--accent-soft);min-height:170px}
+.place-card h3{margin:0 0 6px;font-size:24px}
+.progress{font:14px system-ui,sans-serif;color:var(--muted)}
+figure{margin:16px 0 0}figure img{width:100%;border-radius:14px}figcaption{font:14px system-ui,sans-serif;color:var(--muted);margin-top:6px}
+/* 词汇 */
+.word{font:inherit;padding:0 4px;border:0;border-bottom:2px dotted var(--accent);border-radius:4px;background:transparent;color:inherit}
+.word.open{background:var(--accent-soft)}
+.gloss{display:block;font:15px/1.6 system-ui,"PingFang SC",sans-serif;color:var(--accent);margin:4px 0 10px}
+/* 分类游戏 */
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.chip.selected{background:var(--accent);border-color:var(--accent);color:#fff}
+.chip.done{opacity:.45;cursor:default}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.bin{min-height:120px;padding:12px;border:2px dashed var(--line);border-radius:16px;text-align:left;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.bin b{font:700 13px system-ui,sans-serif;letter-spacing:.1em;color:var(--accent)}
+.bin span{font:15px system-ui,sans-serif;padding:4px 10px;border-radius:99px;background:var(--ok-soft);color:var(--ok)}
+/* 明信片 */
+.postcard{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+label{display:block;font:600 14px/1.5 system-ui,sans-serif;color:var(--muted);margin:10px 0 4px}
+input{width:100%;font:17px/1.4 Georgia,serif;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.card-preview{padding:22px;border-radius:16px;background:repeating-linear-gradient(0deg,transparent 0 33px,var(--line) 33px 34px),var(--card);border:1px solid var(--line);min-height:240px;font-size:19px;line-height:34px}
+.stamp{float:right;width:64px;height:74px;border:3px dotted var(--sun);border-radius:6px;display:grid;place-items:center;font:700 12px system-ui,sans-serif;color:var(--sun);margin:0 0 8px 12px}
+.source{font:13px/1.6 system-ui,sans-serif;color:var(--muted)}
+@media(max-width:680px){main{padding:16px 14px 30px}section{padding:18px}.map-wrap,.postcard{grid-template-columns:1fr}.bins{grid-template-columns:1fr}.level .more{max-width:none}.level{flex-wrap:wrap}.level:nth-child(n){margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<main>
+
+<section class="hero">
+  <span class="label">Places · A2 · 20 min</span>
+  <h1>A state. A city.<br>A world of stories.</h1>
+  <p>Big question: <b>Is LA a city or a state?</b></p>
+  <p class="zh">先猜一猜：LA 是一座城市，还是一个州？</p>
+  <div class="row" id="poll">
+    <button data-answer="city">A city</button>
+    <button data-answer="state">A state</button>
+  </div>
+  <p class="feedback" id="poll-feedback" aria-live="polite"></p>
+</section>
+
+<section>
+  <span class="label">01 · Zoom in</span>
+  <h2>From a country to a neighborhood</h2>
+  <p class="zh">点击每一层，看看它们是什么关系。</p>
+  <div class="levels" id="levels">
+    <button class="level"><span class="tag">COUNTRY</span><span class="name">United States</span><span class="more">A country with 50 states. 美国有 50 个州。</span></button>
+    <button class="level"><span class="tag">STATE</span><span class="name">California</span><span class="more">A state on the west coast. Its capital is Sacramento.</span></button>
+    <button class="level"><span class="tag">CITY</span><span class="name">Los Angeles (LA)</span><span class="more">The biggest city in California.</span></button>
+    <button class="level"><span class="tag">NEIGHBORHOOD</span><span class="name">Hollywood</span><span class="more">A neighborhood in LA, famous for films. 不是一个州！</span></button>
+  </div>
+</section>
+
+<section>
+  <span class="label">02 · Explore the map</span>
+  <h2>Five places in California</h2>
+  <p class="zh">点击地图上的圆点。紫色圆点是首府。示意图，不按比例。</p>
+  <div class="map-wrap">
+    <svg viewBox="0 0 320 430" role="img" aria-label="Simplified map of California, not to scale">
+      <rect class="ocean" x="0" y="0" width="120" height="430"/>
+      <text class="ocean-label" x="18" y="300" transform="rotate(-70 18 300)">PACIFIC OCEAN</text>
+      <path class="state" d="M22 12 L172 12 L172 172 L292 330 L288 384 L196 402 L176 380 L152 344 L120 322 L96 302 L74 262 L58 226 L40 178 L30 150 L8 86 Z"/>
+      <g class="pin capital" data-place="sacramento" tabindex="0" role="button" aria-label="Sacramento"><circle cx="78" cy="150" r="9"/><text x="90" y="146">Sacramento</text></g>
+      <g class="pin" data-place="sanfrancisco" tabindex="0" role="button" aria-label="San Francisco"><circle cx="40" cy="176" r="9"/><text x="10" y="204">San Francisco</text></g>
+      <g class="pin" data-place="losangeles" tabindex="0" role="button" aria-label="Los Angeles"><circle cx="150" cy="338" r="9"/><text x="162" y="334">Los Angeles</text></g>
+      <g class="pin" data-place="hollywood" tabindex="0" role="button" aria-label="Hollywood"><circle cx="140" cy="322" r="6"/><text x="70" y="314">Hollywood</text></g>
+      <g class="pin" data-place="sandiego" tabindex="0" role="button" aria-label="San Diego"><circle cx="190" cy="394" r="9"/><text x="202" y="398">San Diego</text></g>
+    </svg>
+    <div>
+      <div class="place-card" id="place-card" aria-live="polite">
+        <h3>Choose a place</h3>
+        <p class="zh">从地图上选择一个地点开始探索。</p>
+      </div>
+      <p class="progress" id="map-progress">Places visited: 0 / 5</p>
+      <figure id="skyline" hidden><img alt="Los Angeles skyline"><figcaption>Los Angeles</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="label">03 · Read and discover</span>
+  <h2>More than films</h2>
+  <p class="zh">点击带虚线的词查看意思。</p>
+  <div id="reading">
+    <p>California is a state on the west <button class="word" data-zh="海岸">coast</button> of the United States. It has big cities, mountains, farms and a long coastline. Its <button class="word" data-zh="首府；首都">capital</button> is Sacramento.</p>
+    <p>Los Angeles is the biggest city in California. People often call it LA. LA is <button class="word" data-zh="以……而闻名">known for</button> films and television. Hollywood is a <button class="word" data-zh="街区；社区">neighborhood</button> in Los Angeles. It is not a separate state!</p>
+    <p>But a city is more than the films we see. People in LA go to school, work, play sports and spend time with their families. People from many different <button class="word" data-zh="背景；出身">backgrounds</button> live there.</p>
+  </div>
+</section>
+
+<section>
+  <span class="label">04 · Sort it out</span>
+  <h2>State, city or neighborhood?</h2>
+  <p class="zh">先点一个地名，再点它所属的类别。</p>
+  <div class="chips" id="chips">
+    <button class="chip" data-type="state">California</button>
+    <button class="chip" data-type="city">Los Angeles</button>
+    <button class="chip" data-type="neighborhood">Hollywood</button>
+    <button class="chip" data-type="city">Sacramento</button>
+    <button class="chip" data-type="state">Texas</button>
+    <button class="chip" data-type="city">San Diego</button>
+  </div>
+  <div class="bins">
+    <button class="bin" data-bin="state"><b>STATE</b></button>
+    <button class="bin" data-bin="city"><b>CITY</b></button>
+    <button class="bin" data-bin="neighborhood"><b>NEIGHBORHOOD</b></button>
+  </div>
+  <p class="feedback" id="sort-feedback" aria-live="polite"></p>
+</section>
+
+<section>
+  <span class="label">05 · Your turn</span>
+  <h2>Write a postcard</h2>
+  <p class="zh">介绍一个你熟悉的地方，写完读给老师听。</p>
+  <div class="postcard">
+    <div>
+      <label for="p-name">The place is called…</label><input id="p-name" maxlength="60" placeholder="Beijing">
+      <label for="p-where">It is in…</label><input id="p-where" maxlength="80" placeholder="the north of China">
+      <label for="p-known">It is known for…</label><input id="p-known" maxlength="100" placeholder="the Great Wall and Peking duck">
+      <label for="p-why">I would like to… because…</label><input id="p-why" maxlength="140" placeholder="I would like to show you the Summer Palace because it is beautiful in spring.">
+    </div>
+    <div class="card-preview" id="postcard"><span class="stamp">STAMP</span><span id="postcard-text"></span></div>
+  </div>
+</section>
+
+<p class="source">Original teaching text for learners. Map is simplified and not to scale.</p>
+</main>
+
+<script>
+// 在网站中运行时由平台提供 EnglishDaily；直接用浏览器打开文件预览时使用空实现。
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+
+// 导入问题
+document.querySelectorAll('#poll button').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var f = document.getElementById('poll-feedback');
+    if (b.dataset.answer === 'city') { f.className = 'feedback good'; f.textContent = 'Yes! LA (Los Angeles) is a city in the state of California.'; }
+    else { f.className = 'feedback bad'; f.textContent = 'Not quite. California is the state. LA is a city in California.'; }
+    ED.done('big-question');
+  });
+});
+
+// 层级卡
+document.querySelectorAll('.level').forEach(function (b) {
+  b.addEventListener('click', function () { b.classList.toggle('open'); });
+});
+
+// 地图
+var places = {
+  sacramento: ['Sacramento', 'The capital of California. The state government works here.', '加州首府，州政府所在地。'],
+  sanfrancisco: ['San Francisco', 'A city by the sea, famous for the Golden Gate Bridge.', '海边城市，以金门大桥闻名。'],
+  losangeles: ['Los Angeles', 'The biggest city in California. People call it LA.', '加州最大的城市，简称 LA。'],
+  hollywood: ['Hollywood', 'A neighborhood in Los Angeles. Many films are made here.', '洛杉矶的一个街区，电影业的代名词。'],
+  sandiego: ['San Diego', 'A city in the south, near the border with Mexico.', '加州南部城市，靠近墨西哥边境。']
+};
+var seen = {};
+function showPlace(pin) {
+  var p = places[pin.dataset.place];
+  document.getElementById('place-card').innerHTML = '<h3>' + p[0] + '</h3><p>' + p[1] + '</p><p class="zh">' + p[2] + '</p>';
+  pin.classList.add('seen');
+  seen[pin.dataset.place] = true;
+  var n = Object.keys(seen).length;
+  document.getElementById('map-progress').textContent = 'Places visited: ' + n + ' / 5' + (n === 5 ? ' · Great job!' : '');
+  if (n === 5) ED.done('map');
+}
+document.querySelectorAll('.pin').forEach(function (pin) {
+  pin.addEventListener('click', function () { showPlace(pin); });
+  pin.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPlace(pin); } });
+});
+
+// 如果老师上传了名为 la-skyline 的页面媒体，就显示照片；没有上传时保持隐藏。
+ED.media('la-skyline').then(function (url) {
+  var fig = document.getElementById('skyline');
+  fig.querySelector('img').src = url;
+  fig.hidden = false;
+}).catch(function () {});
+
+// 词汇
+document.querySelectorAll('.word').forEach(function (w) {
+  w.addEventListener('click', function () {
+    var next = w.nextElementSibling;
+    if (next && next.classList.contains('gloss')) { next.remove(); w.classList.remove('open'); return; }
+    var g = document.createElement('span');
+    g.className = 'gloss';
+    g.textContent = w.textContent + ' · ' + w.dataset.zh;
+    w.classList.add('open');
+    w.insertAdjacentElement('afterend', g);
+  });
+});
+
+// 分类游戏
+var selected = null, placed = 0, total = document.querySelectorAll('.chip').length;
+document.querySelectorAll('.chip').forEach(function (c) {
+  c.addEventListener('click', function () {
+    if (c.classList.contains('done')) return;
+    document.querySelectorAll('.chip').forEach(function (x) { x.classList.remove('selected'); });
+    c.classList.add('selected');
+    selected = c;
+  });
+});
+document.querySelectorAll('.bin').forEach(function (bin) {
+  bin.addEventListener('click', function () {
+    var f = document.getElementById('sort-feedback');
+    if (!selected) { f.className = 'feedback'; f.textContent = 'Choose a place first.'; return; }
+    if (selected.dataset.type === bin.dataset.bin) {
+      var s = document.createElement('span'); s.textContent = selected.textContent; bin.appendChild(s);
+      selected.classList.remove('selected'); selected.classList.add('done'); selected = null; placed++;
+      f.className = 'feedback good';
+      f.textContent = placed === total ? 'All correct! You can name places in English.' : 'Correct!';
+      if (placed === total) ED.done('sort-places');
+    } else {
+      f.className = 'feedback bad';
+      f.textContent = selected.textContent + ' is not a ' + bin.dataset.bin + '. Try again.';
+    }
+  });
+});
+
+// 明信片
+function postcard() {
+  var v = function (id) { return document.getElementById(id).value.trim(); };
+  var lines = [];
+  if (v('p-name')) lines.push('Hello! This is ' + v('p-name') + '.');
+  if (v('p-where')) lines.push('It is in ' + v('p-where') + '.');
+  if (v('p-known')) lines.push('It is known for ' + v('p-known') + '.');
+  if (v('p-why')) lines.push(v('p-why'));
+  document.getElementById('postcard-text').textContent = lines.join(' ') || 'Your postcard will appear here.';
+  if (lines.length === 4) ED.done('postcard');
+}
+document.querySelectorAll('.postcard input').forEach(function (i) { i.addEventListener('input', postcard); });
+postcard();
+</script>
+</body>
+</html>
