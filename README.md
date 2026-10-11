@@ -263,6 +263,7 @@ Next.js App Router、React、TypeScript、现有 shadcn/Radix 组件。后端沿
 知识拓展的 HTML 分为“静态页面”和“互动页面”两种。互动页面可以运行页面里的脚本（地图点选、翻卡、排序、小游戏），上限 1MB。页面在不带本站身份的沙箱 iframe 中运行（`sandbox="allow-scripts"`，不加 `allow-same-origin`），并由 CSP 禁止一切网络请求，所以页面脚本读不到登录 Cookie，也不能调用 `/api` 或加载外部资源。
 
 - 图片、音频（20MB 以内）、视频可以上传为“页面媒体”，在 HTML 中用 `data-media="名称"` 引用。平台验证学生登录后加载文件，再交给页面；学生只能读取已发布主题引用的媒体。
+- B 站视频：页面写 `<div data-bilibili="BV号"></div>` 占位，平台在沙箱外层把 B 站官方播放器（`player.bilibili.com`，独立源、不能导航本站或弹窗）盖在占位处，学生在页面内直接播放。页面脚本无法控制播放器；其他外站 iframe 仍被禁止。
 - 页面调用 `EnglishDaily.done('活动名')` 记录学生完成的活动，保存在 `culture_progress` 中；平台通过 `html.dark` 通知页面切换夜间模式，切换时页面不会重新加载。
 - 学生的课程列表不再包含知识拓展正文，打开主题时通过 `/api/knowledge?id=` 单独加载。
 - 静态页面保持原有的清洗和划线批注方式。无须数据库迁移。

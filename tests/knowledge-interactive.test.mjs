@@ -28,8 +28,21 @@ test('interactive knowledge pages: sandbox document, page media access, single-t
  const notes=inspectInteractiveHtml('<script src="https://cdn.test/x.js"></script><link rel="stylesheet" href="https://fonts.googleapis.com/x"><img data-media="missing"><script>fetch("/api")</script><div style="height:100vh"></div>',[]);
  for(const pattern of [/外部脚本/,/外部样式/,/联网/,/找不到页面媒体“missing”/,/100vh/,/夜间样式/])assert.ok(notes.some(n=>pattern.test(n)),String(pattern));
  assert.deepEqual(inspectInteractiveHtml('<style>html.dark{color:#fff}</style><img data-media="photo">',[{name:'photo',url:'/api/media?key=x',type:'image'}]),[]);
+ // B 站视频：解析 BV 号、分 P 与开始时间，只生成官方播放器地址。
+ const {parseBilibili,bilibiliPlayerUrl}=routes.html;
+ assert.deepEqual(parseBilibili('BV1GJ411x7h7'),{bvid:'BV1GJ411x7h7',p:1,t:0});
+ assert.deepEqual(parseBilibili('https://www.bilibili.com/video/BV1GJ411x7h7/?p=3&t=42.5&spm_id_from=x'),{bvid:'BV1GJ411x7h7',p:3,t:42});
+ assert.deepEqual(parseBilibili('BV1GJ411x7h7','2','90'),{bvid:'BV1GJ411x7h7',p:2,t:90});
+ for(const bad of ['','b23.tv/abc','https://evil.test/?x=BV1GJ411x7h7extra','BV123','javascript:alert(1)'])assert.equal(parseBilibili(bad),null,bad);
+ const player=new URL(bilibiliPlayerUrl(parseBilibili('BV1GJ411x7h7','2','30')));
+ assert.equal(player.origin,'https://player.bilibili.com');assert.equal(player.searchParams.get('bvid'),'BV1GJ411x7h7');assert.equal(player.searchParams.get('autoplay'),'0');assert.equal(player.searchParams.get('t'),'30');
+ const videoNotes=inspectInteractiveHtml('<style>.dark{}</style><div data-bilibili="b23.tv/xyz"></div><div data-bilibili="hello"></div><div data-bilibili="BV1GJ411x7h7"></div><iframe src="https://player.bilibili.com/x"></iframe>');
+ assert.equal(videoNotes.length,3);assert.ok(videoNotes.some(n=>/短链接/.test(n)));assert.ok(videoNotes.some(n=>/无法识别的 B 站视频“hello”/.test(n)));assert.ok(videoNotes.some(n=>/data-bilibili/.test(n)));
+ assert.match(buildInteractiveDocument('<p>x</p>'),/\[data-bilibili\]\{display:block/);
  // 沙箱回归保护：互动 iframe 只允许脚本，不能获得本站身份。
- const iframe=(await readFile('app/interactive-html.tsx','utf8')).match(/<iframe[^>]*>/g);assert.equal(iframe.length,1);assert.match(iframe[0],/sandbox="allow-scripts"/);assert.doesNotMatch(iframe[0],/allow-same-origin|allow-forms|allow-popups|allow-top-navigation/);
+ const [iframe,embed]=(await readFile('app/interactive-html.tsx','utf8')).match(/<iframe[\s\S]*?\/>/g);assert.match(iframe,/sandbox="allow-scripts"/);assert.doesNotMatch(iframe,/allow-same-origin|allow-forms|allow-popups|allow-top-navigation/);
+ // B 站播放器在自己的源中运行，可以有存储，但不能导航本站或打开弹窗。
+ assert.match(embed,/src=\{e\.url\}/);assert.match(embed,/sandbox="allow-scripts allow-same-origin allow-presentation"/);assert.doesNotMatch(embed,/allow-top-navigation|allow-popups|allow-forms/);
 
  await post('auth',{op:'login',username:'teacher',password:'teacher-long-password'});const teacher=globalThis.__headers.get('cookie');
  await post('auth',{op:'saveStudent',username:'student',password:'student-long-password',teacherPassword:'teacher-long-password'});
