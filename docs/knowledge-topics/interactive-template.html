@@ -100,6 +100,7 @@ textarea{width:100%;min-height:120px;font:17px/1.6 Georgia,serif;padding:12px;bo
   <p class="zh">听片段时，注意一个词：<b>friendship</b>。</p>
   <audio data-media="song-clip" controls></audio>
   <!-- 视频：<video data-media="film-clip" controls playsinline></video> -->
+  <!-- B 站视频（填 BV 号或视频页地址）：<div data-bilibili="BV1xx411c7mD"></div> -->
 </section>
 
 <!-- 区块 4：选择题，即时反馈。全部答对时记录 quiz。 -->
@@ -166,6 +167,9 @@ document.querySelectorAll('.flip').forEach(function (card, i) {
 // 音频播放结束记录 listen
 var clip = document.querySelector('audio[data-media]');
 if (clip) clip.addEventListener('ended', function () { ED.done('listen'); });
+
+// 学生点击 B 站视频时记录 video
+document.addEventListener('englishdaily:video', function () { ED.done('video'); });
 
 // 选择题
 var answered = 0, correct = 0, total = document.querySelectorAll('.q').length;
