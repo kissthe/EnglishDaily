@@ -304,7 +304,7 @@ $$('.venn .ring').forEach(function(g){
     var r = rings[g.dataset.r];
     $('#def').innerHTML = '<h3>' + r[0] + '</h3><p>' + r[1] + '</p><p class="zh">' + r[2] + '</p>';
     ringSeen[g.dataset.r] = 1;
-    if (Object.keys(ringSeen).length >= 4) ED.done('zoom-out');
+    if (Object.keys(ringSeen).length === 4 && !ringSeen.done){ ringSeen.done = 1; ED.done('zoom-out'); }
   });
 });
 

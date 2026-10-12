@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Units: Miles, Feet, Pounds, °F · Interactive</title>
+<!-- 风格实验 09：瑞士国际主义 / 仪表盘。黑白 + 一个红色强调色、严格网格、超大数字；每个模块是一个可以拖动的“仪器”。 -->
+<style>
+:root{--bg:#f4f4f1;--card:#ffffff;--ink:#111111;--muted:#666666;--line:#111111;--hair:#d9d9d4;--red:#e30613;--red-soft:#fde3e4;--blue:#0057b8;--cold:#3a86ff;--hot:#ff5400;--ok:#0a8f4a;--bad:#e30613}
+html.dark{--bg:#0d0d0d;--card:#171717;--ink:#f2f2f2;--muted:#a3a3a3;--line:#f2f2f2;--hair:#2e2e2e;--red:#ff3b45;--red-soft:#3a1214;--blue:#5ea0ff;--cold:#64a2ff;--hot:#ff7a3d;--ok:#3ddc84;--bad:#ff5a5f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.6 "Helvetica Neue",Helvetica,Arial,system-ui,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:18px 14px 40px}
+.zh{font:14px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.02em}
+button{font:700 15px/1.2 "Helvetica Neue",Helvetica,Arial,sans-serif;cursor:pointer;color:var(--ink)}
+.label{font:700 11px/1 "Helvetica Neue",Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.label.red{color:var(--red)}
+/* 头部 */
+.top{display:grid;grid-template-columns:repeat(12,1fr);gap:0;border-top:8px solid var(--ink);padding-top:14px}
+.top .meta{grid-column:1/4}
+.top .meta p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.top .head{grid-column:4/13}
+.top h1{font-size:clamp(46px,9.5vw,112px);line-height:.88;letter-spacing:-.05em}
+.top h1 .r{color:var(--red)}
+.forecast{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-top:20px;border:2px solid var(--line);background:var(--card)}
+.forecast .big{background:var(--red);color:#fff;padding:18px 22px;font:700 72px/1 "Helvetica Neue",Arial,sans-serif;letter-spacing:-.04em}
+.forecast .big small{display:block;font-size:12px;letter-spacing:.14em;font-weight:700;margin-top:4px}
+.forecast .q{padding:12px 16px 12px 0}
+.forecast .q p{margin:0 0 6px}
+.seg{display:flex;flex-wrap:wrap;gap:0;border:2px solid var(--line);width:fit-content;max-width:100%}
+.seg button{background:var(--card);border:0;border-right:2px solid var(--line);padding:10px 14px}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.say{min-height:24px;font-weight:700;margin-top:8px;font-size:15px}
+/* 模块网格 */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-left:2px solid var(--line);border-top:2px solid var(--line);margin-top:30px}
+.mod{border-right:2px solid var(--line);border-bottom:2px solid var(--line);padding:20px;background:var(--card);position:relative}
+.mod.full{grid-column:1/-1}
+.mod .idx{position:absolute;right:16px;top:14px;font:700 44px/1 "Helvetica Neue",Arial,sans-serif;color:var(--hair);letter-spacing:-.04em}
+.mod h2{font-size:28px;line-height:1.05;margin:8px 0 6px;max-width:80%}
+.readout{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:12px 0}
+.readout .n{font:700 64px/0.9 "Helvetica Neue",Arial,sans-serif;letter-spacing:-.05em}
+.readout .u{font-weight:700;font-size:20px}
+.readout .eq{font-size:30px;color:var(--muted);font-weight:300}
+.readout .n.red{color:var(--red)}
+input[type=range]{width:100%;accent-color:var(--red);height:28px}
+.ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700}
+.note{font-size:14.5px;min-height:46px;border-left:4px solid var(--red);padding:4px 10px;margin-top:10px}
+/* 温度计 */
+.thermo{display:grid;grid-template-columns:70px 1fr;gap:18px;align-items:center}
+.thermo svg{width:70px}
+.marks{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.marks button{background:none;border:2px solid var(--line);padding:6px 10px;font-size:13px}
+/* 路牌 */
+.sign{width:120px;border:4px solid var(--ink);border-radius:8px;background:#fff;color:#111;text-align:center;padding:8px 6px;font-weight:700;line-height:1.05;flex:none}
+.sign small{display:block;font-size:12px;letter-spacing:.05em}
+.sign b{display:block;font-size:46px;letter-spacing:-.03em}
+.roadrow{display:flex;gap:16px;align-items:center}
+/* 身高 */
+.ruler{position:relative;height:220px;display:flex;align-items:flex-end;gap:18px;border-bottom:2px solid var(--line);padding-left:36px;margin-top:10px}
+.ruler .scale{position:absolute;left:0;bottom:0;top:0;width:30px;border-right:2px solid var(--line)}
+.ruler .scale span{position:absolute;right:4px;font-size:10px;font-weight:700;transform:translateY(50%)}
+.fig{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;font-size:12px;font-weight:700;text-align:center}
+.fig i{display:block;width:34px;border-radius:17px 17px 0 0;background:var(--ink)}
+.fig.me i{background:var(--red)}
+.hin{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.hin input[type=number]{width:96px;font:700 22px "Helvetica Neue",Arial,sans-serif;padding:6px 8px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+/* 秤 */
+.scalebox{display:grid;grid-template-columns:180px 1fr;gap:18px;align-items:center}
+.scalebox svg{width:180px}
+#needle{transition:transform .25s;transform-origin:90px 100px}
+/* 起源 */
+.origins{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:2px solid var(--line)}
+.og{border-right:2px solid var(--line);padding:14px;background:var(--card);text-align:left;min-height:170px;display:flex;flex-direction:column;gap:6px}
+.og:last-child{border-right:0}
+.og svg{width:56px;height:56px}
+.og b{font-size:20px}
+.og .hide{display:none;font-size:14px}
+.og.open{background:var(--red-soft)}
+.og.open .hide{display:block}
+/* 估算游戏 */
+.game{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.gq b{font-size:20px;line-height:1.3;display:block;margin:6px 0 10px}
+.guessval{font:700 48px/1 "Helvetica Neue",Arial,sans-serif;letter-spacing:-.04em;margin:8px 0}
+.btn{background:var(--ink);color:var(--bg);border:0;padding:12px 18px}
+.btn.ghost{background:none;color:var(--ink);border:2px solid var(--line)}
+.result{font-size:15px;min-height:70px}
+.meter{display:flex;gap:4px;margin-top:8px}
+.meter span{flex:1;height:10px;background:var(--hair)}
+.meter span.on{background:var(--red)}
+/* 表达 */
+.idcard{border:2px solid var(--line);background:var(--card);display:grid;grid-template-columns:1fr 1fr}
+.idcard .form{padding:18px;border-right:2px solid var(--line)}
+.idcard label{display:block;font:700 11px Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;margin:12px 0 4px;color:var(--muted)}
+.idcard input{width:100%;font:18px "Helvetica Neue",Arial,sans-serif;padding:8px 10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)}
+.idcard .hint{font-size:12.5px;color:var(--red);font-weight:700;margin-top:2px;min-height:18px}
+.idcard .out{padding:18px;background:var(--ink);color:var(--bg);font-size:20px;line-height:1.5;display:flex;flex-direction:column;justify-content:space-between}
+.idcard .out .label{color:var(--red)}
+.source{font-size:12.5px;color:var(--muted);margin-top:24px;border-top:2px solid var(--line);padding-top:10px}
+@media(max-width:780px){.top .meta,.top .head{grid-column:1/-1}.top .meta{margin-bottom:10px}.grid{grid-template-columns:1fr}.forecast{grid-template-columns:1fr}.forecast .q{padding:12px 16px}.origins{grid-template-columns:repeat(2,1fr)}.og:nth-child(2){border-right:0}.og:nth-child(-n+2){border-bottom:2px solid var(--line)}.game,.idcard{grid-template-columns:1fr}.idcard .form{border-right:0;border-bottom:2px solid var(--line)}.readout .n{font-size:48px}.mod{padding:16px}.scalebox{grid-template-columns:1fr}.scalebox svg{margin:0 auto;display:block}}
+</style>
+</head>
+<body>
+<main>
+
+<header class="top">
+  <div class="meta">
+    <span class="label red">Everyday culture · A2 · 20 min</span>
+    <p>Miles · Feet · Inches<br>Pounds · Degrees Fahrenheit</p>
+    <p class="zh">英美生活中的单位</p>
+  </div>
+  <div class="head">
+    <h1>80 degrees?<br><span class="r">Hot or cold?</span></h1>
+    <div class="forecast">
+      <div class="big">80°<small>NEW YORK · TODAY</small></div>
+      <div class="q">
+        <p><b>An American weather forecast says: “It's 80 degrees today.”</b> What should you wear?</p>
+        <p class="zh">美国天气预报说今天 80 度。你该穿什么？</p>
+        <div class="seg" id="poll"><button data-k="coat">🧥 A big coat</button><button data-k="tshirt">👕 A T-shirt</button><button data-k="stay">🔥 Stay inside — it's boiling!</button></div>
+        <p class="say" id="pollSay" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="grid">
+  <!-- 温度 -->
+  <section class="mod">
+    <span class="idx">01</span>
+    <span class="label red">Temperature</span>
+    <h2>Fahrenheit → Celsius</h2>
+    <p class="zh">拖动滑块。美国用华氏度 °F，中国用摄氏度 °C。</p>
+    <div class="thermo">
+      <svg viewBox="0 0 70 260" aria-hidden="true">
+        <rect x="25" y="10" width="20" height="200" rx="10" fill="none" stroke="currentColor" stroke-width="3"/>
+        <rect id="merc" x="30" y="100" width="10" height="110" fill="var(--red)"/>
+        <circle cx="35" cy="225" r="22" fill="var(--red)" stroke="currentColor" stroke-width="3"/>
+      </svg>
+      <div>
+        <div class="readout"><span class="n" id="fVal">80</span><span class="u">°F</span><span class="eq">=</span><span class="n red" id="cVal">27</span><span class="u">°C</span></div>
+        <input type="range" id="fSlider" min="-4" max="212" value="80" aria-label="Fahrenheit">
+        <div class="ticks"><span>-4°F</span><span>32°F</span><span>98.6°F</span><span>212°F</span></div>
+        <div class="marks"><button data-f="32">Water freezes</button><button data-f="98.6">Body temperature</button><button data-f="212">Water boils</button></div>
+      </div>
+    </div>
+    <p class="note" id="fNote"></p>
+    <p class="zh" style="margin:6px 0 0">Formula: °C = (°F − 32) × 5 ÷ 9 &nbsp;·&nbsp; Quick trick: (°F − 30) ÷ 2 ≈ °C</p>
+  </section>
+
+  <!-- 距离 -->
+  <section class="mod">
+    <span class="idx">02</span>
+    <span class="label red">Distance</span>
+    <h2>Miles → Kilometres</h2>
+    <p class="zh">美国和英国的路牌用英里（mile）。1 mile ≈ 1.6 km。</p>
+    <div class="roadrow">
+      <div class="sign"><small>SPEED<br>LIMIT</small><b id="mphSign">65</b></div>
+      <div style="flex:1">
+        <div class="readout"><span class="n" id="miVal">65</span><span class="u">miles</span><span class="eq">≈</span><span class="n red" id="kmVal">105</span><span class="u">km</span></div>
+      </div>
+    </div>
+    <input type="range" id="miSlider" min="1" max="100" value="65" aria-label="Miles">
+    <div class="ticks"><span>1</span><span>26.2 (marathon)</span><span>100</span></div>
+    <p class="note" id="miNote"></p>
+  </section>
+
+  <!-- 身高 -->
+  <section class="mod">
+    <span class="idx">03</span>
+    <span class="label red">Height</span>
+    <h2>Feet & inches</h2>
+    <p class="zh">英美人说身高常用“几英尺几英寸”。1 foot = 12 inches ≈ 30.5 cm；1 inch ≈ 2.54 cm。输入你的身高试试。</p>
+    <div class="ruler" id="ruler">
+      <div class="scale" id="rscale"></div>
+    </div>
+    <div class="hin"><label for="cm"><b>My height:</b></label><input type="number" id="cm" min="100" max="230" value="165"> cm <b>=</b> <span class="n" style="font:700 30px Arial,sans-serif" id="ftOut">5′ 5″</span></div>
+    <p class="zh" style="margin-top:6px">读作：five feet five (inches)。写法：5′ 5″ 或 5 ft 5 in。</p>
+  </section>
+
+  <!-- 重量 -->
+  <section class="mod">
+    <span class="idx">04</span>
+    <span class="label red">Weight</span>
+    <h2>Pounds → Kilograms</h2>
+    <p class="zh">1 pound（lb）≈ 0.45 kg。为什么缩写是 lb？它来自拉丁语 libra。</p>
+    <div class="scalebox">
+      <svg viewBox="0 0 180 130" aria-hidden="true">
+        <rect x="10" y="40" width="160" height="86" rx="16" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M30 100 a60 60 0 0 1 120 0" fill="none" stroke="var(--hair)" stroke-width="14"/>
+        <path d="M30 100 a60 60 0 0 1 120 0" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 8"/>
+        <g id="needle"><path d="M90 100 L90 48" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/></g>
+        <circle cx="90" cy="100" r="7" fill="currentColor"/>
+        <rect x="40" y="18" width="100" height="18" rx="4" fill="currentColor"/>
+      </svg>
+      <div>
+        <div class="readout"><span class="n" id="lbVal">10</span><span class="u">lb</span><span class="eq">≈</span><span class="n red" id="kgVal">4.5</span><span class="u">kg</span></div>
+        <input type="range" id="lbSlider" min="1" max="300" value="10" aria-label="Pounds">
+        <div class="marks" id="lbMarks"><button data-lb="1">🧈 butter</button><button data-lb="7">👶 baby</button><button data-lb="44">🐕 dog</button><button data-lb="150">🧑 adult</button></div>
+      </div>
+    </div>
+    <p class="note" id="lbNote"></p>
+  </section>
+
+  <!-- 起源 -->
+  <section class="mod full">
+    <span class="idx">05</span>
+    <span class="label red">Word history</span>
+    <h2>Units from the human body</h2>
+    <p class="zh">很久以前，人们用身体来测量。点开看看这些单位名字的来历。</p>
+    <div class="origins" id="origins">
+      <button class="og"><svg viewBox="0 0 56 56"><path d="M14 8 q-6 20 0 34 q4 8 18 8 h14 q4 -6 -4 -8 l-14 -4 q-4 -16 -2 -30z" fill="currentColor"/></svg><b>foot</b><span class="hide">The length of a foot — about 30 cm. Plural: <b>feet</b>. “He is six feet tall.”<br><span class="zh">一只脚的长度。复数 feet。</span></span></button>
+      <button class="og"><svg viewBox="0 0 56 56"><rect x="20" y="6" width="16" height="40" rx="8" fill="currentColor"/><rect x="20" y="6" width="16" height="12" rx="6" fill="var(--red)"/></svg><b>inch</b><span class="hide">About the width of a thumb. 12 inches = 1 foot. TV and phone screens are measured in inches!<br><span class="zh">约一个拇指宽，屏幕尺寸也用英寸。</span></span></button>
+      <button class="og"><svg viewBox="0 0 56 56"><path d="M4 30 h40" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><circle cx="48" cy="30" r="5" fill="var(--red)"/><circle cx="10" cy="18" r="8" fill="currentColor"/></svg><b>yard</b><span class="hide">About 91 cm. Some people say it was the distance from a king's nose to his fingertip — nobody knows if that is true!<br><span class="zh">约 91 厘米，传说是国王鼻尖到指尖的距离。</span></span></button>
+      <button class="og"><svg viewBox="0 0 56 56"><g fill="currentColor"><ellipse cx="14" cy="40" rx="6" ry="9"/><ellipse cx="30" cy="22" rx="6" ry="9"/><ellipse cx="46" cy="40" rx="6" ry="9" fill="var(--red)"/></g></svg><b>mile</b><span class="hide">From Latin <i>mille passus</i> — “a thousand steps” of a Roman soldier. (Think: mille → million.)<br><span class="zh">来自拉丁语“一千步”。</span></span></button>
+    </div>
+  </section>
+
+  <!-- 估算游戏 -->
+  <section class="mod full">
+    <span class="idx">06</span>
+    <span class="label red">Game</span>
+    <h2>Estimate it!</h2>
+    <p class="zh">先估计，拖动滑块给出答案，再点 Check。离正确答案越近，分数越高（每题最多 3 分）。</p>
+    <div class="game">
+      <div class="gq">
+        <span class="label" id="gNo">Question 1 / 5</span>
+        <b id="gText"></b>
+        <div class="guessval"><span id="gVal">0</span> <span style="font-size:22px" id="gUnit"></span></div>
+        <input type="range" id="gSlider" aria-label="Your estimate">
+        <div style="display:flex;gap:8px;margin-top:10px"><button class="btn" id="gCheck">Check</button><button class="btn ghost" id="gNext" disabled>Next →</button></div>
+      </div>
+      <div>
+        <div class="result" id="gResult" aria-live="polite"><span class="zh">答案会显示在这里。</span></div>
+        <span class="label">Score</span>
+        <div class="readout" style="margin:4px 0"><span class="n red" id="gScore">0</span><span class="u">/ 15</span></div>
+        <div class="meter" id="gMeter"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 表达 -->
+  <section class="mod full">
+    <span class="idx">07</span>
+    <span class="label red">Your turn</span>
+    <h2>Describe yourself — American style</h2>
+    <p class="zh">用英美单位介绍自己。右边红字会帮你换算。</p>
+    <div class="idcard">
+      <div class="form">
+        <label for="e1">I am … feet … inches tall</label><input id="e1" maxlength="30" placeholder="5 feet 5 inches">
+        <div class="hint" id="h1"></div>
+        <label for="e2">My school is … miles from my home</label><input id="e2" maxlength="20" placeholder="2">
+        <div class="hint" id="h2"></div>
+        <label for="e3">Today it is … °F where I live</label><input id="e3" maxlength="10" placeholder="68">
+        <div class="hint" id="h3"></div>
+      </div>
+      <div class="out"><span class="label">ID · ENGLISH DAILY</span><p id="idText" style="margin:12px 0">Your sentences will appear here.</p><span class="zh" style="color:inherit;opacity:.7">Tip: 1 mile ≈ 1.6 km · 1 foot ≈ 30 cm · 1 lb ≈ 0.45 kg</span></div>
+    </div>
+  </section>
+</div>
+
+<p class="source">Conversions: 1 mile = 1.609 km · 1 foot = 30.48 cm · 1 inch = 2.54 cm · 1 lb = 0.4536 kg · °C = (°F − 32) × 5/9. Original teaching text and drawings. The USA uses these units every day; the UK uses miles on road signs but kilograms and Celsius in most places. 教师可在此补充来源与授权。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function r1(x){ return Math.round(x * 10) / 10; }
+
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    $$('#poll button').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
+    $('#pollSay').textContent = b.dataset.k === 'tshirt' ? '✔ Right. 80°F ≈ 27°C — a warm summer day.' : '✘ 80°F is only about 27°C — T-shirt weather! Try the thermometer below.';
+    ED.done('big-question');
+  };
+});
+
+// 温度
+var touched = {};
+function touch(k){ touched[k] = 1; if (touched.f && touched.mi && touched.ht && touched.lb) ED.done('converters'); }
+function setF(f){
+  f = +f; var c = (f - 32) * 5 / 9;
+  $('#fVal').textContent = r1(f); $('#cVal').textContent = Math.round(c);
+  var h = Math.max(4, Math.min(200, (f + 4) / 216 * 200));
+  $('#merc').setAttribute('y', 210 - h); $('#merc').setAttribute('height', h);
+  var t;
+  if (f <= 32) t = '🥶 Freezing! Water turns to ice. Wear a coat, hat and gloves.';
+  else if (f < 50) t = '🧥 Cold. You need a warm jacket.';
+  else if (f < 68) t = '🧶 Cool. A sweater is a good idea.';
+  else if (f < 86) t = '👕 Warm. T-shirt weather!';
+  else if (f < 100) t = '🥵 Hot! Drink lots of water.';
+  else if (f < 105) t = '🤒 Around body temperature — or a fever if it\'s you!';
+  else if (f < 212) t = '🔥 Dangerously hot. (Ovens: 350°F ≈ 177°C)';
+  else t = '♨️ Water boils at 212°F (100°C).';
+  $('#fNote').textContent = t;
+  $('#fSlider').value = f;
+}
+$('#fSlider').addEventListener('input', function(){ setF(this.value); touch('f'); });
+$$('.mod .marks [data-f]').forEach(function(b){ b.onclick = function(){ setF(b.dataset.f); touch('f'); }; });
+setF(80);
+
+// 距离
+function setMi(m){
+  m = +m; var km = m * 1.609;
+  $('#miVal').textContent = m; $('#kmVal').textContent = Math.round(km); $('#mphSign').textContent = m;
+  var n;
+  if (m === 26) n = '🏃 A marathon is 26.2 miles ≈ 42.2 km.';
+  else if (m <= 3) n = '🚶 About ' + Math.round(m * 20) + ' minutes on foot.';
+  else if (m <= 30) n = '🚲 A long bike ride.';
+  else if (m <= 70) n = '🚗 On a sign, “SPEED LIMIT ' + m + '” means ' + m + ' miles per hour (mph) ≈ ' + Math.round(km) + ' km/h.';
+  else n = '🛣️ About ' + r1(m / 60) + ' hours on an American highway.';
+  $('#miNote').textContent = n;
+}
+$('#miSlider').addEventListener('input', function(){ setMi(this.value); touch('mi'); });
+setMi(65);
+
+// 身高
+var scale = $('#rscale');
+for (var ft = 0; ft <= 7; ft++){ var s = document.createElement('span'); s.style.bottom = (ft * 30.48 / 240 * 100) + '%'; s.textContent = ft + "′"; scale.appendChild(s); }
+var people = [['A door', 203], ['Yao Ming', 229], ['A guard', 198]];
+function fig(name, cm, me){ var d = document.createElement('div'); d.className = 'fig' + (me ? ' me' : ''); d.innerHTML = '<i style="height:' + (cm / 240 * 200) + 'px"></i>' + name; return d; }
+function setHeight(){
+  var cm = Math.max(60, Math.min(240, +$('#cm').value || 0));
+  var totalIn = cm / 2.54, f = Math.floor(totalIn / 12), i = Math.round(totalIn - f * 12);
+  if (i === 12){ f++; i = 0; }
+  $('#ftOut').textContent = f + '′ ' + i + '″';
+  $$('#ruler .fig').forEach(function(x){ x.remove(); });
+  $('#ruler').appendChild(fig('Me', cm, true));
+  people.forEach(function(p){ $('#ruler').appendChild(fig(p[0] + '<br>' + Math.floor(p[1] / 30.48) + '′' + Math.round((p[1] / 2.54) % 12) + '″', p[1])); });
+}
+$('#cm').addEventListener('input', function(){ setHeight(); touch('ht'); });
+setHeight();
+
+// 重量
+function setLb(lb){
+  lb = +lb; var kg = lb * 0.4536;
+  $('#lbVal').textContent = lb; $('#kgVal').textContent = kg < 10 ? r1(kg) : Math.round(kg);
+  $('#needle').style.transform = 'rotate(' + (-80 + lb / 300 * 160) + 'deg)';
+  var n = lb <= 2 ? '🧈 In the USA, butter is often sold by the pound.' : lb <= 12 ? '👶 Doctors tell American parents a baby\'s weight in pounds: “7 pounds 8 ounces”.' : lb <= 80 ? '🐕 A medium dog. Remember: 2.2 lb ≈ 1 kg.' : '🧑 Adults talk about their weight in pounds in the USA. In the UK, some people use “stone” (1 stone = 14 lb)!';
+  $('#lbNote').textContent = n; $('#lbSlider').value = lb;
+}
+$('#lbSlider').addEventListener('input', function(){ setLb(this.value); touch('lb'); });
+$$('#lbMarks button').forEach(function(b){ b.onclick = function(){ setLb(b.dataset.lb); touch('lb'); }; });
+setLb(10);
+
+// 起源
+var ogSeen = {};
+$$('.og').forEach(function(o, i){ o.onclick = function(){ o.classList.toggle('open'); ogSeen[i] = 1; if (Object.keys(ogSeen).length === 4) ED.done('word-history'); }; });
+
+// 估算游戏
+var G = [
+  ['A basketball hoop is 10 feet high. How many metres is that?', 'm', 1, 6, 0.1, 3.05],
+  ['The oven is at 350°F to bake a cake. What is that in °C?', '°C', 50, 300, 1, 177],
+  ['A dog weighs 44 pounds. How many kilograms?', 'kg', 5, 60, 1, 20],
+  ['The speed limit is 55 mph. What is that in km/h?', 'km/h', 30, 150, 1, 89],
+  ['A marathon is 26.2 miles. How many kilometres?', 'km', 10, 80, 0.5, 42.2]
+];
+var gi = 0, gTotal = 0;
+for (var k = 0; k < 15; k++) $('#gMeter').appendChild(document.createElement('span'));
+function loadG(){
+  var g = G[gi];
+  $('#gNo').textContent = 'Question ' + (gi + 1) + ' / ' + G.length;
+  $('#gText').textContent = g[0]; $('#gUnit').textContent = g[1];
+  var sl = $('#gSlider'); sl.min = g[2]; sl.max = g[3]; sl.step = g[4]; sl.value = (g[2] + g[3]) / 2; sl.disabled = false;
+  $('#gVal').textContent = sl.value; $('#gCheck').disabled = false; $('#gNext').disabled = true;
+  $('#gResult').innerHTML = '<span class="zh">先估计，再拖动滑块。</span>';
+}
+$('#gSlider').addEventListener('input', function(){ $('#gVal').textContent = this.value; });
+$('#gCheck').onclick = function(){
+  var g = G[gi], v = +$('#gSlider').value, err = Math.abs(v - g[5]) / g[5], pts = err <= .05 ? 3 : err <= .15 ? 2 : err <= .3 ? 1 : 0;
+  gTotal += pts; $('#gScore').textContent = gTotal;
+  $$('#gMeter span').forEach(function(s, j){ s.classList.toggle('on', j < gTotal); });
+  $('#gResult').innerHTML = '<b>Answer: ' + g[5] + ' ' + g[1] + '</b><br>You said ' + v + ' ' + g[1] + '. ' + ['Too far — try the quick tricks above!', 'Not bad! +1', 'Close! +2', 'Excellent! +3'][pts];
+  $('#gCheck').disabled = true; $('#gSlider').disabled = true;
+  if (gi < G.length - 1) $('#gNext').disabled = false; else { $('#gResult').innerHTML += '<br><b>Game over: ' + gTotal + ' / 15</b>'; ED.done('estimate-game'); }
+};
+$('#gNext').onclick = function(){ gi++; loadG(); };
+loadG();
+
+// 表达
+function idc(){
+  var a = $('#e1').value.trim(), b = $('#e2').value.trim(), c = $('#e3').value.trim(), out = [];
+  var m = a.match(/(\d+)\D+(\d+)/) || a.match(/(\d+)/);
+  $('#h1').textContent = m ? '≈ ' + Math.round((+m[1]) * 30.48 + (m[2] ? +m[2] * 2.54 : 0)) + ' cm' : '';
+  $('#h2').textContent = b && !isNaN(+b) ? '≈ ' + r1(+b * 1.609) + ' km' : '';
+  $('#h3').textContent = c && !isNaN(+c) ? '≈ ' + Math.round((+c - 32) * 5 / 9) + ' °C' : '';
+  if (a) out.push('I am ' + a + ' tall.');
+  if (b) out.push('My school is ' + b + (+b === 1 ? ' mile' : ' miles') + ' from my home.');
+  if (c) out.push('Today it is ' + c + ' degrees Fahrenheit where I live.');
+  $('#idText').textContent = out.join(' ') || 'Your sentences will appear here.';
+  if (out.length === 3) ED.done('express');
+}
+['#e1', '#e2', '#e3'].forEach(function(s){ $(s).addEventListener('input', idc); });
+</script>
+</body>
+</html>

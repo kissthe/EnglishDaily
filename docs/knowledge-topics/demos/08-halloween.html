@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halloween · Interactive</title>
+<!-- 风格实验 08：冒险游戏式。一条夜晚街道是“主菜单”，点哪栋房子就进入哪个任务；每完成一个任务得到糖果，糖果袋装满后解锁派对邀请卡。 -->
+<style>
+:root{--bg:#fff3e3;--card:#ffffff;--ink:#2a1838;--muted:#6e5a7c;--line:#ecd9c4;--orange:#ff7a1a;--orange2:#ffb347;--purple:#6a2c91;--purple2:#b98ad9;--green:#4caf50;--sky1:#ff9f5a;--sky2:#7a3b8f;--sky3:#2d1846;--ok:#2e7d32;--bad:#c62828;--soft:#fbe7d1}
+html.dark{--bg:#120a1c;--card:#1e1230;--ink:#f3e9ff;--muted:#b9a5cf;--line:#3a2654;--orange:#ff8c33;--orange2:#ffc06b;--purple:#c48bff;--purple2:#8b5cc4;--green:#7ed37f;--sky1:#3b1f5c;--sky2:#1f1037;--sky3:#0b0614;--ok:#81e08a;--bad:#ff8a80;--soft:#291a40}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 "Trebuchet MS","Gill Sans",system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:16px 14px 40px}
+.zh{font:14px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{margin:0;font-family:"Chiller","Papyrus","Trebuchet MS",fantasy,sans-serif;font-weight:700;letter-spacing:.02em}
+button{font:700 15px/1.25 "Trebuchet MS",system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+/* 街景 */
+.street{position:relative;border-radius:22px;overflow:hidden;background:var(--sky3);box-shadow:0 14px 30px rgba(42,24,56,.25)}
+.street svg{display:block;width:100%;height:auto}
+.street .title{padding:18px 12px 0;text-align:center;color:#fff;text-shadow:0 3px 14px rgba(0,0,0,.5)}
+.street .title small{font:700 12px system-ui,sans-serif;letter-spacing:.24em;color:#ffd8a8}
+.street h1{font-size:clamp(40px,9vw,88px);line-height:1;color:#ff9a3c;-webkit-text-stroke:1px #3b1a00}
+.house{cursor:pointer}
+.house .win{fill:#ffd36b;transition:fill .3s}
+.house:hover .win,.house:focus .win{fill:#fff3b0}
+.house.done .win{fill:#9be59d}
+.house .sign{font:700 13px "Trebuchet MS",sans-serif;fill:#fff}
+.house:focus{outline:none}
+.house:focus .door{stroke:#fff;stroke-width:4}
+.bat{animation:flap 3.2s ease-in-out infinite}
+.bat.b2{animation-delay:-1.1s}.bat.b3{animation-delay:-2s}
+@keyframes flap{50%{transform:translate(18px,-10px)}}
+.glow{animation:flick 2.4s infinite}
+@keyframes flick{40%{opacity:.75}50%{opacity:1}60%{opacity:.8}}
+/* 状态栏 */
+.status{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:14px 0}
+.bag{display:flex;align-items:center;gap:10px;background:var(--card);border:2px solid var(--line);border-radius:99px;padding:8px 16px}
+.bag .slots{display:flex;gap:4px}
+.bag .slots span{width:30px;height:30px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-size:17px}
+.bag .slots span.got{border:2px solid var(--orange);background:var(--soft);animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.3)}}
+.doors{display:flex;flex-wrap:wrap;gap:8px}
+.doors button{background:var(--card);border:2px solid var(--line);border-radius:99px;padding:8px 14px}
+.doors button.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.doors button.done::after{content:" 🍬"}
+/* 大问题 */
+.intro{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.intro .ghost{font-size:64px;line-height:1;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.choices{display:grid;gap:8px;margin-top:10px}
+.choices button{text-align:left;background:var(--soft);border:2px solid transparent;border-radius:14px;padding:10px 14px;font-weight:600}
+.choices button.right{border-color:var(--ok);background:var(--card)}
+.choices button.wrong{border-color:var(--bad);opacity:.7}
+.say{min-height:24px;font:600 14.5px/1.6 system-ui,sans-serif;margin-top:8px}
+/* 房间 */
+.room{display:none;margin-top:14px;background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px;position:relative;animation:enter .4s ease}
+.room.on{display:block}
+@keyframes enter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.room .door-no{font:700 12px system-ui,sans-serif;letter-spacing:.2em;color:var(--orange);text-transform:uppercase}
+.room h2{font-size:clamp(30px,5vw,46px);line-height:1.1;margin:4px 0 8px;color:var(--purple)}
+/* 习俗翻卡 */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tc{height:190px;perspective:800px;background:none;border:0;padding:0}
+.tc .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.tc.flip .in{transform:rotateY(180deg)}
+.tc .f,.tc .b{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+.tc .f{background:linear-gradient(160deg,var(--sky2),var(--sky3));color:#fff}
+.tc .f span{font-size:46px;line-height:1.1}
+.tc .f b{font-size:19px;margin-top:6px}
+.tc .b{background:var(--soft);border:2px solid var(--orange);transform:rotateY(180deg);font-size:14.5px;line-height:1.5}
+.tc .b i{display:block;font-style:normal;color:var(--muted);font:13px/1.5 system-ui,"PingFang SC",sans-serif;margin-top:6px}
+/* 南瓜工坊 */
+.workshop{display:grid;grid-template-columns:1fr 1.1fr;gap:20px;align-items:center}
+.pumpkin{width:100%;max-width:320px;display:block;margin:0 auto}
+.pumpkin .carve{fill:#3a1500;transition:fill .4s}
+.pumpkin.lit .carve{fill:#ffe066}
+.pumpkin.lit .halo{opacity:1}
+.pumpkin .halo{opacity:0;transition:opacity .4s}
+.pick{margin:8px 0}
+.pick b{display:block;font-size:14px;color:var(--muted);margin-bottom:4px}
+.pick .row{display:flex;flex-wrap:wrap;gap:6px}
+.pick button{background:var(--soft);border:2px solid transparent;border-radius:10px;padding:7px 12px;font-size:14px}
+.pick button.on{border-color:var(--orange);background:var(--card)}
+.light{margin-top:10px;background:var(--orange);color:#fff;border:0;border-radius:99px;padding:12px 20px;font-size:16px}
+.desc{background:var(--soft);border-radius:12px;padding:10px 14px;margin-top:10px;font-style:italic;min-height:48px}
+/* 谜语 */
+.riddles{display:grid;gap:12px}
+.rd{background:var(--soft);border-radius:16px;padding:14px 16px}
+.rd p{margin:0 0 8px;font-weight:600}
+.rd .opts{display:flex;flex-wrap:wrap;gap:8px}
+.rd .opts button{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:6px}
+.rd .opts button span{font-size:24px}
+.rd .opts button.right{border-color:var(--ok);background:var(--card)}
+.rd .opts button.wrong{border-color:var(--bad);opacity:.6}
+/* 敲门对话 */
+.porch{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start}
+.porch svg{width:100%}
+.lines{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:l}
+.lines li{counter-increment:l;display:flex;gap:10px;align-items:center;min-height:46px;border:2px dashed var(--line);border-radius:12px;padding:6px 12px}
+.lines li::before{content:counter(l);width:26px;height:26px;flex:none;border-radius:50%;background:var(--purple);color:#fff;display:grid;place-items:center;font:700 13px system-ui,sans-serif}
+.lines li.f{border-style:solid;background:var(--soft)}
+.pool{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pool button{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:8px 12px;font-weight:600;text-align:left}
+.pool button.used{display:none}
+.lines li.ok{border-color:var(--ok)}.lines li.no{border-color:var(--bad)}
+.minirow{display:flex;gap:8px;margin-top:10px}
+.minirow button{background:none;border:2px solid var(--ink);border-radius:99px;padding:8px 14px}
+/* 派对邀请 */
+.party{margin-top:22px;border-radius:22px;padding:22px;background:linear-gradient(160deg,var(--sky2),var(--sky3));color:#fff;position:relative;overflow:hidden}
+.party h2{font-size:clamp(32px,6vw,52px);color:#ffb347}
+.party .zh{color:#d9c7ec}
+.party.locked .inner{filter:blur(3px);pointer-events:none;opacity:.5}
+.party .lock{display:none;position:absolute;inset:0;place-items:center;text-align:center;font-weight:700;font-size:18px;z-index:2}
+.party.locked .lock{display:grid}
+.inv{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px}
+.inv label{display:block;font-size:13px;color:#d9c7ec;margin:8px 0 4px;font-weight:700}
+.inv select,.inv input{width:100%;font:16px "Trebuchet MS",sans-serif;padding:9px 11px;border:2px solid #8b5cc4;border-radius:10px;background:#1e1230;color:#fff}
+.ticket{background:#ff7a1a;color:#2a1838;border-radius:18px;padding:18px;position:relative;font-size:17px;line-height:1.6;border:3px dashed #2a1838;min-height:220px}
+.ticket h3{font-size:34px;color:#2a1838}
+.source{font:12.5px/1.6 system-ui,sans-serif;color:var(--muted);margin-top:26px}
+@media(max-width:760px){.cards{grid-template-columns:repeat(2,1fr)}.workshop,.porch,.inv{grid-template-columns:1fr}.porch svg{max-width:160px;margin:0 auto;display:block}.intro{grid-template-columns:1fr;text-align:center}.intro .ghost{font-size:48px}.room{padding:16px}.street .title small{font-size:10px}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="street">
+  <div class="title"><small>FESTIVALS · A2 · 25 MIN · 10月31日</small><h1>Halloween Night</h1></div>
+  <svg viewBox="0 0 1000 440" role="img" aria-label="A street at night with four houses. Click a house to visit it.">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sky3)"/><stop offset=".55" style="stop-color:var(--sky2)"/><stop offset="1" style="stop-color:var(--sky1)"/></linearGradient>
+      <radialGradient id="moonG"><stop offset=".6" stop-color="#fff6d5"/><stop offset="1" stop-color="#fff6d5" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="1000" height="440" fill="url(#sky)"/>
+    <circle cx="830" cy="110" r="90" fill="url(#moonG)" opacity=".5"/>
+    <circle cx="830" cy="110" r="52" fill="#fff3c4"/>
+    <circle cx="812" cy="98" r="8" fill="#eedf9f"/><circle cx="846" cy="124" r="11" fill="#eedf9f"/>
+    <g fill="#1a0d26">
+      <g class="bat"><path d="M150 140 q10 -14 20 -2 q6 -8 10 0 q4 -8 10 0 q10 -12 20 2 q-14 -2 -20 8 q-6 -6 -10 0 q-4 -6 -10 0 q-6 -10 -20 -8z"/></g>
+      <g class="bat b2"><path d="M640 70 q8 -11 16 -2 q5 -6 8 0 q3 -6 8 0 q8 -9 16 2 q-11 -2 -16 6 q-5 -5 -8 0 q-3 -5 -8 0 q-5 -8 -16 -6z"/></g>
+      <g class="bat b3"><path d="M720 160 q6 -8 12 -1 q4 -5 6 0 q2 -5 6 0 q6 -7 12 1 q-8 -1 -12 5 q-4 -4 -6 0 q-2 -4 -6 0 q-4 -6 -12 -5z"/></g>
+    </g>
+    <!-- 远处小山 -->
+    <path d="M0 330 Q150 270 300 320 T620 300 T1000 310 V440 H0Z" fill="#1a0d26" opacity=".55"/>
+    <!-- 房子 1 -->
+    <g class="house" data-room="r1" tabindex="0" role="button" aria-label="House 1: Halloween traditions">
+      <path d="M60 400 V270 L140 210 L220 270 V400Z" fill="#2b1840"/>
+      <rect class="win" x="88" y="290" width="34" height="30"/><rect class="win" x="158" y="290" width="34" height="30"/>
+      <rect class="door" x="122" y="340" width="36" height="60" fill="#5b2a1a"/>
+      <rect x="80" y="232" width="120" height="22" rx="4" fill="#ff7a1a"/><text class="sign" x="140" y="248" text-anchor="middle">1 · TRADITIONS</text>
+    </g>
+    <!-- 房子 2 -->
+    <g class="house" data-room="r2" tabindex="0" role="button" aria-label="House 2: Pumpkin workshop">
+      <path d="M290 400 V250 L380 180 L470 250 V400Z" fill="#331c4b"/>
+      <circle class="win" cx="380" cy="240" r="16"/>
+      <rect class="win" x="314" y="280" width="40" height="34"/><rect class="win" x="406" y="280" width="40" height="34"/>
+      <rect class="door" x="360" y="336" width="40" height="64" fill="#5b2a1a"/>
+      <rect x="318" y="190" width="124" height="22" rx="4" fill="#ff7a1a" transform="translate(0 -32)"/><text class="sign" x="380" y="174" text-anchor="middle">2 · PUMPKINS</text>
+      <g class="glow"><ellipse cx="420" cy="392" rx="20" ry="16" fill="#ff7a1a"/><path d="M412 388 l4 -5 4 5z M424 388 l4 -5 4 5z M410 396 q10 6 20 0" fill="#ffe066"/></g>
+    </g>
+    <!-- 房子 3 -->
+    <g class="house" data-room="r3" tabindex="0" role="button" aria-label="House 3: Who is at the door?">
+      <path d="M540 400 V230 h40 v-40 h20 v40 L680 170 L760 230 V400Z" fill="#2b1840"/>
+      <rect class="win" x="566" y="262" width="36" height="34"/><rect class="win" x="660" y="262" width="36" height="34"/>
+      <rect class="door" x="630" y="332" width="40" height="68" fill="#5b2a1a"/>
+      <rect x="590" y="198" width="140" height="22" rx="4" fill="#ff7a1a"/><text class="sign" x="660" y="214" text-anchor="middle">3 · COSTUMES</text>
+    </g>
+    <!-- 房子 4 -->
+    <g class="house" data-room="r4" tabindex="0" role="button" aria-label="House 4: Trick or treat at the door">
+      <path d="M810 400 V260 L890 200 L970 260 V400Z" fill="#331c4b"/>
+      <rect class="win" x="836" y="282" width="32" height="30"/><rect class="win" x="912" y="282" width="32" height="30"/>
+      <rect class="door" x="872" y="336" width="36" height="64" fill="#5b2a1a"/>
+      <rect x="834" y="222" width="112" height="22" rx="4" fill="#ff7a1a"/><text class="sign" x="890" y="238" text-anchor="middle">4 · THE DOOR</text>
+    </g>
+    <rect y="400" width="1000" height="40" fill="#120818"/>
+    <path d="M0 418 h1000" stroke="#ffb347" stroke-width="3" stroke-dasharray="26 22" opacity=".5"/>
+  </svg>
+</div>
+
+<div class="status">
+  <div class="bag" aria-live="polite"><b>Candy bag</b><div class="slots" id="slots"><span>·</span><span>·</span><span>·</span><span>·</span><span>·</span></div></div>
+  <div class="doors" id="doors">
+    <button data-room="r0" class="on">👻 Start</button><button data-room="r1">House 1</button><button data-room="r2">House 2</button><button data-room="r3">House 3</button><button data-room="r4">House 4</button>
+  </div>
+</div>
+<p class="zh" style="margin:-4px 0 0">点街上的房子（或上面的按钮）去敲门。每完成一栋房子的任务，就能得到一颗糖。集满 5 颗，解锁万圣节派对！</p>
+
+<!-- 起点：大问题 -->
+<section class="room on" id="r0">
+  <div class="intro">
+    <div class="ghost" aria-hidden="true">👻</div>
+    <div>
+      <span class="door-no">Before you go</span>
+      <h2>"Trick or treat!"</h2>
+      <p>On October 31st, children knock on doors and say these three words. What do they really mean?</p>
+      <p class="zh">万圣节晚上，孩子们敲门时说“Trick or treat!”。这是什么意思？</p>
+      <div class="choices" id="tq">
+        <button data-k="a">Please play a game with me.</button>
+        <button data-k="b">Give me a treat (sweets), or I'll play a trick on you!</button>
+        <button data-k="c">I'm a ghost. Be scared!</button>
+      </div>
+      <p class="say" id="tqSay" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 房子 1：习俗 -->
+<section class="room" id="r1">
+  <span class="door-no">House 1 · Knock knock!</span>
+  <h2>Old traditions, new fun</h2>
+  <p class="zh">翻开每张卡片，了解万圣节的来历和习俗。</p>
+  <div class="cards" id="tcards"></div>
+</section>
+
+<!-- 房子 2：南瓜 -->
+<section class="room" id="r2">
+  <span class="door-no">House 2 · The pumpkin workshop</span>
+  <h2>Carve a jack-o'-lantern</h2>
+  <p class="zh">选择眼睛、鼻子和嘴巴的形状，再点亮蜡烛。下面会用英语描述你的南瓜灯。</p>
+  <div class="workshop">
+    <svg class="pumpkin" id="pumpkin" viewBox="0 0 300 280" role="img" aria-label="Your jack-o'-lantern">
+      <defs><radialGradient id="halo"><stop offset="0" stop-color="#ffd36b" stop-opacity=".7"/><stop offset="1" stop-color="#ffd36b" stop-opacity="0"/></radialGradient></defs>
+      <circle class="halo" cx="150" cy="160" r="150" fill="url(#halo)"/>
+      <path d="M144 52 q-4 -26 14 -36 l8 8 q-12 8 -10 30z" fill="#4c7a2a"/>
+      <ellipse cx="96" cy="160" rx="70" ry="100" fill="#e8650f"/>
+      <ellipse cx="204" cy="160" rx="70" ry="100" fill="#e8650f"/>
+      <ellipse cx="150" cy="160" rx="72" ry="108" fill="#ff7a1a"/>
+      <path d="M150 54 q-30 106 0 214 M150 54 q30 106 0 214" stroke="#d95a0a" stroke-width="4" fill="none"/>
+      <g id="eyes"></g><g id="nose"></g><g id="mouth"></g>
+    </svg>
+    <div>
+      <div class="pick"><b>Eyes</b><div class="row" data-part="eyes"><button data-v="triangle">▲ triangle</button><button data-v="round">● round</button><button data-v="angry">◣ angry</button></div></div>
+      <div class="pick"><b>Nose</b><div class="row" data-part="nose"><button data-v="triangle">▲ triangle</button><button data-v="heart">♥ heart</button><button data-v="none">no nose</button></div></div>
+      <div class="pick"><b>Mouth</b><div class="row" data-part="mouth"><button data-v="smile">◡ big smile</button><button data-v="teeth">⩔ toothy</button><button data-v="o">◯ "Ooh!"</button></div></div>
+      <button class="light" id="light">🕯️ Light the candle</button>
+      <p class="desc" id="pdesc">My jack-o'-lantern has…</p>
+    </div>
+  </div>
+</section>
+
+<!-- 房子 3：谜语 -->
+<section class="room" id="r3">
+  <span class="door-no">House 3 · Who's at the door?</span>
+  <h2>Guess the costume</h2>
+  <p class="zh">门外的人在说谜语。读一读，猜猜他扮成了什么。</p>
+  <div class="riddles" id="riddles"></div>
+</section>
+
+<!-- 房子 4：对话 -->
+<section class="room" id="r4">
+  <span class="door-no">House 4 · At the door</span>
+  <h2>Ding-dong!</h2>
+  <p class="zh">把门口的对话按顺序排好。礼貌很重要：别忘了说谢谢！</p>
+  <div class="porch">
+    <svg viewBox="0 0 200 240" aria-hidden="true">
+      <rect x="40" y="20" width="120" height="210" rx="6" fill="#5b2a1a"/><rect x="52" y="34" width="96" height="80" rx="4" fill="#6f3622"/><rect x="52" y="126" width="96" height="90" rx="4" fill="#6f3622"/>
+      <circle cx="140" cy="130" r="6" fill="#ffd36b"/>
+      <circle cx="100" cy="74" r="20" fill="#2e7d32"/><path d="M80 74 q20 -30 40 0 q-20 30 -40 0" fill="none" stroke="#1b4d1e" stroke-width="3"/><circle cx="100" cy="74" r="6" fill="#c62828"/>
+      <text x="100" y="180" font-size="40" text-anchor="middle">🎃</text>
+    </svg>
+    <div>
+      <ol class="lines" id="lines"></ol>
+      <div class="pool" id="linePool"></div>
+      <div class="minirow"><button id="lineCheck">✔ Check</button><button id="lineReset">↺ Again</button></div>
+      <p class="say" id="lineSay" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 派对 -->
+<section class="party locked" id="party">
+  <div class="lock"><div>🔒 Collect 5 candies to open the party!<br><span class="zh">集满 5 颗糖解锁</span></div></div>
+  <div class="inner">
+    <h2>You're invited!</h2>
+    <p class="zh">设计你的万圣节造型，写一张派对邀请卡。</p>
+    <div class="inv">
+      <div>
+        <label for="i1">I'm going to be a…</label>
+        <select id="i1"><option value="">— costume —</option><option>witch</option><option>ghost</option><option>vampire</option><option>skeleton</option><option>black cat</option><option>pumpkin</option><option>superhero</option></select>
+        <label for="i2">I will wear…</label><input id="i2" maxlength="60" placeholder="a tall black hat and a long cape">
+        <label for="i3">At the door, I will say…</label><input id="i3" maxlength="50" placeholder="Trick or treat! Happy Halloween!">
+      </div>
+      <div class="ticket" id="ticket"><h3>🎃 Halloween Party</h3><p>Fill in the form…</p></div>
+    </div>
+  </div>
+</section>
+
+<p class="source">Original teaching text and drawings. Facts: History.com, Encyclopaedia Britannica. Halloween customs are different in different places; trick-or-treating is most popular in the USA, Canada, the UK and Ireland. 教师可在此补充图片 / 视频来源与授权。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s){ return s.replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+// 导航
+function openRoom(id, scroll){
+  $$('.room').forEach(function(r){ r.classList.toggle('on', r.id === id); });
+  $$('#doors button').forEach(function(b){ b.classList.toggle('on', b.dataset.room === id); });
+  if (scroll && $('#' + id).getBoundingClientRect().top > 300) $('#' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+$$('#doors button').forEach(function(b){ b.onclick = function(){ openRoom(b.dataset.room); }; });
+$$('.house').forEach(function(h){
+  h.addEventListener('click', function(){ openRoom(h.dataset.room, true); });
+  h.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openRoom(h.dataset.room, true); } });
+});
+
+// 糖果
+var candies = ['🍬', '🍭', '🍫', '🍪', '🧁'], got = {};
+function candy(key){
+  if (got[key]) return; got[key] = 1; ED.done(key);
+  var n = Object.keys(got).length, s = $$('#slots span')[n - 1];
+  s.textContent = candies[n - 1]; s.classList.add('got');
+  var room = { 'big-question': 'r0', traditions: 'r1', pumpkin: 'r2', costumes: 'r3', 'at-the-door': 'r4' }[key];
+  var btn = $('#doors [data-room="' + room + '"]'); if (btn) btn.classList.add('done');
+  var house = $('.house[data-room="' + room + '"]'); if (house) house.classList.add('done');
+  if (n === 5){ $('#party').classList.remove('locked'); }
+}
+
+// 大问题
+$$('#tq button').forEach(function(b){
+  b.onclick = function(){
+    if ($('#tq').dataset.done) return; $('#tq').dataset.done = 1;
+    $$('#tq button')[1].classList.add('right'); if (b.dataset.k !== 'b') b.classList.add('wrong');
+    $('#tqSay').textContent = 'A treat = sweets or candy. A trick = a little joke. Most people just give the treats! 🍬 Now visit House 1.';
+    candy('big-question');
+  };
+});
+
+// 习俗
+var tr = [
+  ['🍂', 'Where did it start?', 'More than 2,000 years ago, the Celts in Ireland and Britain had a festival called <b>Samhain</b> at the end of summer.', '起源于两千多年前凯尔特人的“萨温节”。'],
+  ['📅', 'Why the name?', '<b>Halloween</b> comes from <b>All Hallows\' Eve</b> — the evening before All Hallows\' Day (1st November).', '“万圣节前夜”的缩写。'],
+  ['🎃', 'Jack-o\'-lantern', 'In Ireland, people first carved faces into <b>turnips</b>! In America, they used pumpkins — bigger and easier to carve.', '最早用的是芜菁，美国人改用南瓜。'],
+  ['🧙', 'Costumes', 'Long ago, people wore costumes to hide from ghosts. Today, kids dress up as anything — even superheroes.', '以前穿戏服是为了“躲避鬼魂”。'],
+  ['🍎', 'Bobbing for apples', 'A party game: apples float in water, and you try to pick one up with your <b>teeth</b> — no hands!', '派对游戏：不用手，用牙咬起水里的苹果。'],
+  ['🏚️', 'Haunted houses', 'People make scary houses with fake ghosts and spiders. You walk through and try not to scream!', '鬼屋：走进去尽量别尖叫！']
+];
+var tcSeen = {};
+tr.forEach(function(t, i){
+  var b = document.createElement('button'); b.className = 'tc';
+  b.innerHTML = '<div class="in"><div class="f"><span>' + t[0] + '</span><b>' + t[1] + '</b></div><div class="b"><span>' + t[2] + '</span><i>' + t[3] + '</i></div></div>';
+  b.onclick = function(){ b.classList.toggle('flip'); tcSeen[i] = 1; if (Object.keys(tcSeen).length === tr.length) candy('traditions'); };
+  $('#tcards').appendChild(b);
+});
+
+// 南瓜
+var shapes = {
+  eyes: { triangle: '<path class="carve" d="M100 120 l20 -34 l20 34z M160 120 l20 -34 l20 34z"/>', round: '<circle class="carve" cx="118" cy="110" r="18"/><circle class="carve" cx="182" cy="110" r="18"/>', angry: '<path class="carve" d="M96 96 l44 16 l-8 18 l-30 -6z M204 96 l-44 16 l8 18 l30 -6z"/>' },
+  nose: { triangle: '<path class="carve" d="M150 132 l-12 24 h24z"/>', heart: '<path class="carve" d="M150 160 l-14 -14 a8 8 0 0 1 14 -10 a8 8 0 0 1 14 10z"/>', none: '' },
+  mouth: { smile: '<path class="carve" d="M92 176 q58 60 116 0 q-58 26 -116 0z"/>', teeth: '<path class="carve" d="M92 178 q58 54 116 0 l-14 10 l-10 -12 l-12 14 l-12 -14 l-12 14 l-12 -14 l-12 14 l-10 -12z"/>', o: '<ellipse class="carve" cx="150" cy="196" rx="20" ry="24"/>' }
+};
+var words = {
+  eyes: { triangle: 'triangle eyes', round: 'round eyes', angry: 'angry eyes' },
+  nose: { triangle: 'a triangle nose', heart: 'a heart-shaped nose', none: 'no nose' },
+  mouth: { smile: 'a big smile', teeth: 'a toothy grin', o: 'a round "Ooh!" mouth' }
+};
+var face = {}, lit = false;
+function drawPumpkin(){
+  ['eyes', 'nose', 'mouth'].forEach(function(p){ $('#' + p).innerHTML = face[p] ? shapes[p][face[p]] : ''; });
+  var parts = ['eyes', 'nose', 'mouth'].filter(function(p){ return face[p]; }).map(function(p){ return words[p][face[p]]; });
+  var t = parts.length ? 'My jack-o\'-lantern has ' + (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0]) + '.' : 'My jack-o\'-lantern has…';
+  if (lit) t += ' The candle is glowing inside! 🕯️';
+  $('#pdesc').textContent = t;
+  if (face.eyes && face.nose && face.mouth && lit) candy('pumpkin');
+}
+$$('.pick .row').forEach(function(row){
+  $$('button', row).forEach(function(b){ b.onclick = function(){ $$('button', row).forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on'); face[row.dataset.part] = b.dataset.v; drawPumpkin(); }; });
+});
+$('#light').onclick = function(){ lit = !lit; $('#pumpkin').classList.toggle('lit', lit); $('#light').textContent = lit ? '💨 Blow it out' : '🕯️ Light the candle'; drawPumpkin(); };
+
+// 谜语
+var riddles = [
+  ['I\'m white, I fly, and I say "Boo!" Who am I?', [['👻', 'a ghost'], ['🧛', 'a vampire'], ['🐈‍⬛', 'a black cat']], 0],
+  ['I wear a tall pointy hat and I fly on a broom. Who am I?', [['💀', 'a skeleton'], ['🧙', 'a witch'], ['🦇', 'a bat']], 1],
+  ['I sleep in the day and I have two long, sharp teeth. Who am I?', [['🧛', 'a vampire'], ['🎃', 'a pumpkin'], ['👻', 'a ghost']], 0],
+  ['I am all bones and no body. Who am I?', [['🧙', 'a witch'], ['🕷️', 'a spider'], ['💀', 'a skeleton']], 2],
+  ['I have eight legs and I make a web. Who am I?', [['🕷️', 'a spider'], ['🦇', 'a bat'], ['🐈‍⬛', 'a black cat']], 0]
+];
+var rDone = 0;
+riddles.forEach(function(r){
+  var d = document.createElement('div'); d.className = 'rd';
+  d.innerHTML = '<p>🚪 “' + r[0] + '”</p><div class="opts"></div>';
+  r[1].forEach(function(o, j){
+    var b = document.createElement('button'); b.innerHTML = '<span>' + o[0] + '</span>' + o[1];
+    b.onclick = function(){
+      if (d.dataset.done) return;
+      if (j === r[2]){ d.dataset.done = 1; b.classList.add('right'); rDone++; if (rDone === riddles.length) candy('costumes'); }
+      else b.classList.add('wrong');
+    };
+    $('.opts', d).appendChild(b);
+  });
+  $('#riddles').appendChild(d);
+});
+
+// 门口对话排序
+var dialog = ['🧒 (Knock knock) Trick or treat!', '👵 Oh, hello! What a scary witch! Here you are.', '🧒 Thank you so much!', '👵 You\'re welcome. Happy Halloween!', '🧒 Happy Halloween! Bye!'];
+var placed = [];
+function buildDialog(){
+  placed = []; $('#lines').innerHTML = dialog.map(function(){ return '<li></li>'; }).join(''); $('#linePool').innerHTML = ''; $('#lineSay').textContent = '';
+  [2, 4, 0, 3, 1].forEach(function(i){
+    var b = document.createElement('button'); b.textContent = dialog[i];
+    b.onclick = function(){ var li = $$('#lines li')[placed.length]; li.textContent = dialog[i]; li.classList.add('f'); placed.push(i); b.classList.add('used'); };
+    $('#linePool').appendChild(b);
+  });
+}
+buildDialog();
+$('#lineReset').onclick = buildDialog;
+$('#lineCheck').onclick = function(){
+  if (placed.length < dialog.length){ $('#lineSay').textContent = 'Put all five lines in order first.'; return; }
+  var ok = 0; $$('#lines li').forEach(function(li, j){ var r = placed[j] === j; li.classList.toggle('ok', r); li.classList.toggle('no', !r); if (r) ok++; });
+  if (ok === dialog.length){ $('#lineSay').textContent = '🎉 Perfect manners! Now read it aloud with a partner.'; candy('at-the-door'); }
+  else $('#lineSay').textContent = ok + ' / 5 correct. Press "Again" to try once more.';
+};
+
+// 邀请卡
+function inv(){
+  var a = $('#i1').value, b = $('#i2').value.trim(), c = $('#i3').value.trim(), out = [];
+  if (a) out.push('I\'m going to be a ' + esc(a) + '.');
+  if (b) out.push('I will wear ' + esc(b) + '.');
+  if (c) out.push('At the door, I will say: “' + esc(c) + '”');
+  $('#ticket').innerHTML = '<h3>🎃 Halloween Party</h3><p><b>When:</b> October 31st, 7 p.m.<br><b>Dress up!</b></p><p>' + (out.join(' ') || 'Fill in the form…') + '</p>';
+  if (out.length === 3) ED.done('express');
+}
+['#i1', '#i2', '#i3'].forEach(function(s){ $(s).addEventListener('input', inv); $(s).addEventListener('change', inv); });
+</script>
+</body>
+</html>

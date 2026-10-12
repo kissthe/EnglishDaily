@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Moon Landing · Interactive</title>
+<!-- 风格实验 11：任务控制中心。顶部是地球→月球的飞行轨道，完成活动火箭就往前飞；终端式“任务日志”、倒计时发射、等宽字体。日间是 60 年代航天新闻资料风，夜间是深空。 -->
+<style>
+:root{--bg:#f1ede4;--panel:#fbf9f4;--ink:#13213a;--muted:#5a6578;--line:#cfc8b8;--blue:#0b3d91;--red:#fc3d21;--gold:#d9a521;--term:#0e1a2b;--termtxt:#9cffb0;--space:#0b1a33;--ok:#1b8a4b;--bad:#d6301a;--soft:#e7e1d3}
+html.dark{--bg:#05070f;--panel:#0d1424;--ink:#e3e9f7;--muted:#8d9ab6;--line:#1f2b45;--blue:#6e9bff;--red:#ff6a4d;--gold:#ffcc4d;--term:#02060c;--termtxt:#7dffa1;--space:#02040a;--ok:#5ee08f;--bad:#ff7a66;--soft:#141d33}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.65 "Avenir Next","Century Gothic","Futura",system-ui,sans-serif}
+main{max-width:1020px;margin:0 auto;padding:16px 14px 40px}
+.zh{font:14px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+.mono{font-family:"Courier New",ui-monospace,Menlo,monospace}
+h1,h2,h3{margin:0;font-family:"Futura","Century Gothic","Avenir Next",sans-serif;font-weight:700;letter-spacing:.02em}
+button{font:700 15px/1.2 "Avenir Next","Century Gothic",system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+.tag{font:700 11px/1 "Courier New",monospace;letter-spacing:.2em;color:var(--red);text-transform:uppercase}
+/* 深空头图 */
+.sky{position:relative;overflow:hidden;border-radius:18px;background:var(--space);color:#fff;padding:22px 22px 0}
+.stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 10% 20%,#fff,transparent),radial-gradient(1px 1px at 30% 70%,#fff,transparent),radial-gradient(1.5px 1.5px at 50% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 80%,#fff,transparent),radial-gradient(1px 1px at 85% 15%,#fff,transparent),radial-gradient(1.5px 1.5px at 92% 55%,#fff,transparent),radial-gradient(1px 1px at 20% 50%,#cfe,transparent),radial-gradient(1px 1px at 62% 58%,#fff,transparent),radial-gradient(1px 1px at 40% 10%,#fff,transparent),radial-gradient(1px 1px at 5% 85%,#fff,transparent);background-size:300px 220px;opacity:.85;animation:tw 6s ease-in-out infinite alternate}
+@keyframes tw{to{opacity:.45}}
+.sky>*:not(.stars){position:relative}
+.sky .tag{color:#ffb3a6}
+.sky h1{font-size:clamp(36px,7.6vw,76px);line-height:1;margin:10px 0 8px;letter-spacing:.04em}
+.sky h1 span{color:#ffcc4d}
+.sky p{margin:0 0 6px;max-width:640px}
+.sky .zh{color:#a9b6d3}
+.who{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.who button{background:transparent;color:#fff;border:1.5px solid #6e9bff;border-radius:6px;padding:9px 14px}
+.who button.right{background:#1b8a4b;border-color:#1b8a4b}
+.who button.wrong{background:#d6301a;border-color:#d6301a}
+.say{min-height:24px;font:600 14.5px/1.6 system-ui,sans-serif}
+.traj{display:block;width:100%;margin-top:6px}
+.traj .wp{cursor:pointer}
+.traj .wp circle{fill:#13213a;stroke:#6e9bff;stroke-width:3}
+.traj .wp.done circle{fill:#ffcc4d;stroke:#ffcc4d}
+.traj .wp text{font:700 12px "Courier New",monospace;fill:#cfe0ff}
+#ship{transition:transform 1.2s cubic-bezier(.4,0,.2,1)}
+/* 面板 */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:22px 0;position:relative}
+.panel h2{font-size:clamp(24px,4.2vw,34px);margin:8px 0 6px}
+.panel .stamp{position:absolute;right:16px;top:14px;font:700 11px "Courier New",monospace;letter-spacing:.14em;color:var(--muted);border:1.5px solid var(--line);padding:4px 8px;border-radius:4px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+/* 倒计时 */
+.pad{position:relative;height:300px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#0b1a33,#2a4a7a 70%,#d98c5f)}
+.pad .tower{position:absolute;left:30%;bottom:30px;width:14px;height:200px;background:repeating-linear-gradient(45deg,#c33 0 6px,#555 6px 12px)}
+.pad .ground{position:absolute;left:0;right:0;bottom:0;height:30px;background:#3a3a3a}
+.rocket{position:absolute;left:50%;bottom:30px;width:60px;margin-left:-30px;transition:transform 3.5s cubic-bezier(.6,0,.9,.6)}
+.rocket .fire{opacity:0;transition:opacity .3s}
+.pad.go .rocket{transform:translateY(-420px)}
+.pad.lit .rocket .fire{opacity:1;animation:fl .12s infinite alternate}
+@keyframes fl{to{transform:scaleY(1.25)}}
+.smoke{position:absolute;bottom:20px;left:50%;width:220px;height:60px;margin-left:-110px;border-radius:50%;background:radial-gradient(ellipse,#eee,rgba(255,255,255,0) 70%);opacity:0;transition:opacity .6s}
+.pad.lit .smoke{opacity:.9}
+.count{font:700 92px/1 "Courier New",monospace;color:var(--red);text-align:center;min-height:96px}
+.big{width:100%;background:var(--red);color:#fff;border:0;border-radius:10px;padding:14px;font-size:18px;letter-spacing:.12em;text-transform:uppercase}
+.big:disabled{opacity:.4;cursor:default}
+/* 宇航员 */
+.crew{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.astro{background:var(--soft);border:2px solid transparent;border-radius:14px;padding:14px;text-align:center}
+.astro svg{width:96px;display:block;margin:0 auto 6px}
+.astro b{display:block;font-size:17px}
+.astro .role{display:block;min-height:42px;font:600 13.5px/1.5 system-ui,sans-serif;color:var(--muted);margin-top:4px}
+.astro.ok{border-color:var(--ok)}
+.roles{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.roles button{background:var(--panel);border:1.5px solid var(--line);border-radius:99px;padding:8px 14px;font-size:14px}
+.roles button.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.roles button.used{display:none}
+/* 任务日志 */
+.term{background:var(--term);color:var(--termtxt);border-radius:12px;padding:16px;font:15px/1.7 "Courier New",monospace;min-height:190px;white-space:pre-wrap;border:2px solid #1f2b45}
+.term .cur{display:inline-block;width:9px;height:16px;background:var(--termtxt);vertical-align:-2px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.wpbtns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.wpbtns button{background:var(--panel);border:1.5px solid var(--line);border-radius:6px;padding:8px 12px;font:700 13px "Courier New",monospace}
+.wpbtns button.on{background:var(--ink);color:var(--bg)}
+.wpbtns button.seen::before{content:"✓ ";color:var(--ok)}
+/* 名言填空 */
+.quote{font:600 clamp(20px,3.6vw,28px)/1.6 Georgia,serif;text-align:center;margin:14px 0}
+.slot{display:inline-block;min-width:96px;border-bottom:3px solid var(--red);color:var(--red);padding:0 6px}
+.bank{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.bank button{background:var(--soft);border:1.5px solid var(--line);border-radius:8px;padding:9px 16px;font:600 17px Georgia,serif}
+.bank button.used{opacity:.3}
+.explain{display:none;margin-top:12px;background:var(--soft);border-radius:10px;padding:12px 14px}
+.explain.on{display:block}
+/* 重力 */
+.grav{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
+.moonart{width:100%;max-width:300px;display:block;margin:0 auto}
+#jumper{transition:transform .5s cubic-bezier(.2,.8,.3,1)}
+.readout{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.readout div{background:var(--soft);border-radius:10px;padding:10px 14px}
+.readout b{display:block;font:700 34px/1 "Courier New",monospace;color:var(--blue)}
+.readout small{font:600 12px system-ui,sans-serif;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--red)}
+/* 词汇 */
+.vocab{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.vw{background:var(--soft);border:1.5px solid var(--line);border-radius:12px;padding:12px;text-align:left;min-height:96px}
+.vw span{font-size:26px}
+.vw b{display:block;font-size:17px}
+.vw i{display:none;font-style:normal;font:13.5px/1.5 system-ui,"PingFang SC",sans-serif;color:var(--muted)}
+.vw.open i{display:block}
+.vw.open{border-color:var(--blue)}
+/* 中国 */
+.cn{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cn div{border-left:4px solid var(--red);padding:6px 12px}
+.cn b{font:700 22px "Courier New",monospace;color:var(--red)}
+/* 表达 */
+.log{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.log label{display:block;font:700 12px "Courier New",monospace;letter-spacing:.1em;color:var(--muted);margin:10px 0 4px}
+.log input{width:100%;font:16px "Avenir Next",system-ui,sans-serif;padding:9px 11px;border:1.5px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+.source{font:12px/1.6 "Courier New",monospace;color:var(--muted);margin-top:24px}
+@media(max-width:760px){.panel .stamp{position:static;display:inline-block;margin-bottom:8px}.panel .tag{display:block}.two,.grav,.log{grid-template-columns:1fr}.crew{grid-template-columns:1fr}.astro{display:grid;grid-template-columns:72px 1fr;text-align:left;gap:10px;align-items:center}.astro svg{width:72px;margin:0;grid-row:span 3}.vocab{grid-template-columns:repeat(2,1fr)}.cn{grid-template-columns:1fr}.panel{padding:16px}.sky{padding:18px 16px 0}.count{font-size:70px;min-height:74px}}
+</style>
+</head>
+<body>
+<main>
+
+<header class="sky">
+  <div class="stars" aria-hidden="true"></div>
+  <span class="tag mono">Science · A2 · 25 min · Apollo 11 · July 1969</span>
+  <h1>One small step,<br><span>one giant leap.</span></h1>
+  <p>On 20 July 1969, a human walked on the Moon for the first time. Around 600 million people watched on TV.</p>
+  <p class="zh">1969 年 7 月 20 日，人类第一次踏上月球。先猜：说出“这是个人的一小步……”这句名言的是谁？</p>
+  <div class="who" id="who">
+    <button data-k="aldrin">Buzz Aldrin</button><button data-k="armstrong">Neil Armstrong</button><button data-k="collins">Michael Collins</button>
+  </div>
+  <p class="say" id="whoSay" aria-live="polite"></p>
+  <!-- 飞行轨道：完成活动，飞船前进 -->
+  <svg class="traj" viewBox="0 0 900 200" role="img" aria-label="Mission progress from the Earth to the Moon">
+    <circle cx="70" cy="140" r="56" fill="#2b6cd4"/><path d="M40 110 q20 10 10 30 q-14 6 -8 24 q20 6 26 -12 q12 -20 30 -14 q-6 -24 -28 -30z" fill="#3fa35b"/><circle cx="70" cy="140" r="56" fill="none" stroke="#9cc4ff" stroke-width="3" opacity=".5"/>
+    <circle cx="830" cy="70" r="42" fill="#d8d4c8"/><circle cx="816" cy="58" r="8" fill="#b9b3a3"/><circle cx="846" cy="84" r="11" fill="#b9b3a3"/><circle cx="838" cy="48" r="5" fill="#b9b3a3"/>
+    <path id="path" d="M126 130 C 300 40, 520 200, 788 80" fill="none" stroke="#6e9bff" stroke-width="2" stroke-dasharray="6 8"/>
+    <g class="wp" data-i="0"><circle cx="126" cy="130" r="8"/><text x="100" y="186">LAUNCH</text></g>
+    <g class="wp" data-i="1"><circle cx="276" cy="86" r="8"/><text x="250" y="70">CREW</text></g>
+    <g class="wp" data-i="2"><circle cx="420" cy="118" r="8"/><text x="400" y="150">LOG</text></g>
+    <g class="wp" data-i="3"><circle cx="560" cy="134" r="8"/><text x="530" y="168">QUOTE</text></g>
+    <g class="wp" data-i="4"><circle cx="690" cy="104" r="8"/><text x="660" y="140">GRAVITY</text></g>
+    <g class="wp" data-i="5"><circle cx="788" cy="80" r="8"/><text x="740" y="140">LANDED</text></g>
+    <g id="ship"><g transform="translate(116 112)"><path d="M10 0 q8 8 8 22 v10 h-16 v-10 q0 -14 8 -22z" fill="#fff"/><path d="M2 26 l-6 8 h6z M18 26 l6 8 h-6z" fill="#fc3d21"/><circle cx="10" cy="16" r="3" fill="#0b3d91"/></g></g>
+  </svg>
+</header>
+
+<section class="panel">
+  <span class="stamp">STAGE 1 · LAUNCH</span>
+  <span class="tag">16 July 1969 · Florida</span>
+  <h2>T-minus 10…</h2>
+  <p class="zh">巨大的“土星五号”（Saturn V）火箭从佛罗里达州发射。点按钮，和屏幕一起用英语大声倒数！</p>
+  <div class="two">
+    <div class="pad" id="pad">
+      <div class="tower"></div>
+      <div class="smoke"></div>
+      <svg class="rocket" viewBox="0 0 60 220" aria-hidden="true">
+        <path d="M30 0 q12 16 12 40 v150 h-24 v-150 q0 -24 12 -40z" fill="#f4f4f4" stroke="#222" stroke-width="2"/>
+        <rect x="18" y="70" width="24" height="10" fill="#222"/><rect x="18" y="120" width="24" height="8" fill="#222"/>
+        <text x="30" y="110" font-size="9" text-anchor="middle" font-family="Arial" font-weight="700" fill="#222" transform="rotate(90 30 110)">USA</text>
+        <path d="M18 170 l-12 26 v8 h12z M42 170 l12 26 v8 h-12z" fill="#222"/>
+        <g class="fire"><path d="M20 192 q10 40 10 28 q0 12 10 -28z" fill="#ffcc4d"/><path d="M24 192 q6 22 6 16 q0 6 6 -16z" fill="#fc3d21"/></g>
+      </svg>
+      <div class="ground"></div>
+    </div>
+    <div>
+      <div class="count mono" id="count" aria-live="polite">10</div>
+      <button class="big" id="ignite">Start countdown</button>
+      <p class="zh" style="margin-top:10px">ten, nine, eight, seven, six, five, four, three, two, one… <b>Liftoff!</b>（起飞！）</p>
+      <p class="say" id="padSay"></p>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <span class="stamp">STAGE 2 · CREW</span>
+  <span class="tag">Meet the astronauts</span>
+  <h2>Three men, three jobs</h2>
+  <p class="zh">先点一个任务，再点执行这个任务的宇航员。（插画为原创示意）</p>
+  <div class="roles" id="roles">
+    <button data-a="armstrong">Commander — first to step on the Moon</button>
+    <button data-a="aldrin">Second person on the Moon</button>
+    <button data-a="collins">Stayed in orbit around the Moon in “Columbia”</button>
+  </div>
+  <div class="crew" id="crew"></div>
+  <p class="say" id="crewSay" aria-live="polite"></p>
+</section>
+
+<section class="panel">
+  <span class="stamp">STAGE 3 · MISSION LOG</span>
+  <span class="tag">Houston, we're listening</span>
+  <h2>Read the mission log</h2>
+  <p class="zh">点击每一天，读一读任务日志。</p>
+  <div class="wpbtns" id="wpbtns"></div>
+  <div class="term" id="term" aria-live="polite">&gt; SELECT A DAY TO READ THE LOG<span class="cur"></span></div>
+</section>
+
+<section class="panel">
+  <span class="stamp">STAGE 4 · THE WORDS</span>
+  <span class="tag">20 July 1969 · Sea of Tranquility</span>
+  <h2>Complete the famous sentence</h2>
+  <p class="zh">阿姆斯特朗踏上月面时说了一句话。按顺序点击词语填空。</p>
+  <p class="quote">“That's one small <span class="slot" id="s1">&nbsp;</span> for man, one giant <span class="slot" id="s2">&nbsp;</span> for mankind.”</p>
+  <div class="bank" id="bank"><button>jump</button><button>leap</button><button>walk</button><button>step</button></div>
+  <div class="explain" id="explain"><b>step</b> = 一步；<b>leap</b> = 一大跳、飞跃。<b>mankind</b> = 人类。<br>A small step for one person, but a giant leap for all humans. <span class="zh">对一个人来说是一小步，对全人类来说是一次巨大的飞跃。</span></div>
+  <p class="say" id="quoteSay" aria-live="polite" style="text-align:center"></p>
+</section>
+
+<section class="panel">
+  <span class="stamp">STAGE 5 · GRAVITY</span>
+  <span class="tag">Why do astronauts bounce?</span>
+  <h2>You on the Moon</h2>
+  <p class="zh">月球的引力只有地球的大约 1/6。拖动滑块输入你的体重，再点“Jump!”。</p>
+  <div class="grav">
+    <svg class="moonart" viewBox="0 0 300 240" role="img" aria-label="An astronaut jumping on the Moon">
+      <rect width="300" height="240" fill="var(--space)" rx="12"/>
+      <g fill="#fff" opacity=".8"><circle cx="30" cy="30" r="1.5"/><circle cx="260" cy="40" r="1.5"/><circle cx="200" cy="20" r="1"/><circle cx="90" cy="60" r="1"/></g>
+      <circle cx="250" cy="60" r="18" fill="#2b6cd4"/><path d="M240 54 q8 4 4 12 q8 2 10 -6z" fill="#3fa35b"/>
+      <path d="M0 200 Q80 186 150 196 T300 192 V240 H0Z" fill="#cfcabb"/>
+      <ellipse cx="70" cy="214" rx="20" ry="5" fill="#b3ad9d"/><ellipse cx="230" cy="220" rx="26" ry="6" fill="#b3ad9d"/>
+      <g id="jumper"><g transform="translate(150 150)">
+        <rect x="-14" y="0" width="28" height="34" rx="10" fill="#f4f4f4" stroke="#222" stroke-width="2"/>
+        <circle cx="0" cy="-10" r="14" fill="#f4f4f4" stroke="#222" stroke-width="2"/><rect x="-9" y="-16" width="18" height="10" rx="4" fill="#d9a521"/>
+        <rect x="-12" y="34" width="9" height="14" fill="#f4f4f4" stroke="#222" stroke-width="2"/><rect x="3" y="34" width="9" height="14" fill="#f4f4f4" stroke="#222" stroke-width="2"/>
+      </g></g>
+    </svg>
+    <div>
+      <label for="kg" class="zh">My weight on Earth: <b id="kgV">50</b> kg</label>
+      <input type="range" id="kg" min="25" max="100" value="50">
+      <div class="readout">
+        <div><b id="moonKg">8.3</b><small>feels like (kg) on the Moon</small></div>
+        <div><b id="jumpCm">300</b><small>a 50 cm jump becomes (cm)</small></div>
+      </div>
+      <button class="big" id="jumpBtn" style="background:var(--blue)">Jump!</button>
+      <p class="say" id="gravSay" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <span class="stamp">STAGE 6 · WORDS</span>
+  <span class="tag">Space English</span>
+  <h2>Pack your space words</h2>
+  <p class="zh">点开每个词。</p>
+  <div class="vocab" id="vocab"></div>
+</section>
+
+<section class="panel">
+  <span class="stamp">TODAY</span>
+  <span class="tag">China on the Moon · 嫦娥</span>
+  <h2>The Moon story continues</h2>
+  <p>Twelve astronauts walked on the Moon between 1969 and 1972. Today, many countries explore it with robots. China's Chang'e missions are named after the Moon goddess in a Chinese legend.</p>
+  <div class="cn">
+    <div><b>2013</b><p>Chang'e 3 lands. The rover Yutu (Jade Rabbit) drives on the Moon. <span class="zh">嫦娥三号，玉兔号月球车。</span></p></div>
+    <div><b>2019</b><p>Chang'e 4: the first soft landing on the far side of the Moon. <span class="zh">首次在月球背面软着陆。</span></p></div>
+    <div><b>2024</b><p>Chang'e 6 brings rocks back from the far side for the first time. <span class="zh">首次从月球背面采样返回。</span></p></div>
+  </div>
+</section>
+
+<section class="panel">
+  <span class="stamp">STAGE 7 · YOUR LOG</span>
+  <span class="tag">Your turn</span>
+  <h2>Write your own mission log</h2>
+  <p class="zh">想象你是第一个登上月球的中国学生。写三句任务日志。</p>
+  <div class="log">
+    <div>
+      <label for="l1">TODAY I…</label><input id="l1" maxlength="80" placeholder="walked on the Moon for two hours">
+      <label for="l2">I CAN SEE…</label><input id="l2" maxlength="80" placeholder="the blue Earth in the black sky">
+      <label for="l3">I FEEL…</label><input id="l3" maxlength="80" placeholder="excited, because I can jump very high">
+    </div>
+    <div class="term" id="myLog">&gt; WAITING FOR INPUT<span class="cur"></span></div>
+  </div>
+</section>
+
+<p class="source">SOURCES: NASA Apollo 11 mission pages (nasa.gov); CNSA news releases. Illustrations are original drawings, not NASA photos (NASA photos are public domain — a teacher may upload one as page media, e.g. <code>apollo-photo</code>). Moon weight uses 1/6 of Earth's gravity (rounded). 教师可在此补充授权说明。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s){ return s.replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+// 轨道进度：每完成一个阶段，飞船移动到下一个航点
+var wps = [[126, 130], [276, 86], [420, 118], [560, 134], [690, 104], [788, 80]], stageDone = {};
+function stage(i, key){
+  if (stageDone[i]) return; stageDone[i] = 1; ED.done(key);
+  $('.wp[data-i="' + i + '"]').classList.add('done');
+  var n = Object.keys(stageDone).length, p = wps[Math.min(n, wps.length - 1)];
+  $('#ship').style.transform = 'translate(' + (p[0] - 126) + 'px,' + (p[1] - 130) + 'px)';
+  if (n === 5) $('.wp[data-i="5"]').classList.add('done');
+}
+
+$$('#who button').forEach(function(b){
+  b.onclick = function(){
+    if ($('#who').dataset.done) return; $('#who').dataset.done = 1;
+    $$('#who button')[1].classList.add('right'); if (b.dataset.k !== 'armstrong') b.classList.add('wrong');
+    $('#whoSay').textContent = 'Neil Armstrong said it as he stepped onto the Moon. Now complete the mission — your rocket will fly to the Moon! 🚀';
+    ED.done('big-question');
+  };
+});
+
+// 倒计时（设备支持时用自带语音读数字）
+var canSpeak = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance === 'function';
+function speak(t){ if (!canSpeak) return; try { var u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 1.1; speechSynthesis.speak(u); } catch (e) {} }
+var nums = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+$('#ignite').onclick = function(){
+  var b = this, n = 10; b.disabled = true;
+  if (canSpeak) try { speechSynthesis.cancel(); } catch (e) {}
+  $('#count').textContent = n; speak('ten');
+  var t = setInterval(function(){
+    n--;
+    if (n === 3) $('#pad').classList.add('lit');
+    if (n > 0){ $('#count').textContent = n; speak(nums[n]); }
+    else {
+      clearInterval(t); $('#count').textContent = 'LIFTOFF!'; $('#count').style.fontSize = '48px'; speak('Liftoff!');
+      $('#pad').classList.add('go');
+      $('#padSay').textContent = 'We have liftoff! The trip to the Moon takes about three days.';
+      stage(0, 'launch');
+    }
+  }, 800);
+};
+
+// 宇航员
+var crew = [
+  ['armstrong', 'Neil Armstrong', '#0b3d91'],
+  ['aldrin', 'Buzz Aldrin', '#fc3d21'],
+  ['collins', 'Michael Collins', '#d9a521']
+];
+function astro(c){ return '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="' + c + '" opacity=".18"/><circle cx="50" cy="42" r="26" fill="#f4f4f4" stroke="#222" stroke-width="3"/><path d="M30 40 a20 16 0 0 1 40 0 v6 a20 14 0 0 1 -40 0z" fill="' + c + '"/><path d="M36 38 q8 -8 16 -4" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/><path d="M18 100 q4 -30 32 -32 q28 2 32 32z" fill="#f4f4f4" stroke="#222" stroke-width="3"/><rect x="42" y="78" width="16" height="10" fill="' + c + '"/></svg>'; }
+crew.forEach(function(c){
+  var b = document.createElement('button'); b.className = 'astro'; b.dataset.a = c[0];
+  b.innerHTML = astro(c[2]) + '<b>' + c[1] + '</b><span class="role">?</span>';
+  $('#crew').appendChild(b);
+});
+var roleSel = null, roleDone = 0;
+$$('#roles button').forEach(function(r){ r.onclick = function(){ $$('#roles button').forEach(function(x){ x.classList.remove('sel'); }); r.classList.add('sel'); roleSel = r; }; });
+$$('.astro').forEach(function(a){
+  a.onclick = function(){
+    if (!roleSel){ $('#crewSay').textContent = 'Choose a job first. 先选一个任务。'; return; }
+    if (roleSel.dataset.a === a.dataset.a){
+      $('.role', a).textContent = roleSel.textContent; a.classList.add('ok'); roleSel.classList.add('used'); roleSel = null; roleDone++;
+      $('#crewSay').textContent = roleDone === 3 ? '✔ Crew ready! Armstrong and Aldrin flew down in the lunar module “Eagle”. Collins waited above in “Columbia”.' : 'Correct!';
+      if (roleDone === 3) stage(1, 'crew');
+    } else $('#crewSay').textContent = 'Not quite. Think: who never stepped on the Moon?';
+  };
+});
+
+// 任务日志（打字机效果）
+var logs = [
+  ['DAY 1 · 16 JUL', '09:32 (Florida time): Liftoff! The Saturn V rocket is as tall as a 36-storey building.\nAll systems go. Next stop: the Moon.'],
+  ['DAY 4 · 20 JUL', 'The lunar module "Eagle" lands on the Sea of Tranquility.\nArmstrong: "Houston, Tranquility Base here. The Eagle has landed."'],
+  ['DAY 5 · 21 JUL (UTC)', 'Armstrong steps onto the Moon. Aldrin follows.\nThey walk for about two and a half hours, take photos\nand collect about 21 kg of Moon rocks.'],
+  ['DAY 5 · PLAQUE', 'They leave a flag and a plaque. It says:\n"Here men from the planet Earth first set foot upon the Moon,\nJuly 1969 A.D. We came in peace for all mankind."'],
+  ['DAY 9 · 24 JUL', 'Splashdown in the Pacific Ocean. The crew is safe.\nMission complete. Welcome home!']
+];
+var typing, logSeen = {};
+logs.forEach(function(l, i){
+  var b = document.createElement('button'); b.textContent = l[0];
+  b.onclick = function(){
+    $$('#wpbtns button').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on', 'seen');
+    clearInterval(typing); var txt = '> ' + l[0] + '\n' + l[1], k = 0, term = $('#term');
+    typing = setInterval(function(){ k += 2; term.innerHTML = esc(txt.slice(0, k)) + '<span class="cur"></span>'; if (k >= txt.length) clearInterval(typing); }, 18);
+    logSeen[i] = 1; if (Object.keys(logSeen).length === logs.length) stage(2, 'mission-log');
+  };
+  $('#wpbtns').appendChild(b);
+});
+
+// 名言填空
+var need = ['step', 'leap'], filled = 0, missed = false;
+$$('#bank button').forEach(function(b){
+  b.onclick = function(){
+    if (filled >= 2 || b.classList.contains('used')) return;
+    if (b.textContent === need[filled]){ $('#s' + (filled + 1)).textContent = b.textContent; b.classList.add('used'); filled++; $('#quoteSay').textContent = '';
+      if (filled === 2){ $('#explain').classList.add('on'); $('#quoteSay').textContent = '✔ Perfect!'; stage(3, 'quote'); } }
+    else { missed = true; $('#quoteSay').textContent = 'Hmm. Which word means a small movement of the foot? Then, a very big jump?'; }
+  };
+});
+
+// 重力
+function grav(){
+  var kg = +$('#kg').value; $('#kgV').textContent = kg; $('#moonKg').textContent = (kg / 6).toFixed(1); $('#jumpCm').textContent = 300;
+}
+$('#kg').addEventListener('input', grav); grav();
+$('#jumpBtn').onclick = function(){
+  var j = $('#jumper'); j.style.transform = 'translateY(-110px)';
+  setTimeout(function(){ j.style.transition = 'transform 1.4s cubic-bezier(.5,0,.8,.6)'; j.style.transform = ''; setTimeout(function(){ j.style.transition = ''; }, 1500); }, 600);
+  $('#gravSay').textContent = 'Boing! With less gravity you feel ' + $('#moonKg').textContent + ' kg — about six times lighter — and you can jump about six times higher. (But your spacesuit is very heavy!)';
+  stage(4, 'gravity');
+};
+
+// 词汇
+var vocab = [['👩‍🚀', 'astronaut', '宇航员'], ['🚀', 'rocket', '火箭'], ['🛰️', 'orbit', '轨道；绕……运行'], ['🌍', 'gravity', '重力；引力'], ['🔥', 'launch', '发射'], ['🌕', 'crater', '陨石坑'], ['🧑‍🚀', 'spacesuit', '宇航服'], ['🌊', 'splashdown', '（飞船）溅落']];
+var vSeen = {};
+vocab.forEach(function(v, i){
+  var b = document.createElement('button'); b.className = 'vw';
+  b.innerHTML = '<span>' + v[0] + '</span><b>' + v[1] + '</b><i>' + v[2] + '</i>';
+  b.onclick = function(){ b.classList.toggle('open'); vSeen[i] = 1; if (Object.keys(vSeen).length === vocab.length) ED.done('space-words'); };
+  $('#vocab').appendChild(b);
+});
+
+// 我的日志
+function myLog(){
+  var a = $('#l1').value.trim(), b = $('#l2').value.trim(), c = $('#l3').value.trim(), out = [];
+  if (a) out.push('Today I ' + a + '.'); if (b) out.push('I can see ' + b + '.'); if (c) out.push('I feel ' + c + '.');
+  $('#myLog').innerHTML = out.length ? esc('> MISSION LOG · DAY 1 ON THE MOON\n' + out.join('\n')) + '<span class="cur"></span>' : '&gt; WAITING FOR INPUT<span class="cur"></span>';
+  if (out.length === 3) ED.done('express');
+}
+['#l1', '#l2', '#l3'].forEach(function(s){ $(s).addEventListener('input', myLog); });
+</script>
+</body>
+</html>

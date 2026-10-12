@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Helen Keller · Interactive</title>
+<!-- 风格实验 10：安静的长篇叙事。单栏、大留白、文学衬线；用“黑暗中摸索”“掌心拼写”“盲文”三个体验活动代替花哨装饰。滚动时内容淡入。 -->
+<style>
+:root{--bg:#f7f3ea;--card:#fffdf8;--ink:#23312d;--muted:#6b7a74;--line:#e2dccd;--accent:#2f6f62;--accent-soft:#dcebe6;--warm:#c98b3a;--water:#4a90c2;--dark:#121614;--ok:#2f7d4f;--bad:#b4442c}
+html.dark{--bg:#131715;--card:#1b211e;--ink:#e9e4d6;--muted:#9eaaa4;--line:#2d3632;--accent:#7cc4b2;--accent-soft:#1f322d;--warm:#e3b062;--water:#7bb8e3;--dark:#050706;--ok:#7bd49c;--bad:#ff9a80}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.85 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+main{max-width:720px;margin:0 auto;padding:30px 18px 60px}
+.zh{font:14.5px/1.75 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{font-weight:400;margin:0;line-height:1.15}
+button{font:600 15px/1.2 system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+.kicker{font:600 12px/1 system-ui,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:var(--accent)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
+.reveal.in{opacity:1;transform:none}
+/* 开篇 */
+.open{text-align:center;padding:30px 0 10px}
+.open h1{font-size:clamp(46px,10vw,86px);letter-spacing:-.01em;margin:16px 0 6px}
+.open .dates{font:italic 18px Georgia,serif;color:var(--muted)}
+.portrait{display:block;width:180px;margin:24px auto 10px}
+.lead{font-size:23px;line-height:1.6;text-align:center;margin:20px auto 10px;max-width:600px}
+.lead em{color:var(--accent);font-style:italic}
+.choice{display:grid;gap:10px;margin:18px 0}
+.choice button{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font:400 17px/1.5 "Palatino Linotype",Georgia,serif}
+.choice button.on{border-color:var(--accent);background:var(--accent-soft)}
+.soft{font:15px/1.7 system-ui,sans-serif;color:var(--accent);min-height:26px}
+hr.orn{border:0;text-align:center;margin:56px 0 40px;color:var(--warm)}
+hr.orn::before{content:"· · ✦ · ·";letter-spacing:.5em;font-size:16px}
+.chapter h2{font-size:clamp(32px,6vw,48px);margin:10px 0 18px}
+.chapter p{margin:0 0 18px}
+.drop::first-letter{float:left;font-size:72px;line-height:.9;padding:6px 10px 0 0;color:var(--accent)}
+/* 黑暗体验 */
+.darkbox{position:relative;height:300px;border-radius:18px;overflow:hidden;background:#2a2620;cursor:none;touch-action:none;user-select:none;-webkit-user-select:none;margin:18px 0 8px}
+.darkbox .room{position:absolute;inset:0}
+.darkbox .obj{position:absolute;font-size:44px;line-height:1;transform:translate(-50%,-50%)}
+.darkbox .mask{position:absolute;inset:0;background:radial-gradient(circle 46px at var(--x,-100px) var(--y,-100px),transparent 0 70%,#000 100%);pointer-events:none}
+.darkbox .hint{position:absolute;left:0;right:0;bottom:12px;text-align:center;color:#8a8a8a;font:14px system-ui,sans-serif;pointer-events:none}
+.found{display:flex;gap:8px;flex-wrap:wrap;font:14px system-ui,sans-serif}
+.found span{border:1px solid var(--line);border-radius:99px;padding:4px 12px;color:var(--muted)}
+.found span.ok{border-color:var(--ok);color:var(--ok);background:var(--accent-soft)}
+/* 掌心拼写 */
+.spell{display:grid;grid-template-columns:220px 1fr;gap:22px;align-items:center;margin:18px 0}
+.hand{width:100%}
+.hand .palmL{font:700 40px Georgia,serif;fill:var(--accent);opacity:0;transition:opacity .2s}
+.hand .palmL.show{opacity:1}
+.pump{width:100%}
+.pump .drop{opacity:0}
+.pump.flow .stream{animation:flow .5s linear infinite}
+.pump .stream{stroke:var(--water);stroke-width:10;stroke-dasharray:10 8;stroke-linecap:round;opacity:0;transition:opacity .4s}
+.pump.flow .stream{opacity:1}
+@keyframes flow{to{stroke-dashoffset:-36}}
+.keys{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.keys button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--card);font:700 18px Georgia,serif}
+.keys button.used{background:var(--accent);color:#fff;border-color:var(--accent)}
+.typed{font:700 32px Georgia,serif;letter-spacing:.3em;min-height:46px;color:var(--accent)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.pill{background:var(--card);border:1px solid var(--accent);color:var(--accent);border-radius:99px;padding:9px 16px}
+/* 时间轴 */
+.tl{position:relative;margin:24px 0;padding-left:28px;border-left:2px solid var(--line)}
+.tl .ev{position:relative;margin:0 0 26px}
+.tl .ev::before{content:"";position:absolute;left:-36px;top:10px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.tl .yr{font:600 14px system-ui,sans-serif;letter-spacing:.14em;color:var(--warm)}
+.tl .ev p{margin:2px 0 0;font-size:18px}
+/* 引言 */
+.quote{font-size:clamp(24px,4.4vw,32px);line-height:1.45;text-align:center;font-style:italic;margin:30px 0 8px;padding:0 6px}
+.quote::before{content:"“";display:block;font-size:80px;line-height:.5;color:var(--warm);margin-bottom:14px;font-style:normal}
+.cite{text-align:center;font:14px system-ui,sans-serif;color:var(--muted)}
+.mcq{display:grid;gap:8px;margin-top:16px}
+.mcq button{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font:400 16px/1.5 Georgia,serif}
+.mcq button.right{border-color:var(--ok);background:var(--accent-soft)}
+.mcq button.wrong{border-color:var(--bad);opacity:.65}
+/* 盲文 */
+.bwrap{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:18px 0}
+.cells{display:flex;flex-wrap:wrap;gap:10px;min-height:76px;margin:10px 0}
+.cell{display:grid;grid-template-columns:repeat(2,14px);grid-template-rows:repeat(3,14px);gap:5px;padding:7px;border-radius:8px;background:var(--accent-soft);position:relative}
+.cell i{width:14px;height:14px;border-radius:50%;background:var(--line)}
+.cell i.on{background:var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.cell small{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font:600 11px system-ui,sans-serif;color:var(--muted)}
+.cell.space{background:none}
+.bwrap input{width:100%;font:20px Georgia,serif;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);margin-top:8px}
+.chart{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:4px;margin-top:22px}
+.chart .cell{grid-template-columns:repeat(2,8px);grid-template-rows:repeat(3,8px);gap:3px;padding:5px;margin-bottom:20px}
+.chart .cell i{width:8px;height:8px}
+.chart{min-width:0}.chart div.k{min-width:0;align-items:center}
+.chart div.k{display:flex;flex-direction:column;align-items:flex-start}
+.decode{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.decode input{width:160px;margin:0}
+/* 表达 */
+.days{display:grid;gap:10px}
+.days label{font:600 14px system-ui,sans-serif;color:var(--muted)}
+.days input{width:100%;font:18px Georgia,serif;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+.letter{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:26px 24px;font:italic 20px/1.8 Georgia,serif;min-height:180px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.letter .sig{text-align:right;margin-top:10px}
+.source{font:12.5px/1.7 system-ui,sans-serif;color:var(--muted);margin-top:50px;border-top:1px solid var(--line);padding-top:14px}
+@media(max-width:620px){body{font-size:17.5px}.spell{grid-template-columns:1fr}.hand{max-width:220px;margin:0 auto;display:block}.chart{grid-template-columns:repeat(7,minmax(0,1fr))}.lead{font-size:20px}.darkbox{height:260px}.letter{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+
+<header class="open">
+  <span class="kicker">People · A2 · 25 min</span>
+  <!-- 原创线描，不是照片 -->
+  <svg class="portrait" viewBox="0 0 180 200" role="img" aria-label="Line drawing of a young woman">
+    <circle cx="90" cy="96" r="84" fill="var(--accent-soft)"/>
+    <g fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round">
+      <path d="M58 92 q-4 -46 34 -50 q38 2 34 50"/>
+      <path d="M62 88 q2 44 28 52 q26 -8 28 -52"/>
+      <path d="M58 92 q-10 10 -4 26 M126 92 q10 10 4 26"/>
+      <path d="M74 98 q6 4 12 0 M96 98 q6 4 12 0"/>
+      <path d="M90 104 q-3 12 2 16"/>
+      <path d="M80 126 q10 6 20 0"/>
+      <path d="M62 60 q28 -24 60 4"/>
+      <path d="M72 140 q-34 8 -42 40 M108 140 q34 8 42 40"/>
+      <path d="M78 150 q12 8 24 0"/>
+    </g>
+  </svg>
+  <h1>Helen Keller</h1>
+  <p class="dates">1880 – 1968</p>
+  <p class="lead">She could not see. She could not hear.<br>So how did she learn the word <em>“water”</em>?</p>
+  <p class="zh">她看不见，也听不见。她是怎样学会“water”这个词的？先想一想：如果是你，你会怎么教她？</p>
+  <div class="choice" id="poll">
+    <button data-k="draw">✏️ Draw a picture of water for her.</button>
+    <button data-k="touch">✋ Let her touch water and spell the word into her hand.</button>
+    <button data-k="loud">📢 Say the word very loudly.</button>
+  </div>
+  <p class="soft" id="pollSay" aria-live="polite"></p>
+</header>
+
+<hr class="orn">
+
+<section class="chapter reveal">
+  <span class="kicker">Chapter one</span>
+  <h2>A world without light or sound</h2>
+  <p class="drop">Helen Keller was born in 1880 in Alabama, in the south of the United States. When she was just nineteen months old, she became very ill. She lived, but the illness took away her sight and her hearing.</p>
+  <p>As she grew up, Helen could not understand the world around her. She often felt angry and alone. She had no words to tell people what she wanted.</p>
+  <p class="zh">海伦一岁半时因病失明失聪。她无法与人交流，常常愤怒又孤独。</p>
+  <p><b>Try it.</b> The box below is dark. Move your finger or mouse slowly to “feel” around. Can you find three things?</p>
+  <div class="darkbox" id="dark" aria-label="A dark room. Move to explore.">
+    <div class="room">
+      <span class="obj" data-o="doll" style="left:18%;top:32%">🪆</span>
+      <span class="obj" data-o="cup" style="left:72%;top:66%">🥛</span>
+      <span class="obj" data-o="cake" style="left:84%;top:22%">🍰</span>
+      <span class="obj" style="left:44%;top:72%;opacity:.5">🪑</span>
+    </div>
+    <div class="mask"></div>
+    <div class="hint" id="darkHint">Move slowly…</div>
+  </div>
+  <div class="found" id="found"><span data-o="doll">a doll</span><span data-o="cup">a cup of milk</span><span data-o="cake">a piece of cake</span></div>
+  <p class="zh" style="margin-top:8px">这只是一个小小的体验：只靠一点点“触摸”去认识世界，有多难？</p>
+</section>
+
+<hr class="orn">
+
+<section class="chapter reveal">
+  <span class="kicker">Chapter two</span>
+  <h2>The teacher and the water pump</h2>
+  <p class="drop">In 1887, a young teacher named Anne Sullivan came to live with the Kellers. Anne spelled words into Helen's hand with her fingers: d-o-l-l for “doll”, c-a-k-e for “cake”. Helen copied the shapes, but she did not understand that they were <i>words</i>.</p>
+  <p>Then one day, Anne took Helen to the water pump. Cool water ran over one of Helen's hands. Into the other hand, Anne spelled: <b>w-a-t-e-r</b>. Suddenly, Helen understood. That “wonderful cool something” had a name! Everything had a name! That day she learned many new words.</p>
+  <p class="zh">安妮·莎莉文老师把字母一个个“写”进海伦的手心。在水泵旁，海伦第一次明白：每样东西都有名字。</p>
+  <p><b>Be Anne.</b> Spell W-A-T-E-R into Helen's hand. Tap the letters in order.</p>
+  <div class="spell">
+    <svg class="hand" viewBox="0 0 220 240" role="img" aria-label="An open hand">
+      <path d="M60 230 q-26 -60 -20 -110 l2 -60 q2 -14 14 -12 q10 2 10 14 l2 50 l4 -78 q2 -14 14 -14 q12 0 12 14 l0 76 l6 -82 q2 -14 14 -14 q12 2 12 16 l-2 82 l10 -64 q4 -12 14 -10 q12 4 10 16 l-12 100 q-4 40 -30 76z" fill="var(--accent-soft)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round"/>
+      <text class="palmL" id="palm" x="104" y="170" text-anchor="middle"></text>
+    </svg>
+    <div>
+      <svg class="pump" id="pump" viewBox="0 0 300 150" aria-hidden="true">
+        <rect x="40" y="40" width="40" height="100" rx="6" fill="var(--muted)" opacity=".5"/>
+        <path d="M80 56 h70 v16 h-56" fill="none" stroke="var(--muted)" stroke-width="10" opacity=".6"/>
+        <path d="M60 40 l-30 -28" stroke="var(--muted)" stroke-width="8" stroke-linecap="round" opacity=".6"/>
+        <path class="stream" d="M146 76 V140"/>
+        <rect x="120" y="136" width="70" height="10" rx="4" fill="var(--water)" opacity=".4"/>
+      </svg>
+      <div class="typed" id="typed" aria-live="polite"></div>
+      <div class="keys" id="keys"></div>
+      <p class="soft" id="spellSay" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<hr class="orn">
+
+<section class="chapter reveal">
+  <span class="kicker">Chapter three</span>
+  <h2>A life of firsts</h2>
+  <div class="tl">
+    <div class="ev"><span class="yr">1880</span><p>Born in Tuscumbia, Alabama, USA.</p></div>
+    <div class="ev"><span class="yr">1882</span><p>An illness leaves her blind and deaf. <span class="zh">因病失明失聪。</span></p></div>
+    <div class="ev"><span class="yr">1887</span><p>Anne Sullivan arrives. “W-a-t-e-r” at the pump. <span class="zh">莎莉文老师到来。</span></p></div>
+    <div class="ev"><span class="yr">1890</span><p>Starts to learn to speak, by feeling a teacher's lips and throat. <span class="zh">通过触摸嘴唇和喉咙学说话。</span></p></div>
+    <div class="ev"><span class="yr">1903</span><p>Publishes <i>The Story of My Life</i>. <span class="zh">出版自传《我的生活》。</span></p></div>
+    <div class="ev"><span class="yr">1904</span><p>Graduates from Radcliffe College — the first deaf-blind person to earn a university degree (Bachelor of Arts). <span class="zh">第一位获得学士学位的盲聋人。</span></p></div>
+    <div class="ev"><span class="yr">1933</span><p>Writes the essay <i>Three Days to See</i> — known in China as 《假如给我三天光明》.</p></div>
+    <div class="ev"><span class="yr">1937</span><p>Visits Japan, and later brings home an Akita dog — said to be the first Akita in the USA! 🐕</p></div>
+    <div class="ev"><span class="yr">1968</span><p>Dies at 87, after a lifetime of helping blind and deaf people around the world.</p></div>
+  </div>
+</section>
+
+<hr class="orn">
+
+<section class="chapter reveal">
+  <span class="kicker">Chapter four</span>
+  <h2>Reading with fingers</h2>
+  <p>Helen read books in <b>Braille</b>: small raised dots that you feel with your fingers. Each letter is a “cell” of six dots. Type your name below and see it in Braille.</p>
+  <p class="zh">盲文：每个字母由六个点位中的凸点组成。输入你的英文名。</p>
+  <div class="bwrap">
+    <label for="bname" class="zh">Your English name</label>
+    <input id="bname" maxlength="16" placeholder="Helen" autocomplete="off">
+    <div class="cells" id="bout"></div>
+  </div>
+  <div class="bwrap">
+    <p style="margin:0"><b>Decode it!</b> What word is this? Use the chart.</p>
+    <div class="cells" id="secret"></div>
+    <div class="decode"><input id="guess" maxlength="10" placeholder="?" autocomplete="off" style="font:20px Georgia,serif;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)"><button class="pill" id="checkB">Check</button><span class="soft" id="bSay" aria-live="polite"></span></div>
+    <div class="chart" id="chart" aria-label="Braille alphabet chart"></div>
+  </div>
+</section>
+
+<hr class="orn">
+
+<section class="chapter reveal">
+  <span class="kicker">Chapter five</span>
+  <h2>Felt with the heart</h2>
+  <p class="quote">The best and most beautiful things in the world cannot be seen or even touched — they must be felt with the heart.</p>
+  <p class="cite">— words often linked to Helen Keller, from a letter she wrote as a girl</p>
+  <p style="margin-top:24px"><b>Which of these is something you “feel with the heart”?</b></p>
+  <div class="mcq" id="mcq">
+    <button data-ok="0">A beautiful flower</button>
+    <button data-ok="1">Love and friendship</button>
+    <button data-ok="0">A soft blanket</button>
+  </div>
+  <p class="soft" id="mcqSay" aria-live="polite"></p>
+</section>
+
+<hr class="orn">
+
+<section class="chapter reveal">
+  <span class="kicker">Your turn</span>
+  <h2>Three days to see</h2>
+  <p>In her essay, Helen imagined having just three days of sight. On the first day, she wanted to see the faces of the people she loved. What would <i>you</i> want to look at?</p>
+  <p class="zh">如果只有三天能看见，你想看什么？每天写一句。</p>
+  <div class="days">
+    <label for="d1">On the first day, I would like to see…</label><input id="d1" maxlength="80" placeholder="my family's faces">
+    <label for="d2">On the second day, I would like to see…</label><input id="d2" maxlength="80" placeholder="the sunrise over the sea">
+    <label for="d3">On the third day, I would like to see…</label><input id="d3" maxlength="80" placeholder="my friends playing football">
+  </div>
+  <div class="letter" id="letter">Dear Helen,<br><span id="lbody">…</span><div class="sig">— your friend</div></div>
+</section>
+
+<p class="source">Original teaching text based on Helen Keller's autobiography <i>The Story of My Life</i> (1903, public domain), the American Foundation for the Blind and the Perkins School for the Blind. The portrait is an original line drawing, not a photograph. Braille shown is uncontracted English Braille (letters a–z). 教师可上传授权照片（如 <code>keller-photo</code>）并在此注明来源。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s){ return s.replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+// 滚动淡入（不支持时直接显示）
+if ('IntersectionObserver' in window){
+  var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .08 });
+  $$('.reveal').forEach(function(el){ io.observe(el); });
+  setTimeout(function(){ $$('.reveal').forEach(function(el){ el.classList.add('in'); }); }, 4000);
+} else $$('.reveal').forEach(function(el){ el.classList.add('in'); });
+
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    $$('#poll button').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
+    $('#pollSay').textContent = b.dataset.k === 'touch' ? 'Yes — that is exactly what her teacher did. Read on to find out how.' : 'Helen couldn\'t see pictures or hear sounds. Her teacher found another way — read on!';
+    ED.done('big-question');
+  };
+});
+
+// 黑暗体验
+var dark = $('#dark'), foundSet = {};
+function explore(e){
+  var r = dark.getBoundingClientRect(), p = e.touches ? e.touches[0] : e, x = p.clientX - r.left, y = p.clientY - r.top;
+  dark.style.setProperty('--x', x + 'px'); dark.style.setProperty('--y', y + 'px');
+  $('#darkHint').style.opacity = 0;
+  $$('.obj[data-o]', dark).forEach(function(o){
+    var ox = o.offsetLeft, oy = o.offsetTop;
+    if (Math.hypot(ox - x, oy - y) < 34 && !foundSet[o.dataset.o]){
+      foundSet[o.dataset.o] = 1; $('#found [data-o="' + o.dataset.o + '"]').classList.add('ok');
+      if (Object.keys(foundSet).length === 3){ $('#darkHint').textContent = 'You found all three — but it was slow and hard, wasn\'t it?'; $('#darkHint').style.opacity = 1; $('#darkHint').style.color = '#ddd'; ED.done('dark-room'); }
+    }
+  });
+  if (e.cancelable && e.touches) e.preventDefault();
+}
+dark.addEventListener('mousemove', explore);
+dark.addEventListener('touchstart', explore, { passive: false });
+dark.addEventListener('touchmove', explore, { passive: false });
+
+// 掌心拼写
+var target = 'WATER', pos = 0, letters = 'TEWRAOL'.split('');
+letters.forEach(function(L){
+  var b = document.createElement('button'); b.textContent = L;
+  b.onclick = function(){
+    if (pos >= target.length) return;
+    var palm = $('#palm');
+    palm.textContent = L; palm.classList.remove('show'); void palm.getBBox(); palm.classList.add('show');
+    setTimeout(function(){ palm.classList.remove('show'); }, 600);
+    if (L === target[pos]){
+      pos++; $('#typed').textContent = target.slice(0, pos).toLowerCase().split('').join('-');
+      if (pos === target.length){ $('#pump').classList.add('flow'); $('#spellSay').textContent = '💧 “Water!” Helen understood: everything has a name.'; ED.done('finger-spelling'); }
+      else $('#spellSay').textContent = '';
+    } else $('#spellSay').textContent = 'Helen feels “' + L + '”… but that isn\'t the next letter of “water”.';
+  };
+  $('#keys').appendChild(b);
+});
+
+// 盲文
+var BR = { a: '1', b: '12', c: '14', d: '145', e: '15', f: '124', g: '1245', h: '125', i: '24', j: '245', k: '13', l: '123', m: '134', n: '1345', o: '135', p: '1234', q: '12345', r: '1235', s: '234', t: '2345', u: '136', v: '1236', w: '2456', x: '1346', y: '13456', z: '1356' };
+// 点位排列：左列 1 2 3，右列 4 5 6 → 网格顺序 1 4 / 2 5 / 3 6
+function cell(ch, label){
+  var d = BR[ch];
+  if (!d) return '<span class="cell space"></span>';
+  return '<span class="cell" aria-label="' + ch + '">' + [1, 4, 2, 5, 3, 6].map(function(n){ return '<i class="' + (d.indexOf(n) >= 0 ? 'on' : '') + '"></i>'; }).join('') + (label ? '<small>' + ch + '</small>' : '') + '</span>';
+}
+$('#bname').addEventListener('input', function(){
+  var t = this.value.toLowerCase().replace(/[^a-z ]/g, '');
+  $('#bout').innerHTML = t.split('').map(function(c){ return cell(c, true); }).join('');
+  if (t.replace(/ /g, '').length >= 3) ED.done('braille-name');
+});
+$('#chart').innerHTML = Object.keys(BR).map(function(c){ return '<div class="k">' + cell(c, true) + '</div>'; }).join('');
+var secret = 'hope';
+$('#secret').innerHTML = secret.split('').map(function(c){ return cell(c, false); }).join('');
+$('#checkB').onclick = function(){
+  if ($('#guess').value.trim().toLowerCase() === secret){ $('#bSay').textContent = '✔ “hope” — 希望。'; ED.done('braille-decode'); }
+  else $('#bSay').textContent = 'Not yet. Check each cell with the chart.';
+};
+
+// 名言
+$$('#mcq button').forEach(function(b){
+  b.onclick = function(){
+    if ($('#mcq').dataset.done) return;
+    if (b.dataset.ok === '1'){ $('#mcq').dataset.done = 1; b.classList.add('right'); $('#mcqSay').textContent = 'Yes. You can\'t see or touch love — but you can feel it.'; ED.done('quote'); }
+    else { b.classList.add('wrong'); $('#mcqSay').textContent = 'You can see or touch that one. Try again.'; }
+  };
+});
+
+// 三天光明
+function letter(){
+  var v = ['#d1', '#d2', '#d3'].map(function(s){ return $(s).value.trim(); }), ord = ['first', 'second', 'third'], out = [];
+  v.forEach(function(x, i){ if (x) out.push('On the ' + ord[i] + ' day, I would like to see ' + esc(x) + '.'); });
+  $('#lbody').innerHTML = out.length ? 'If I had three days to see: ' + out.join(' ') : '…';
+  if (out.length === 3) ED.done('express');
+}
+['#d1', '#d2', '#d3'].forEach(function(s){ $(s).addEventListener('input', letter); });
+</script>
+</body>
+</html>
