@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lion King · Interactive</title>
+<!-- 风格实验 03：绘本 / 翻页书。整页是一本书，一页一个任务，底部爪印做进度条。日落剪影插画。 -->
+<style>
+:root{--bg:#fbeedd;--page:#fffaf1;--ink:#3b2412;--muted:#7a5a40;--line:#ead6bb;--sun1:#ffb347;--sun2:#ff6f3c;--sun3:#c4384a;--sky4:#5b2a5e;--grass:#d9a441;--leaf:#5a7d2a;--ok:#2f7d32;--bad:#c0392b;--soft:#f6e3c6}
+html.dark{--bg:#1a120d;--page:#261a12;--ink:#f7e7d2;--muted:#c9a888;--line:#4a3424;--sun1:#ffb85c;--sun2:#ff7f50;--sun3:#e0566a;--sky4:#3a1840;--grass:#b5862f;--leaf:#8fb85a;--ok:#7bd88f;--bad:#ff8a7a;--soft:#3a2819}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.75 "Palatino Linotype","Book Antiqua",Palatino,Georgia,serif}
+main{max-width:920px;margin:0 auto;padding:18px 14px 36px}
+.zh{font:14.5px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{font-weight:700;margin:0;font-family:"Palatino Linotype",Palatino,Georgia,serif}
+button{font:600 15px/1.2 system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+/* 书 */
+.book{position:relative;background:var(--page);border-radius:10px 22px 22px 10px;box-shadow:0 2px 0 var(--line),0 18px 40px rgba(59,36,18,.18),inset 14px 0 18px -14px rgba(59,36,18,.35);overflow:hidden}
+.page{display:none;padding:0 0 22px;animation:turn .45s ease}
+.page.on{display:block}
+@keyframes turn{from{opacity:0;transform:translateX(24px) rotateY(-6deg)}to{opacity:1;transform:none}}
+.pad{padding:22px 26px 0}
+.chapter{font:700 12px/1 system-ui,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:var(--sun3)}
+.page h2{font-size:clamp(26px,4.4vw,38px);line-height:1.15;margin:8px 0 8px}
+.scene{display:block;width:100%;height:auto}
+/* 封面 */
+.cover-title{position:absolute;left:0;right:0;top:20px;text-align:center;color:#fff;text-shadow:0 2px 12px rgba(80,20,20,.5)}
+.cover-title .chapter{color:#ffe7b8}
+.cover-title h1{font-size:clamp(40px,9vw,84px);line-height:1;letter-spacing:.02em;margin-top:8px}
+.coverwrap{position:relative}
+.choices{display:grid;gap:10px;margin:14px 0}
+.choice{text-align:left;background:var(--soft);border:2px solid transparent;border-radius:14px;padding:12px 16px;font:500 16px/1.5 "Palatino Linotype",Georgia,serif}
+.choice.on{border-color:var(--sun2);background:var(--page)}
+.note{min-height:26px;font:15px/1.6 system-ui,"PingFang SC",sans-serif}
+/* 翻页控制 */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 4px 0}
+.nav>button{white-space:nowrap;background:var(--sun2);color:#fff;border:0;border-radius:99px;padding:12px 20px;font-size:16px;box-shadow:0 4px 0 var(--sun3)}
+.nav>button:disabled{opacity:.35;cursor:default}
+.paws{display:flex;gap:4px;flex-wrap:nowrap;justify-content:center}
+.paws button{flex:none;width:30px;line-height:1;background:none;border:0;padding:2px;font-size:20px;box-shadow:none;filter:grayscale(1);opacity:.4}
+.paws button.on{filter:none;opacity:1;transform:scale(1.2)}
+.paws button.done{filter:none;opacity:.8}
+/* 人物网 */
+.web{width:100%;display:block;max-width:640px;margin:0 auto}
+.web .edge{stroke:var(--line);stroke-width:3;transition:stroke .2s}
+.web .edge.hot{stroke:var(--sun2);stroke-width:5}
+.web .elabel{font:600 11px system-ui,sans-serif;fill:var(--muted);opacity:0;transition:opacity .2s}
+.web .elabel.hot{opacity:1;fill:var(--sun3)}
+.web .node{cursor:pointer}
+.web .node circle{stroke:var(--ink);stroke-width:2.5;transition:transform .2s}
+.web .node text{font:700 13px system-ui,sans-serif;fill:var(--ink);pointer-events:none}
+.web .node .emo{font-size:26px}
+.web .node.on circle{stroke:var(--sun2);stroke-width:5}
+.who{background:var(--soft);border-radius:16px;padding:14px 18px;min-height:110px;margin-top:10px}
+.who h3{font-size:24px}
+/* 排序 */
+.slots{list-style:none;margin:12px 0;padding:0;display:grid;gap:8px;counter-reset:s}
+.slots li{counter-increment:s;display:flex;gap:10px;align-items:center;min-height:50px;border:2px dashed var(--line);border-radius:12px;padding:8px 12px;font-size:16px}
+.slots li::before{content:counter(s);flex:none;width:30px;height:30px;border-radius:50%;background:var(--grass);color:#fff;display:grid;place-items:center;font:700 14px system-ui,sans-serif}
+.slots li.filled{border-style:solid;background:var(--soft)}
+.slots li.ok{border-color:var(--ok)}
+.slots li.no{border-color:var(--bad)}
+.pool{display:flex;flex-wrap:wrap;gap:8px}
+.ev{background:var(--page);border:2px solid var(--ink);border-radius:12px;padding:10px 12px;text-align:left;font:500 15px/1.4 "Palatino Linotype",Georgia,serif;max-width:100%}
+.ev.used{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.ghost{background:none;border:2px solid var(--ink);border-radius:99px;padding:9px 16px}
+/* 斯瓦希里语 */
+.sw{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.tile{perspective:700px;background:none;border:0;padding:0;height:150px}
+.tile .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.tile.flip .in{transform:rotateY(180deg)}
+.tile .f,.tile .b{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;text-align:center}
+.tile .f{background:linear-gradient(160deg,var(--sun1),var(--sun2));color:#fff}
+.tile .f b{font:700 22px/1.2 "Palatino Linotype",Georgia,serif}
+.tile .f span{font-size:30px}
+.tile .b{background:var(--page);border:3px solid var(--sun2);transform:rotateY(180deg)}
+.tile .b b{font:700 20px/1.2 "Palatino Linotype",Georgia,serif;color:var(--sun3)}
+.tile .b small{font:13px/1.5 system-ui,"PingFang SC",sans-serif;color:var(--muted)}
+/* 名言 */
+.quote{position:relative;margin:16px 0;padding:22px 22px 18px 60px;background:var(--soft);border-radius:18px;font-size:22px;line-height:1.5;font-style:italic}
+.quote::before{content:"“";position:absolute;left:14px;top:-6px;font-size:90px;color:var(--sun2);font-style:normal}
+.quote cite{display:block;font:600 13px system-ui,sans-serif;font-style:normal;color:var(--muted);margin-top:8px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.vote{border:3px solid var(--line);border-radius:16px;background:var(--page);padding:16px;text-align:left;font:500 16px/1.5 "Palatino Linotype",Georgia,serif}
+.vote b{display:block;font-size:22px;margin-bottom:4px}
+.vote.on{border-color:var(--sun2);background:var(--soft)}
+/* 电影 vs 真实 */
+.fvf{display:grid;gap:10px;margin-top:12px}
+.claim{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--page)}
+.claim .btns{display:flex;gap:6px}
+.claim .btns button{border:2px solid var(--ink);background:var(--page);border-radius:99px;padding:7px 12px;font-size:13px}
+.claim .why{grid-column:1/-1;display:none;font:14px/1.6 system-ui,"PingFang SC",sans-serif;color:var(--muted)}
+.claim.done .why{display:block}
+.claim.ok{border-color:var(--ok)}
+.claim.no{border-color:var(--bad)}
+/* 阅读 */
+.w{font:inherit;color:inherit;background:none;border:0;padding:0 1px;cursor:pointer;border-bottom:2px solid var(--sun1)}
+.gl{display:inline-block;font:600 13px/1.4 system-ui,"PingFang SC",sans-serif;color:var(--sun3);background:var(--soft);border-radius:6px;padding:1px 7px;margin:0 3px}
+/* 结尾 */
+.letter{background:repeating-linear-gradient(transparent 0 35px,var(--line) 35px 36px),var(--page);border:2px solid var(--line);border-radius:12px;padding:12px 18px;line-height:36px;font-size:19px;min-height:150px;margin-top:12px}
+.frames label{display:block;font:600 14px system-ui,sans-serif;color:var(--muted);margin:10px 0 4px}
+.frames select,.frames input{width:100%;font:17px "Palatino Linotype",Georgia,serif;padding:9px 12px;border:2px solid var(--line);border-radius:12px;background:var(--page);color:var(--ink)}
+.source{font:12.5px/1.6 system-ui,sans-serif;color:var(--muted);margin-top:22px}
+@media(max-width:700px){.nav{flex-wrap:wrap}.paws{order:-1;width:100%;gap:6px}.paws button{font-size:18px}.pad{padding:18px 16px 0}.sw{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}.claim{grid-template-columns:1fr}.quote{font-size:19px;padding-left:48px}.nav button{padding:10px 14px;font-size:14px}}
+</style>
+</head>
+<body>
+<main>
+<div class="book" id="book">
+
+  <!-- 第 0 页：封面 -->
+  <article class="page on" data-title="Cover">
+    <div class="coverwrap">
+      <svg class="scene" viewBox="0 0 900 420" role="img" aria-label="Illustration: sunset over the savanna with a lion on a rock">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b2a5e"/><stop offset=".45" stop-color="#c4384a"/><stop offset=".75" stop-color="#ff6f3c"/><stop offset="1" stop-color="#ffb347"/></linearGradient>
+          <radialGradient id="sunG"><stop offset="0" stop-color="#fff3c4"/><stop offset=".6" stop-color="#ffd27a"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect width="900" height="420" fill="url(#sky)"/>
+        <circle cx="450" cy="300" r="190" fill="url(#sunG)"/>
+        <circle cx="450" cy="300" r="120" fill="#ffd27a" opacity=".9"/>
+        <g fill="#3b1a1a" opacity=".55"><path d="M90 120 q10 -8 20 0 q10 -8 20 0" stroke="#3b1a1a" stroke-width="3" fill="none"/><path d="M150 90 q8 -6 16 0 q8 -6 16 0" stroke="#3b1a1a" stroke-width="3" fill="none"/><path d="M720 140 q9 -7 18 0 q9 -7 18 0" stroke="#3b1a1a" stroke-width="3" fill="none"/></g>
+        <g fill="#2a1410">
+          <path d="M0 340 Q200 300 420 336 T900 320 V420 H0Z"/>
+          <!-- 金合欢树 -->
+          <path d="M130 340 l8 -90 6 0 6 90z"/><path d="M60 250 q80 -40 170 0 q-30 14 -170 0z"/><path d="M100 238 q50 -26 100 0z"/>
+          <!-- 岩石 -->
+          <path d="M560 340 L600 250 L660 220 L780 205 L800 214 L700 238 L690 340Z"/>
+          <!-- 狮子剪影 -->
+          <ellipse cx="736" cy="196" rx="24" ry="13"/>
+          <path d="M716 200 q-14 -4 -18 -18 q2 10 12 12" stroke="#2a1410" stroke-width="3" fill="none"/>
+          <circle cx="760" cy="176" r="17"/><circle cx="752" cy="164" r="5"/><circle cx="768" cy="162" r="5"/>
+          <ellipse cx="777" cy="182" rx="9" ry="7"/>
+          <rect x="752" y="186" width="7" height="22" rx="3"/><rect x="762" y="188" width="7" height="20" rx="3"/>
+          <rect x="722" y="200" width="16" height="9" rx="4"/>
+          <!-- 长颈鹿 -->
+          <ellipse cx="300" cy="284" rx="32" ry="14"/>
+          <rect x="274" y="288" width="6" height="52"/><rect x="288" y="290" width="6" height="50"/><rect x="308" y="290" width="6" height="50"/><rect x="320" y="288" width="6" height="52"/>
+          <path d="M318 280 L340 206 L350 208 L332 284 Z"/>
+          <ellipse cx="354" cy="204" rx="14" ry="7" transform="rotate(20 354 204)"/>
+          <rect x="342" y="190" width="3" height="10"/><rect x="348" y="190" width="3" height="10"/>
+          <path d="M270 280 q-10 10 -8 26" stroke="#2a1410" stroke-width="3" fill="none"/>
+        </g>
+      </svg>
+      <div class="cover-title">
+        <span class="chapter">Films · A2 · 25 min</span>
+        <h1>The Lion King</h1>
+      </div>
+    </div>
+    <div class="pad">
+      <p><b>Big question:</b> Simba runs away from home. Years later, he goes back. <b>Why?</b></p>
+      <p class="zh">辛巴离开了家，多年后又回去了。你觉得是为什么？先猜一猜，读完整本书再回来看。</p>
+      <div class="choices" id="guess">
+        <button class="choice" data-k="a">🍖 Because he is hungry.</button>
+        <button class="choice" data-k="b">👑 Because his home needs him.</button>
+        <button class="choice" data-k="c">🏠 Because he misses his house.</button>
+      </div>
+      <p class="note" id="guessNote" aria-live="polite"></p>
+    </div>
+  </article>
+
+  <!-- 第 1 页：人物 -->
+  <article class="page" data-title="Characters">
+    <div class="pad">
+      <span class="chapter">Chapter 1 · Who's who</span>
+      <h2>A family on Pride Rock</h2>
+      <p class="zh">点击人物，看看他和谁有关系。至少认识 5 个人物。</p>
+      <svg class="web" viewBox="0 0 640 380" role="img" aria-label="Character map">
+        <g id="edges"></g><g id="nodes"></g>
+      </svg>
+      <div class="who" id="who" aria-live="polite"><h3>Tap a character</h3><p class="zh">提示：Scar 是 Mufasa 的弟弟。</p></div>
+    </div>
+  </article>
+
+  <!-- 第 2 页：情节 -->
+  <article class="page" data-title="Story">
+    <div class="pad">
+      <span class="chapter">Chapter 2 · The story</span>
+      <h2>Put the story in order</h2>
+      <p class="zh">按发生顺序点击下面的事件，它们会依次填入格子。点“Check”检查。</p>
+      <ol class="slots" id="slots"></ol>
+      <div class="pool" id="pool"></div>
+      <div class="row"><button class="ghost" id="check">✔ Check</button><button class="ghost" id="reset">↺ Start again</button></div>
+      <p class="note" id="orderNote" aria-live="polite"></p>
+    </div>
+  </article>
+
+  <!-- 第 3 页：Hakuna Matata -->
+  <article class="page" data-title="Swahili">
+    <div class="pad">
+      <span class="chapter">Chapter 3 · Words from Africa</span>
+      <h2>Hakuna Matata!</h2>
+      <p>Many names in the film come from <b>Swahili</b>, a language spoken in East Africa (for example in Kenya and Tanzania). Guess the meaning, then flip the card.</p>
+      <p class="zh">电影里很多名字来自东非的斯瓦希里语。先猜，再翻卡。</p>
+      <div class="sw" id="sw">
+        <button class="tile"><div class="in"><div class="f"><span>🦁</span><b>Simba</b></div><div class="b"><b>lion</b><small>辛巴 = 狮子</small></div></div></button>
+        <button class="tile"><div class="in"><div class="f"><span>🐒</span><b>Rafiki</b></div><div class="b"><b>friend</b><small>拉飞奇 = 朋友</small></div></div></button>
+        <button class="tile"><div class="in"><div class="f"><span>😌</span><b>Hakuna matata</b></div><div class="b"><b>no worries</b><small>别担心 / 没问题</small></div></div></button>
+        <button class="tile"><div class="in"><div class="f"><span>🌍</span><b>Jambo!</b></div><div class="b"><b>Hello!</b><small>你好！（斯瓦希里语常用问候）</small></div></div></button>
+      </div>
+      <p class="note" id="swNote" style="margin-top:12px"></p>
+    </div>
+  </article>
+
+  <!-- 第 4 页：名言 + 选择 -->
+  <article class="page" data-title="Choice">
+    <div class="pad">
+      <span class="chapter">Chapter 4 · The turning point</span>
+      <h2>Run from it, or learn from it?</h2>
+      <div class="quote">The past can hurt. But … you can either run from it, or learn from it.<cite>— Rafiki, The Lion King (1994). Short quote for teaching.</cite></div>
+      <p>For years, Simba <button class="w" data-zh="逃避">runs away from</button> his past. He lives an easy life with Timon and Pumbaa. Then Rafiki helps him <button class="w" data-zh="记起">remember</button> his father. Simba hears: <i>“Remember who you are.”</i> He understands that he has a <button class="w" data-zh="责任">responsibility</button> to his family and his home.</p>
+      <p class="zh">如果你是辛巴，你会怎么选？选一个，再说出理由（可以只说给老师听）。</p>
+      <div class="split" id="vote">
+        <button class="vote" data-k="run"><b>🏃 Run from it</b>Stay with my friends. Life is easy. No worries!</button>
+        <button class="vote" data-k="learn"><b>🦁 Learn from it</b>Go home and face Scar. My family needs me.</button>
+      </div>
+      <p class="note" id="voteNote" aria-live="polite"></p>
+    </div>
+  </article>
+
+  <!-- 第 5 页：电影 vs 真实 -->
+  <article class="page" data-title="Film or fact">
+    <div class="pad">
+      <span class="chapter">Chapter 5 · Film or real life?</span>
+      <h2>Is it true for real lions?</h2>
+      <p class="zh">电影是虚构的。判断每句话：只在电影里，还是真实的狮子也这样？</p>
+      <div class="fvf" id="fvf"></div>
+      <p class="note" id="fvfNote" aria-live="polite"></p>
+    </div>
+  </article>
+
+  <!-- 第 6 页：表达 -->
+  <article class="page" data-title="Your turn">
+    <div class="pad">
+      <span class="chapter">The end · Your turn</span>
+      <h2>Why does Simba go home?</h2>
+      <p class="zh">回到最开始的问题。用句架写 2–3 句话。</p>
+      <div class="frames">
+        <label for="e1">Simba goes home because…</label>
+        <select id="e1"><option value="">— choose —</option><option>his family and friends need him</option><option>he wants to stop Scar</option><option>he remembers who he is</option></select>
+        <label for="e2">At first, he… (what did he do?)</label>
+        <input id="e2" maxlength="80" placeholder="runs away and lives with Timon and Pumbaa">
+        <label for="e3">I think he is brave because…</label>
+        <input id="e3" maxlength="100" placeholder="he goes back even though he is afraid">
+      </div>
+      <div class="letter" id="letter">Your answer will appear here.</div>
+      <p class="source">About the film: <i>The Lion King</i> is an animated film made by Walt Disney Pictures in 1994. Songs by Elton John and Tim Rice; music by Hans Zimmer. The story is fiction. Illustrations on this page are original drawings, not film images. Lion facts: National Geographic. 教师可在此补充授权片段来源（如上传 <code>film-clip</code>）。</p>
+    </div>
+  </article>
+
+  <div class="nav pad" style="padding-top:0">
+    <button id="prev" disabled>← Back</button>
+    <div class="paws" id="paws"></div>
+    <button id="next">Next →</button>
+  </div>
+</div>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
+// 翻页
+var pages = $$('.page'), cur = 0;
+pages.forEach(function(p, i){
+  var b = document.createElement('button'); b.textContent = '🐾'; b.title = p.dataset.title; b.setAttribute('aria-label', 'Page ' + (i + 1) + ': ' + p.dataset.title);
+  b.onclick = function(){ go(i); }; $('#paws').appendChild(b);
+});
+function go(i, quiet){
+  pages[cur].classList.remove('on'); cur = i; pages[cur].classList.add('on');
+  $$('#paws button').forEach(function(b, j){ b.classList.toggle('on', j === cur); if (j < cur) b.classList.add('done'); });
+  $('#prev').disabled = cur === 0;
+  $('#next').textContent = cur === pages.length - 1 ? 'The end 🦁' : 'Next →';
+  if (!quiet && $('#book').getBoundingClientRect().top < 0) $('#book').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+$('#prev').onclick = function(){ if (cur > 0) go(cur - 1); };
+$('#next').onclick = function(){ if (cur < pages.length - 1) go(cur + 1); };
+go(0, true);
+
+// 封面猜测
+$$('#guess .choice').forEach(function(c){
+  c.onclick = function(){
+    $$('#guess .choice').forEach(function(x){ x.classList.remove('on'); }); c.classList.add('on');
+    $('#guessNote').textContent = 'Good guess! Keep it in mind — turn the pages to find out. 翻页找答案吧。';
+    ED.done('big-question');
+  };
+});
+
+// 人物关系网
+var chars = {
+  mufasa: [320, 70, '#e9a23b', '🦁', 'Mufasa', 'The king of the Pride Lands. Simba\'s father. Wise and strong.', '国王，辛巴的父亲。'],
+  sarabi: [480, 70, '#d9b77a', '🦁', 'Sarabi', 'The queen. Simba\'s mother.', '王后，辛巴的母亲。'],
+  scar:   [140, 70, '#7a5236', '😼', 'Scar', 'Mufasa\'s younger brother. He wants to be king — he is the villain (bad guy).', '刀疤：木法沙的弟弟，反派。'],
+  simba:  [320, 210, '#f2b84b', '🦁', 'Simba', 'The hero. A young lion who must learn to be king.', '主角，要学会成为国王。'],
+  nala:   [490, 220, '#e7c98f', '🦁', 'Nala', 'Simba\'s best friend from childhood. She finds Simba again.', '娜娜：辛巴儿时的好朋友。'],
+  timon:  [175, 300, '#c9a26b', '🐾', 'Timon', 'A funny meerkat. He teaches Simba "Hakuna Matata".', '丁满：一只狐獴。'],
+  pumbaa: [320, 310, '#9b6b4b', '🐗', 'Pumbaa', 'A kind warthog. Timon\'s best friend.', '彭彭：一只疣猪。'],
+  rafiki: [100, 210, '#8e6bb8', '🐒', 'Rafiki', 'A wise old mandrill (a kind of monkey). He helps Simba remember who he is.', '拉飞奇：智慧的山魈。']
+};
+var links = [
+  ['mufasa', 'simba', 'father'], ['sarabi', 'simba', 'mother'], ['mufasa', 'sarabi', 'husband & wife'], ['scar', 'mufasa', 'brothers'],
+  ['scar', 'simba', 'uncle'], ['nala', 'simba', 'best friends'], ['timon', 'simba', 'friends'], ['pumbaa', 'simba', 'friends'],
+  ['timon', 'pumbaa', 'best friends'], ['rafiki', 'simba', 'helper'], ['rafiki', 'mufasa', 'old friend']
+];
+var NS = 'http://www.w3.org/2000/svg';
+links.forEach(function(l){
+  var a = chars[l[0]], b = chars[l[1]];
+  var line = document.createElementNS(NS, 'line'); line.setAttribute('class', 'edge'); line.setAttribute('x1', a[0]); line.setAttribute('y1', a[1]); line.setAttribute('x2', b[0]); line.setAttribute('y2', b[1]);
+  line.dataset.a = l[0]; line.dataset.b = l[1]; $('#edges').appendChild(line);
+  var t = document.createElementNS(NS, 'text'); t.setAttribute('class', 'elabel'); t.setAttribute('x', (a[0] + b[0]) / 2 + 4); t.setAttribute('y', (a[1] + b[1]) / 2 - 4); t.textContent = l[2];
+  t.dataset.a = l[0]; t.dataset.b = l[1]; $('#edges').appendChild(t);
+});
+var met = {};
+Object.keys(chars).forEach(function(k){
+  var c = chars[k], g = document.createElementNS(NS, 'g');
+  g.setAttribute('class', 'node'); g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.setAttribute('aria-label', c[4]);
+  g.innerHTML = '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="30" fill="' + c[2] + '"/><text class="emo" x="' + c[0] + '" y="' + (c[1] + 9) + '" text-anchor="middle">' + c[3] + '</text><text x="' + c[0] + '" y="' + (c[1] + 48) + '" text-anchor="middle">' + c[4] + '</text>';
+  var pick = function(){
+    $$('.web .node').forEach(function(n){ n.classList.remove('on'); }); g.classList.add('on');
+    $$('.web .edge, .web .elabel').forEach(function(e){ e.classList.toggle('hot', e.dataset.a === k || e.dataset.b === k); });
+    $('#who').innerHTML = '<h3>' + c[3] + ' ' + c[4] + '</h3><p>' + c[5] + '</p><p class="zh">' + c[6] + '</p>';
+    met[k] = 1; if (Object.keys(met).length >= 5) ED.done('characters');
+  };
+  g.addEventListener('click', pick); g.addEventListener('keydown', function(e){ if (e.key === 'Enter') pick(); });
+  $('#nodes').appendChild(g);
+});
+
+// 情节排序
+var events = [
+  'Baby Simba is shown to the animals at Pride Rock.',
+  'Scar plans a trap. Mufasa dies in a stampede.',
+  'Scar tells Simba to run away and never come back.',
+  'Simba grows up with Timon and Pumbaa: "Hakuna Matata!"',
+  'Nala finds Simba and asks him to come home.',
+  'Simba goes back, faces Scar and becomes king.'
+];
+var order = [];
+function buildOrder(){
+  order = [];
+  $('#slots').innerHTML = events.map(function(){ return '<li></li>'; }).join('');
+  var shuffled = events.map(function(e, i){ return i; }).sort(function(){ return Math.random() - .5; });
+  if (shuffled.join() === '0,1,2,3,4,5') shuffled.reverse();
+  $('#pool').innerHTML = '';
+  shuffled.forEach(function(i){
+    var b = document.createElement('button'); b.className = 'ev'; b.textContent = events[i]; b.dataset.i = i;
+    b.onclick = function(){ var li = $$('#slots li')[order.length]; li.textContent = events[i]; li.classList.add('filled'); order.push(i); b.classList.add('used'); $('#orderNote').textContent = ''; };
+    $('#pool').appendChild(b);
+  });
+}
+buildOrder();
+$('#reset').onclick = buildOrder;
+$('#check').onclick = function(){
+  if (order.length < events.length){ $('#orderNote').textContent = 'Place all six events first. 先把六个事件都放进去。'; return; }
+  var right = 0;
+  $$('#slots li').forEach(function(li, j){ var ok = order[j] === j; li.classList.toggle('ok', ok); li.classList.toggle('no', !ok); if (ok) right++; });
+  if (right === events.length){ $('#orderNote').textContent = '🎉 Perfect! You know the story.'; ED.done('story-order'); }
+  else $('#orderNote').textContent = right + ' / 6 in the right place. Red ones need to move — press "Start again".';
+};
+
+// 翻卡
+var flipped = {};
+$$('#sw .tile').forEach(function(t, i){ t.onclick = function(){ t.classList.toggle('flip'); flipped[i] = 1; if (Object.keys(flipped).length === 4){ $('#swNote').textContent = 'Asante! (= Thank you in Swahili) 🙏'; ED.done('swahili'); } }; });
+
+// 选择
+$$('#vote .vote').forEach(function(v){
+  v.onclick = function(){
+    $$('#vote .vote').forEach(function(x){ x.classList.remove('on'); }); v.classList.add('on');
+    $('#voteNote').textContent = v.dataset.k === 'learn'
+      ? 'That is what Simba chooses. Now say why: "I would go home because…"'
+      : 'An honest answer! Many people want an easy life. Can you say why? "I would stay because…"';
+    ED.done('choice');
+  };
+});
+$$('.w').forEach(function(w){ w.onclick = function(){ var n = w.nextElementSibling; if (n && n.classList.contains('gl')){ n.remove(); return; } var g = document.createElement('span'); g.className = 'gl'; g.textContent = w.dataset.zh; w.after(g); }; });
+
+// 电影 vs 真实
+var claims = [
+  ['Lions live in groups called prides.', 'real', 'True! A pride is a family group of lions. 狮群叫 pride。'],
+  ['A meerkat and a warthog adopt a young lion.', 'film', 'Only in the film. In real life, lions may hunt warthogs! 现实中狮子会捕食疣猪。'],
+  ['In a pride, the lionesses (female lions) do most of the hunting.', 'real', 'True! The females usually hunt together. 主要由母狮捕猎。'],
+  ['Lions can sing and talk to other animals.', 'film', 'Of course not — but a real lion\'s roar can be heard from kilometres away. 吼声能传很远。'],
+  ['There is a king who rules all the animals.', 'film', 'Only in the film. Real animals don\'t have kings. 动物世界没有国王。']
+];
+var judged = 0;
+claims.forEach(function(c){
+  var d = document.createElement('div'); d.className = 'claim';
+  d.innerHTML = '<span>' + c[0] + '</span><span class="btns"><button data-v="film">🎬 Only in the film</button><button data-v="real">🌍 Real life</button></span><span class="why">' + c[2] + '</span>';
+  $$('button', d).forEach(function(b){
+    b.onclick = function(){
+      if (d.classList.contains('done')) return;
+      d.classList.add('done', b.dataset.v === c[1] ? 'ok' : 'no'); judged++;
+      if (judged === claims.length){ $('#fvfNote').textContent = 'Remember: a film can teach us real feelings, but not always real facts.'; ED.done('film-or-fact'); }
+    };
+  });
+  $('#fvf').appendChild(d);
+});
+
+// 表达
+function letter(){
+  var a = $('#e1').value, b = $('#e2').value.trim(), c = $('#e3').value.trim(), out = [];
+  if (a) out.push('Simba goes home because ' + a + '.');
+  if (b) out.push('At first, he ' + b + '.');
+  if (c) out.push('I think he is brave because ' + c + '.');
+  $('#letter').textContent = out.join(' ') || 'Your answer will appear here.';
+  if (out.length >= 2) ED.done('express');
+}
+['#e1', '#e2', '#e3'].forEach(function(s){ $(s).addEventListener('input', letter); $(s).addEventListener('change', letter); });
+</script>
+</body>
+</html>

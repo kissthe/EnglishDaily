@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Oscars · Interactive</title>
+<!-- 风格实验 04：颁奖典礼 / 装饰艺术（Art Deco）。黑金配色、聚光灯、红毯、拆信封动画。默认就是“夜场”风格，日间模式用香槟色。 -->
+<style>
+:root{--bg:#f6efe1;--stage:#1a1410;--card:#fffaf0;--ink:#1a1410;--muted:#6f6254;--gold:#b8892b;--gold2:#e6c068;--goldtxt:#8a6414;--red:#a3121f;--line:#e2d3b1;--ok:#2e7d32;--bad:#b71c1c;--soft:#f1e5c9}
+html.dark{--bg:#0b0907;--stage:#000;--card:#17120d;--ink:#f6ead2;--muted:#b5a58a;--gold:#d4a843;--gold2:#f3d27e;--goldtxt:#f3d27e;--red:#e04555;--line:#3a2e1d;--ok:#7bd88f;--bad:#ff8a80;--soft:#221a11}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 "Didot","Bodoni 72","Bodoni MT",Georgia,serif}
+main{max-width:1000px;margin:0 auto;padding:18px 14px 40px}
+.zh{font:14.5px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{margin:0;font-weight:700}
+button{font:600 15px/1.2 system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+.eyebrow{font:600 12px/1 system-ui,sans-serif;letter-spacing:.32em;text-transform:uppercase;color:var(--goldtxt)}
+.deco{display:flex;align-items:center;gap:12px;justify-content:center;margin:0 0 8px}
+.deco::before,.deco::after{content:"";height:1px;flex:1;max-width:160px;background:linear-gradient(90deg,transparent,var(--gold))}
+.deco::after{transform:scaleX(-1)}
+/* 舞台头图 */
+.stage{position:relative;overflow:hidden;background:var(--stage);color:#f6ead2;border-radius:6px;padding:32px 20px 0;text-align:center;border:2px solid var(--gold)}
+.stage::before{content:"";position:absolute;inset:8px;border:1px solid rgba(230,192,104,.45);pointer-events:none}
+.beam{position:absolute;top:-40px;width:200px;height:620px;background:linear-gradient(180deg,rgba(255,236,170,.35),rgba(255,236,170,0) 80%);clip-path:polygon(45% 0,55% 0,100% 100%,0 100%);transform-origin:top center;animation:sweep 6s ease-in-out infinite alternate}
+.beam.l{left:8%;transform:rotate(-18deg)}
+.beam.r{right:8%;transform:rotate(18deg);animation-delay:-3s}
+@keyframes sweep{from{opacity:.5}to{opacity:1}}
+.stage>*:not(.beam){position:relative}
+.stage .eyebrow{color:var(--gold2)}
+.stage h1{font-size:clamp(38px,8vw,80px);line-height:1;letter-spacing:.04em;margin:12px 0 6px;background:linear-gradient(180deg,#fff6d6,#e6c068 55%,#a8781c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stage p{margin:0 auto 8px;max-width:620px}
+.stage .zh{color:#cbbd9f}
+.statue{display:block;margin:6px auto 0;width:160px}
+.carpet{display:block;width:100%;height:auto;margin-top:-6px}
+.pollbox{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}
+.pollbox button{background:transparent;color:#f6ead2;border:1px solid var(--gold2);border-radius:99px;padding:10px 18px;font-family:Georgia,serif;font-size:16px}
+.pollbox button.on{background:linear-gradient(180deg,#f3d27e,#b8892b);color:#1a1410}
+.say{min-height:26px;font:15px/1.6 system-ui,sans-serif}
+/* 区块 */
+.act{margin:40px 0;text-align:center}
+.act h2{font-size:clamp(28px,5vw,42px);line-height:1.15;margin:6px 0}
+.act>.zh{max-width:620px;margin:0 auto 14px}
+.frame{text-align:left;background:var(--card);border:1px solid var(--gold);padding:24px;position:relative;margin-top:16px}
+.frame::before{content:"";position:absolute;inset:6px;border:1px solid var(--line);pointer-events:none}
+/* 事实条 */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--gold);background:var(--card);margin-top:16px}
+.fact{padding:18px 12px;text-align:center;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+.fact b{display:block;font-size:34px;line-height:1.1;color:var(--goldtxt)}
+.fact span{font:13px/1.5 system-ui,sans-serif;color:var(--muted)}
+/* 流程 */
+.road{list-style:none;padding:0;margin:0;display:grid;gap:10px;position:relative}
+.step{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);padding:12px 14px;text-align:left;width:100%;font-family:Georgia,serif;font-size:16px;font-weight:400}
+.step .n{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--gold);font:700 17px Georgia,serif;color:var(--goldtxt)}
+.step.lit{border-color:var(--gold);background:linear-gradient(90deg,var(--soft),var(--card))}
+.step.lit .n{background:linear-gradient(180deg,#f3d27e,#b8892b);color:#1a1410}
+.step small{display:block;font:13.5px/1.6 system-ui,"PingFang SC",sans-serif;color:var(--muted)}
+.step.wrong{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* 类别配对 */
+.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.cat{background:var(--card);border:1px solid var(--line);padding:14px 10px;text-align:center;min-height:118px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-family:Georgia,serif}
+.cat .ico{font-size:30px}
+.cat b{font-size:16px;line-height:1.25}
+.cat.sel{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold2)}
+.cat.done{background:var(--soft);border-color:var(--ok)}
+.cat.done b::after{content:" ✓";color:var(--ok)}
+.descs{display:grid;gap:8px;margin-top:14px}
+.desc{text-align:left;background:transparent;border:1px dashed var(--gold);padding:10px 14px;font:15px/1.5 system-ui,sans-serif}
+.desc.done{display:none}
+/* 信封 */
+.envs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.env{background:var(--card);border:1px solid var(--line);padding:16px;text-align:left}
+.env h3{font-size:18px;line-height:1.35;margin-bottom:10px}
+.env .opts{display:grid;gap:6px}
+.env .opts button{text-align:left;background:transparent;border:1px solid var(--line);padding:8px 10px;font-family:Georgia,serif;font-size:15px;font-weight:400}
+.env .opts button.pick{border-color:var(--gold);background:var(--soft)}
+.envelope{position:relative;height:140px;margin:12px 0 6px;perspective:600px}
+.envelope .body{position:absolute;inset:50px 0 0;z-index:3;background:linear-gradient(180deg,#d9b25a,#b8892b);border-radius:4px}
+.envelope .flap{position:absolute;left:0;right:0;top:50px;height:60px;background:linear-gradient(180deg,#f3d27e,#c99a38);clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s;z-index:4}
+.envelope .card{position:absolute;left:10%;right:10%;top:60px;height:74px;background:#fffaf0;color:#1a1410;border:1px solid #c99a38;display:grid;place-items:center;text-align:center;font:700 16px/1.25 Georgia,serif;padding:6px;transition:transform .7s .3s;z-index:2}
+.envelope .seal{position:absolute;left:50%;top:96px;width:26px;height:26px;margin-left:-13px;border-radius:50%;background:var(--red);z-index:5;transition:opacity .3s}
+.envelope.open .flap{transform:rotateX(180deg);z-index:1}
+.envelope.open .card{transform:translateY(-60px);z-index:6}
+.envelope.open .seal{opacity:0}
+.env .goes{font:italic 14px Georgia,serif;color:var(--muted);min-height:44px}
+.openbtn{width:100%;margin-top:8px;background:linear-gradient(180deg,#f3d27e,#b8892b);border:0;color:#1a1410;padding:10px;border-radius:2px;letter-spacing:.1em;text-transform:uppercase;font-size:13px}
+.openbtn:disabled{opacity:.4;cursor:default}
+/* 中国面孔 */
+.faces{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.face{background:var(--card);border:1px solid var(--line);padding:16px;text-align:left}
+.face .yr{font:600 12px system-ui,sans-serif;letter-spacing:.18em;color:var(--goldtxt)}
+.face h3{font-size:21px;margin:4px 0}
+.face p{margin:0;font-size:15px}
+/* 阅读 */
+.w{font:inherit;color:inherit;background:none;border:0;padding:0 2px;cursor:pointer;border-bottom:1px solid var(--gold);color:var(--goldtxt)}
+.gl{display:inline-block;font:13px/1.4 system-ui,"PingFang SC",sans-serif;background:var(--stage);color:var(--gold2);padding:2px 8px;margin:0 4px}
+/* 颁奖词 */
+.speech{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.speech label{display:block;font:600 13px system-ui,sans-serif;color:var(--muted);margin:10px 0 4px;letter-spacing:.04em}
+.speech input,.speech select{width:100%;font:16px Georgia,serif;padding:9px 11px;border:1px solid var(--gold);background:var(--card);color:var(--ink);border-radius:2px}
+.award{position:relative;overflow:hidden;background:var(--stage);color:#f6ead2;border:2px solid var(--gold);padding:26px 20px;text-align:center;display:flex;flex-direction:column;justify-content:center;min-height:260px}
+.award .eyebrow{color:var(--gold2)}
+.award .big{font-size:26px;line-height:1.3;margin:10px 0}
+.award .big em{font-style:normal;color:var(--gold2)}
+.award p{font-size:15px;margin:0}
+.confetti{position:absolute;top:-10px;width:8px;height:14px;opacity:.9;animation:fall 2.6s linear forwards}
+@keyframes fall{to{transform:translateY(340px) rotate(540deg);opacity:0}}
+.source{font:12.5px/1.6 system-ui,sans-serif;color:var(--muted);margin-top:30px;text-align:center}
+@media(max-width:760px){.facts{grid-template-columns:repeat(2,1fr)}.fact:nth-child(2){border-right:0}.fact:nth-child(-n+2){border-bottom:1px solid var(--line)}.cats{grid-template-columns:repeat(2,1fr)}.envs,.faces,.speech{grid-template-columns:1fr}.frame{padding:16px}}
+</style>
+</head>
+<body>
+<main>
+
+<header class="stage">
+  <div class="beam l" aria-hidden="true"></div><div class="beam r" aria-hidden="true"></div>
+  <span class="eyebrow">Pop Culture · A2 · 20 min</span>
+  <h1>THE OSCARS</h1>
+  <p><i>“And the Oscar goes to…”</i></p>
+  <p>Every year, the film world waits for these five words. But who decides the winners?</p>
+  <p class="zh">每年电影界都在等这句话。可是，奥斯卡奖到底是谁评出来的？</p>
+  <div class="pollbox" id="poll">
+    <button data-k="fans">Fans vote online</button>
+    <button data-k="members">Film-makers vote</button>
+    <button data-k="judge">One famous judge</button>
+  </div>
+  <p class="say" id="pollSay" aria-live="polite"></p>
+  <!-- 原创的“金色小金人”示意插画 -->
+  <svg class="statue" viewBox="0 0 120 230" role="img" aria-label="Illustration of a golden statuette">
+    <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#8a6414"/><stop offset=".45" stop-color="#ffe9a8"/><stop offset=".7" stop-color="#d4a843"/><stop offset="1" stop-color="#7a5510"/></linearGradient></defs>
+    <circle cx="60" cy="22" r="12" fill="url(#g)"/>
+    <path d="M44 38 q16 -6 32 0 l4 60 q-4 8 -8 8 l-2 70 h-20 l-2 -70 q-4 0 -8 -8z" fill="url(#g)"/>
+    <path d="M48 52 q12 26 24 0" stroke="#7a5510" stroke-width="2" fill="none"/>
+    <rect x="57" y="40" width="6" height="140" fill="url(#g)" opacity=".85"/>
+    <rect x="36" y="178" width="48" height="12" rx="2" fill="url(#g)"/>
+    <rect x="30" y="190" width="60" height="36" rx="3" fill="#1a1410" stroke="#d4a843" stroke-width="2"/>
+    <path d="M38 200 h44 M38 208 h44 M38 216 h44" stroke="#d4a843" stroke-width="1" opacity=".6"/>
+  </svg>
+  <svg class="carpet" viewBox="0 0 800 70" aria-hidden="true" preserveAspectRatio="none"><path d="M300 0 h200 l200 70 h-600z" fill="#a3121f"/><path d="M300 0 h200 l200 70 h-600z" fill="none" stroke="#d4a843" stroke-width="2"/></svg>
+</header>
+
+<section class="act">
+  <div class="deco"><span class="eyebrow">Act I · The basics</span></div>
+  <h2>The Academy Awards in numbers</h2>
+  <p class="zh">奥斯卡的正式名称是 Academy Awards（学院奖）。</p>
+  <div class="facts">
+    <div class="fact"><b>1929</b><span>The first ceremony<br>第一届颁奖典礼</span></div>
+    <div class="fact"><b>~10,000</b><span>Academy members vote<br>约一万名学院成员投票</span></div>
+    <div class="fact"><b>34 cm</b><span>Height of the statuette<br>小金人的高度</span></div>
+    <div class="fact"><b>11</b><span>Most Oscars for one film<br>单部电影最多获奖数</span></div>
+  </div>
+  <div class="frame">
+    <p>The Oscars are given by the <b>Academy of Motion Picture Arts and Sciences</b>. Its members are people who make films: actors, directors, writers, music makers and more. The ceremony takes place every year in Hollywood, Los Angeles.</p>
+    <p class="zh">评委是电影行业的从业者：演员、导演、编剧、作曲……不是观众投票。</p>
+  </div>
+</section>
+
+<section class="act">
+  <div class="deco"><span class="eyebrow">Act II · The road to the Oscar</span></div>
+  <h2>How does a film win?</h2>
+  <p class="zh">按正确顺序点亮这五步。点错了会抖一下。</p>
+  <div class="frame">
+    <ol class="road" id="road"></ol>
+    <p class="say" id="roadSay" aria-live="polite" style="margin-top:10px"></p>
+  </div>
+</section>
+
+<section class="act">
+  <div class="deco"><span class="eyebrow">Act III · The categories</span></div>
+  <h2>Best what?</h2>
+  <p class="zh">奥斯卡有二十多个奖项（category）。先点一个奖项，再点它的英文解释。</p>
+  <div class="cats" id="cats">
+    <button class="cat" data-c="picture"><span class="ico">🎬</span><b>Best Picture</b></button>
+    <button class="cat" data-c="director"><span class="ico">📣</span><b>Best Director</b></button>
+    <button class="cat" data-c="actress"><span class="ico">🎭</span><b>Best Actress</b></button>
+    <button class="cat" data-c="animated"><span class="ico">🐼</span><b>Best Animated Feature</b></button>
+    <button class="cat" data-c="song"><span class="ico">🎵</span><b>Best Original Song</b></button>
+    <button class="cat" data-c="vfx"><span class="ico">💥</span><b>Best Visual Effects</b></button>
+    <button class="cat" data-c="costume"><span class="ico">👗</span><b>Best Costume Design</b></button>
+    <button class="cat" data-c="screenplay"><span class="ico">✍️</span><b>Best Original Screenplay</b></button>
+  </div>
+  <div class="descs" id="descs">
+    <button class="desc" data-c="song">A new song that was written for the film.</button>
+    <button class="desc" data-c="picture">The best film of the year — the biggest award of the night.</button>
+    <button class="desc" data-c="costume">The best clothes that the characters wear.</button>
+    <button class="desc" data-c="director">The person who leads the whole team and makes the film.</button>
+    <button class="desc" data-c="vfx">The best computer images, explosions and magic on screen.</button>
+    <button class="desc" data-c="actress">A woman who plays a main role very well.</button>
+    <button class="desc" data-c="screenplay">The best story and words, not based on a book.</button>
+    <button class="desc" data-c="animated">The best long cartoon film.</button>
+  </div>
+  <p class="say" id="catSay" aria-live="polite"></p>
+</section>
+
+<section class="act">
+  <div class="deco"><span class="eyebrow">Act IV · Open the envelopes</span></div>
+  <h2>You are the presenter</h2>
+  <p class="zh">先选你的答案，再拆开信封。大声读出：“And the Oscar goes to…”</p>
+  <div class="envs" id="envs"></div>
+</section>
+
+<section class="act">
+  <div class="deco"><span class="eyebrow">Intermission · Chinese faces at the Oscars</span></div>
+  <h2>Made history</h2>
+  <div class="faces">
+    <div class="face"><span class="yr">2006 · 2013</span><h3>Ang Lee 李安</h3><p>Best Director twice — for <i>Brokeback Mountain</i> and <i>Life of Pi</i>. The first Asian to win Best Director.</p></div>
+    <div class="face"><span class="yr">2021</span><h3>Chloé Zhao 赵婷</h3><p>Born in Beijing. Won Best Director for <i>Nomadland</i>, which also won Best Picture.</p></div>
+    <div class="face"><span class="yr">2023</span><h3>Michelle Yeoh 杨紫琼</h3><p>The first Asian woman to win Best Actress, for <i>Everything Everywhere All at Once</i>.</p></div>
+  </div>
+</section>
+
+<section class="act">
+  <div class="deco"><span class="eyebrow">Act V · Read</span></div>
+  <h2>Oscar night</h2>
+  <div class="frame">
+    <p class="zh" style="margin-top:0">点击金色的词查看中文。</p>
+    <p>Before the big night, the Academy <button class="w" data-zh="提名">nominates</button> about five films or people in each category. They are called the <button class="w" data-zh="被提名者">nominees</button>. Being a nominee is already a great honour.</p>
+    <p>On the night of the <button class="w" data-zh="典礼">ceremony</button>, stars walk on the <button class="w" data-zh="红毯">red carpet</button>. Then a presenter opens an envelope and reads the name of the <button class="w" data-zh="获胜者">winner</button>. The winner goes on stage and gives a short <button class="w" data-zh="获奖感言">acceptance speech</button>: “Thank you so much…”</p>
+    <p>Once, in 2017, the presenters were given the wrong envelope! They read out the wrong film for Best Picture. A few minutes later, everyone learned that <i>Moonlight</i> was the real winner.</p>
+  </div>
+</section>
+
+<section class="act">
+  <div class="deco"><span class="eyebrow">Finale · Your award</span></div>
+  <h2>Give your own award</h2>
+  <p class="zh">给你喜欢的电影、动画或演员颁一个奖，并说出理由。</p>
+  <div class="speech">
+    <div class="frame" style="margin:0">
+      <label for="a1">The award for Best…</label>
+      <select id="a1"><option value="">— choose a category —</option><option>Picture</option><option>Animated Feature</option><option>Actor</option><option>Actress</option><option>Original Song</option><option>Visual Effects</option></select>
+      <label for="a2">goes to…</label><input id="a2" maxlength="50" placeholder="Ne Zha 2">
+      <label for="a3">because…</label><input id="a3" maxlength="100" placeholder="the story is exciting and the animation is beautiful">
+      <button class="openbtn" id="announce" style="margin-top:14px">Announce the winner</button>
+    </div>
+    <div class="award" id="award" aria-live="polite">
+      <span class="eyebrow">Your ceremony</span>
+      <div class="big">And the award for Best <em>…</em><br>goes to <em>…</em>!</div>
+      <p>Fill in the form and press the button.</p>
+    </div>
+  </div>
+</section>
+
+<p class="source">Original teaching text. Facts: Academy of Motion Picture Arts and Sciences (oscars.org). The statuette drawing is an original illustration for teaching only; “Oscar” and “Academy Awards” are trademarks of AMPAS. 教师可在此补充图片 / 视频来源与授权。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    $$('#poll button').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
+    $('#pollSay').textContent = b.dataset.k === 'members'
+      ? '✨ Right! About 10,000 members of the Academy — people who make films — vote.'
+      : 'Not quite. The voters are members of the Academy: people who make films. 投票的是电影从业者。';
+    ED.done('big-question');
+  };
+});
+
+// 获奖之路：按顺序点亮
+var steps = [
+  ['A film comes out in cinemas.', '电影在影院上映。'],
+  ['Members vote in their own group: actors choose actors, directors choose directors…', '提名投票：演员提名演员，导演提名导演……'],
+  ['The nominees are announced (usually five in a category).', '公布提名名单。'],
+  ['All members vote again to choose the winners.', '全体成员再次投票，选出获奖者。'],
+  ['Ceremony night: “And the Oscar goes to…”', '颁奖之夜：打开信封！']
+];
+var shuffled = [3, 0, 4, 2, 1], next = 0;
+shuffled.forEach(function(i){
+  var li = document.createElement('li'); li.style.order = 10;
+  var b = document.createElement('button'); b.className = 'step';
+  b.innerHTML = '<span class="n">?</span><span>' + steps[i][0] + '<small>' + steps[i][1] + '</small></span>';
+  b.onclick = function(){
+    if (b.classList.contains('lit')) return;
+    if (i === next){
+      b.classList.add('lit'); $('.n', b).textContent = next + 1; next++;
+      li.style.order = i;
+      $('#roadSay').textContent = next === steps.length ? '🏆 That is the road to the Oscar!' : 'Step ' + next + ' ✓';
+      if (next === steps.length) ED.done('road');
+    } else {
+      b.classList.remove('wrong'); void b.offsetWidth; b.classList.add('wrong');
+      $('#roadSay').textContent = 'What happens first? Think about the order. 想想先发生什么。';
+    }
+  };
+  li.appendChild(b); $('#road').appendChild(li);
+});
+$('#road').style.display = 'flex'; $('#road').style.flexDirection = 'column';
+
+// 奖项配对
+var catSel = null, catDone = 0;
+$$('.cat').forEach(function(c){ c.onclick = function(){ if (c.classList.contains('done')) return; $$('.cat').forEach(function(x){ x.classList.remove('sel'); }); c.classList.add('sel'); catSel = c; }; });
+$$('.desc').forEach(function(d){
+  d.onclick = function(){
+    if (!catSel){ $('#catSay').textContent = 'Choose a category first. 先选一个奖项。'; return; }
+    if (catSel.dataset.c === d.dataset.c){
+      catSel.classList.remove('sel'); catSel.classList.add('done'); d.classList.add('done'); catSel = null; catDone++;
+      $('#catSay').textContent = catDone === 8 ? '🎉 You know all eight categories!' : 'Correct!';
+      if (catDone === 8) ED.done('categories');
+    } else { $('#catSay').textContent = 'Not this one. Try another sentence.'; }
+  };
+});
+
+// 信封
+var envs = [
+  ['Which film won 11 Oscars, including Best Picture (1998)?', ['Titanic', 'Avatar', 'Frozen'], 0, 'Titanic', 'It shares the record with Ben-Hur and The Lord of the Rings: The Return of the King.'],
+  ['Which film was the first non-English-language film to win Best Picture (2020)?', ['Parasite', 'Coco', 'Spirited Away'], 0, 'Parasite', 'A Korean film by Bong Joon-ho. 第一部获最佳影片的非英语电影。'],
+  ['Which Japanese film won Best Animated Feature in 2003?', ['Toy Story', 'Spirited Away', 'Kung Fu Panda'], 1, 'Spirited Away', 'Directed by Hayao Miyazaki. 宫崎骏的《千与千寻》。']
+];
+var opened = 0;
+envs.forEach(function(e){
+  var d = document.createElement('div'); d.className = 'env';
+  d.innerHTML = '<h3>' + e[0] + '</h3><div class="opts"></div><div class="envelope"><div class="body"></div><div class="card">' + e[3] + '</div><div class="flap"></div><div class="seal"></div></div><p class="goes">Your answer: —</p><button class="openbtn" disabled>Open the envelope</button>';
+  var choice = null;
+  e[1].forEach(function(o, j){
+    var b = document.createElement('button'); b.textContent = o;
+    b.onclick = function(){ if (d.dataset.open) return; $$('.opts button', d).forEach(function(x){ x.classList.remove('pick'); }); b.classList.add('pick'); choice = j; $('.goes', d).textContent = 'Your answer: ' + o; $('.openbtn', d).disabled = false; };
+    $('.opts', d).appendChild(b);
+  });
+  $('.openbtn', d).onclick = function(){
+    if (d.dataset.open) return; d.dataset.open = 1;
+    $('.envelope', d).classList.add('open');
+    $('.openbtn', d).disabled = true;
+    setTimeout(function(){
+      $('.goes', d).innerHTML = (choice === e[2] ? '✨ You were right! ' : 'Surprise! ') + '<b>And the Oscar goes to… ' + e[3] + '!</b> ' + e[4];
+    }, 800);
+    opened++; if (opened === envs.length) ED.done('envelopes');
+  };
+  $('#envs').appendChild(d);
+});
+
+$$('.w').forEach(function(w){ w.onclick = function(){ var n = w.nextElementSibling; if (n && n.classList.contains('gl')){ n.remove(); return; } var g = document.createElement('span'); g.className = 'gl'; g.textContent = w.dataset.zh; w.after(g); }; });
+
+// 颁奖
+function esc(s){ return s.replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+$('#announce').onclick = function(){
+  var a = $('#a1').value, b = $('#a2').value.trim(), c = $('#a3').value.trim();
+  if (!a || !b || !c){ $('#award p').textContent = 'Please fill in all three parts. 三个空都要填哦。'; return; }
+  $('#award').innerHTML = '<span class="eyebrow">Your ceremony</span><div class="big">And the award for Best <em>' + esc(a) + '</em><br>goes to <em>' + esc(b) + '</em>!</div><p>' + esc(b) + ' wins because ' + esc(c) + '.</p>';
+  var colors = ['#f3d27e', '#ffffff', '#e04555', '#d4a843'];
+  for (var i = 0; i < 40; i++){
+    var s = document.createElement('span'); s.className = 'confetti';
+    s.style.left = Math.random() * 100 + '%'; s.style.background = colors[i % 4]; s.style.animationDelay = Math.random() * .8 + 's';
+    $('#award').appendChild(s);
+  }
+  ED.done('express');
+};
+</script>
+</body>
+</html>

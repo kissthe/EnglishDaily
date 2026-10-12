@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Beatles · Interactive</title>
+<!-- 风格实验 02：60 年代波普 / 黑胶唱片。高饱和撞色、粗无衬线、唱片可以转。时间轴做成一排唱片。 -->
+<style>
+:root{--bg:#fff6e5;--card:#ffffff;--ink:#1d1a2f;--muted:#5d5873;--line:#1d1a2f;--pop1:#ff5a36;--pop2:#ffc93c;--pop3:#2ec4b6;--pop4:#ff4f9a;--pop5:#4361ee;--vinyl:#141414;--ok:#16a34a;--bad:#e11d48;--shade:rgba(29,26,47,.08)}
+html.dark{--bg:#161325;--card:#221e38;--ink:#f8f1ff;--muted:#bcb5d6;--line:#f8f1ff;--pop1:#ff7a5c;--pop2:#ffd76a;--pop3:#4fe0d2;--pop4:#ff7ab6;--pop5:#7f97ff;--vinyl:#050505;--ok:#4ade80;--bad:#fb7185;--shade:rgba(255,255,255,.06)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 "Avenir Next","Trebuchet MS",system-ui,sans-serif}
+main{max-width:1020px;margin:0 auto;padding:20px 16px 44px}
+.zh{font:14.5px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{font-family:"Futura","Arial Black","Helvetica Neue",sans-serif;font-weight:900;margin:0;letter-spacing:-.01em}
+button{font:700 15px/1.2 "Avenir Next","Trebuchet MS",sans-serif;cursor:pointer;color:var(--ink)}
+.tag{display:inline-block;font:900 12px/1 "Arial Black",sans-serif;letter-spacing:.12em;text-transform:uppercase;padding:7px 10px;background:var(--ink);color:var(--bg);transform:rotate(-2deg)}
+/* 头图 */
+.hero{position:relative;overflow:hidden;border:4px solid var(--line);border-radius:28px;background:var(--pop2);padding:26px 22px 0;color:#1d1a2f}
+.hero .sun{position:absolute;inset:-40%;background:repeating-conic-gradient(from 0deg at 70% 60%,#ffb703 0 10deg,#ffd166 10deg 20deg);opacity:.7}
+.hero>*:not(.sun){position:relative}
+.hero h1{font-size:clamp(40px,9vw,96px);line-height:.92;margin:14px 0 8px;text-shadow:4px 4px 0 #ff5a36,8px 8px 0 #1d1a2f;color:#fff;-webkit-text-stroke:2px #1d1a2f}
+.hero p{max-width:560px;font-weight:600}
+.hero .zh{color:#4a3b16}
+.crossing{display:block;width:100%;margin-top:6px}
+.poll{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 4px}
+.poll button{background:#fff;border:3px solid #1d1a2f;border-radius:99px;padding:10px 18px;color:#1d1a2f;box-shadow:3px 3px 0 #1d1a2f}
+.poll button.on{background:#ff4f9a;color:#fff}
+.say{min-height:24px;font:600 15px/1.6 system-ui,sans-serif}
+/* 区块 */
+.sec{margin:36px 0}
+.sec h2{font-size:clamp(28px,5vw,44px);line-height:1;margin:12px 0 6px}
+.panel{background:var(--card);border:4px solid var(--line);border-radius:24px;padding:22px;box-shadow:8px 8px 0 var(--pop5)}
+/* 成员 */
+.members{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
+.m{position:relative;border:4px solid var(--line);border-radius:20px;overflow:hidden;padding:0;background:var(--card);text-align:left;transition:transform .15s}
+.m:hover{transform:rotate(-1.5deg) scale(1.02)}
+.m svg{display:block;width:100%}
+.m .cap{padding:10px 12px 12px}
+.m .cap b{display:block;font:900 18px/1.1 "Arial Black",sans-serif}
+.m .cap span{font-size:13px;color:var(--muted)}
+.m .inst{position:absolute;top:8px;right:8px;width:44px;height:44px;border-radius:50%;background:#fff;border:3px solid #1d1a2f;display:grid;place-items:center;font-size:22px}
+.m.dropok{outline:5px solid var(--ok);outline-offset:-5px}
+.instruments{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 4px}
+.ins{border:3px solid var(--line);background:var(--card);border-radius:99px;padding:8px 14px;display:flex;gap:6px;align-items:center}
+.ins.sel{background:var(--pop4);color:#fff;border-color:var(--pop4)}
+.ins.done{opacity:.3;pointer-events:none}
+/* 唱片时间轴 */
+.shelf{display:flex;gap:16px;overflow-x:auto;padding:10px 4px 18px;scroll-snap-type:x mandatory}
+.rec{flex:none;width:120px;scroll-snap-align:start;background:none;border:0;padding:0;text-align:center}
+.disc{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--c) 0 22%,#000 22.5% 24%,var(--vinyl) 24.5% 100%);position:relative;box-shadow:0 6px 0 var(--shade)}
+.disc::before{content:"";position:absolute;inset:6px;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 3px,rgba(255,255,255,.06) 3px 4px)}
+.disc::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--bg)}
+.rec.spin .disc{animation:spin 1.6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rec b{display:block;margin-top:8px;font:900 22px/1 "Arial Black",sans-serif}
+.rec small{font-size:12px;color:var(--muted)}
+.rec.seen b{color:var(--pop1)}
+.liner{display:grid;grid-template-columns:160px 1fr;gap:18px;align-items:center;margin-top:6px;min-height:150px}
+.sleeve{width:160px;height:160px;border:4px solid var(--line);border-radius:6px;display:grid;place-items:center;font:900 44px/1 "Arial Black",sans-serif;color:#fff;text-shadow:3px 3px 0 #1d1a2f;background:var(--pop3)}
+.liner h3{font-size:24px;margin-bottom:6px}
+.counter{font:700 13px system-ui,sans-serif;color:var(--muted)}
+/* 路线 */
+.route{width:100%;display:block}
+.route .city{cursor:pointer}
+.route .city circle{stroke:#1d1a2f;stroke-width:3}
+.route text{font:800 13px "Trebuchet MS",sans-serif;fill:var(--ink)}
+.route .land{fill:var(--shade);stroke:var(--muted);stroke-width:1.5}
+/* 歌曲 */
+.songs{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.song{border:4px solid var(--line);border-radius:22px;padding:18px;background:var(--card);position:relative;overflow:hidden}
+.song:nth-child(1){background:linear-gradient(160deg,color-mix(in srgb,var(--pop2) 35%,var(--card)),var(--card))}
+.song:nth-child(2){background:linear-gradient(160deg,color-mix(in srgb,var(--pop3) 35%,var(--card)),var(--card))}
+.song h3{font-size:30px}
+.song .yr{font:900 13px "Arial Black",sans-serif;color:var(--pop1)}
+.song blockquote{margin:10px 0;padding:8px 12px;border-left:6px solid var(--pop4);font-style:italic}
+.moods{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.moods button{border:2px solid var(--line);background:var(--card);border-radius:99px;padding:6px 12px;font-size:14px}
+.moods button.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.moods button.wrong{background:var(--bad);border-color:var(--bad);color:#fff;opacity:.7}
+.fb{min-height:22px;font:600 14px/1.5 system-ui,sans-serif;margin-top:6px}
+#clip{display:none;margin-top:14px}
+#clip.ready{display:block}
+audio{width:100%}
+/* 歌名英语 */
+.titles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ttl{border:3px solid var(--line);border-radius:16px;padding:14px;background:var(--card);text-align:left;min-height:96px}
+.ttl b{font:900 20px/1.2 "Arial Black",sans-serif;display:block}
+.ttl .ans{display:none;font:14px/1.6 system-ui,"PingFang SC",sans-serif;color:var(--muted);margin-top:6px}
+.ttl.open{background:color-mix(in srgb,var(--pop2) 25%,var(--card))}
+.ttl.open .ans{display:block}
+/* 阅读 */
+.w{font:inherit;color:inherit;background:none;border:0;padding:0 2px;cursor:pointer;background-image:linear-gradient(transparent 62%,color-mix(in srgb,var(--pop2) 70%,transparent) 62%)}
+.gl{display:inline-block;font:700 12.5px/1.4 system-ui,"PingFang SC",sans-serif;background:var(--pop5);color:#fff;border-radius:99px;padding:2px 8px;margin:0 4px}
+/* 表达 */
+.make{display:grid;grid-template-columns:1fr 260px;gap:20px;align-items:center}
+.make label{display:block;font:700 14px system-ui,sans-serif;color:var(--muted);margin:10px 0 4px}
+.make select,.make input{width:100%;font:16px "Trebuchet MS",sans-serif;padding:10px 12px;border:3px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink)}
+.mylp{width:260px;height:260px;border-radius:50%;margin:0 auto;background:radial-gradient(circle,var(--pop4) 0 34%,#000 34.5% 36%,var(--vinyl) 36.5%);display:grid;place-items:center;position:relative}
+.mylp .label{width:46%;text-align:center;color:#fff;font:700 13px/1.35 "Trebuchet MS",sans-serif}
+.mylp .label b{display:block;font:900 15px/1.1 "Arial Black",sans-serif;margin-bottom:4px}
+.source{font:12.5px/1.6 system-ui,sans-serif;color:var(--muted);margin-top:30px}
+@media(max-width:760px){.members{grid-template-columns:repeat(2,1fr)}.songs,.titles,.make{grid-template-columns:1fr}.liner{grid-template-columns:1fr}.sleeve{width:110px;height:110px;font-size:30px}.panel{padding:16px;box-shadow:5px 5px 0 var(--pop5)}.hero{padding:20px 16px 0}}
+</style>
+</head>
+<body>
+<main>
+
+<header class="hero">
+  <div class="sun" aria-hidden="true"></div>
+  <span class="tag">Songs & Music · A2 · 25 min</span>
+  <h1>THE<br>BEATLES</h1>
+  <p>Four young men from Liverpool. Ten years. Songs the whole world still sings.</p>
+  <p class="zh">四个利物浦年轻人，怎样改变了流行音乐？先猜：他们作为乐队一起走红了多少年？</p>
+  <div class="poll" id="poll">
+    <button data-k="a">About 3 years</button><button data-k="b">About 10 years</button><button data-k="c">About 30 years</button>
+  </div>
+  <p class="say" id="pollSay" aria-live="polite"></p>
+  <!-- 斑马线插画（原创，非照片） -->
+  <svg class="crossing" viewBox="0 0 800 210" role="img" aria-label="Illustration: four people walking across a zebra crossing">
+    <rect y="120" width="800" height="90" fill="#3c3c46"/>
+    <g fill="#f5f5f5">
+      <rect x="40" y="135" width="70" height="18" rx="2"/><rect x="40" y="165" width="70" height="18" rx="2"/>
+      <rect x="150" y="135" width="70" height="18" rx="2"/><rect x="150" y="165" width="70" height="18" rx="2"/>
+      <rect x="260" y="135" width="70" height="18" rx="2"/><rect x="260" y="165" width="70" height="18" rx="2"/>
+      <rect x="370" y="135" width="70" height="18" rx="2"/><rect x="370" y="165" width="70" height="18" rx="2"/>
+      <rect x="480" y="135" width="70" height="18" rx="2"/><rect x="480" y="165" width="70" height="18" rx="2"/>
+      <rect x="590" y="135" width="70" height="18" rx="2"/><rect x="590" y="165" width="70" height="18" rx="2"/>
+      <rect x="700" y="135" width="70" height="18" rx="2"/><rect x="700" y="165" width="70" height="18" rx="2"/>
+    </g>
+    <g stroke="#1d1a2f" stroke-width="10" stroke-linecap="round">
+      <!-- 四个行走的小人 -->
+      <g transform="translate(170 0)"><circle cx="0" cy="40" r="16" fill="#1d1a2f" stroke="none"/><path d="M0 58v42M0 100l-16 34M0 100l18 30M0 68l-18 22M0 68l16 24" stroke="#f1f1f1"/><path d="M0 58v42" stroke="#f1f1f1" stroke-width="18"/></g>
+      <g transform="translate(300 0)"><circle cx="0" cy="40" r="16" fill="#1d1a2f" stroke="none"/><path d="M0 58v42" stroke="#1d1a2f" stroke-width="18"/><path d="M0 100l-16 34M0 100l18 30M0 68l-18 22M0 68l16 24"/></g>
+      <g transform="translate(430 0)"><circle cx="0" cy="40" r="16" fill="#1d1a2f" stroke="none"/><path d="M0 58v42" stroke="#5a5f78" stroke-width="18"/><path d="M0 100l-16 34M0 100l18 30M0 68l-18 22M0 68l16 24" stroke="#5a5f78"/></g>
+      <g transform="translate(560 0)"><circle cx="0" cy="40" r="16" fill="#1d1a2f" stroke="none"/><path d="M0 58v42" stroke="#6b4f2e" stroke-width="18"/><path d="M0 100l-16 34M0 100l18 30M0 68l-18 22M0 68l16 24" stroke="#3b6aa0"/></g>
+    </g>
+  </svg>
+</header>
+
+<section class="sec">
+  <span class="tag">01 · Meet the band</span>
+  <h2>John, Paul, George & Ringo</h2>
+  <p class="zh">先点一个乐器，再点演奏它的成员。（插画为原创示意，不是真人肖像）</p>
+  <div class="instruments" id="instruments">
+    <button class="ins" data-m="john">🎸 rhythm guitar</button>
+    <button class="ins" data-m="paul">🎶 bass guitar</button>
+    <button class="ins" data-m="george">⚡ lead guitar</button>
+    <button class="ins" data-m="ringo">🥁 drums</button>
+  </div>
+  <div class="members" id="members"></div>
+  <p class="fb" id="memberSay" aria-live="polite"></p>
+</section>
+
+<section class="sec">
+  <span class="tag">02 · Spin the records</span>
+  <h2>A short, amazing story</h2>
+  <p class="zh">点击每张唱片，它会转起来并讲一段经历。左右滑动查看全部。</p>
+  <div class="panel">
+    <div class="shelf" id="shelf"></div>
+    <div class="liner" id="liner" aria-live="polite">
+      <div class="sleeve" id="sleeve">♫</div>
+      <div><h3>Pick a record</h3><p class="zh">从 1957 年到 1970 年。</p><p class="counter" id="counter">Records played: 0 / 7</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="tag">03 · On the road</span>
+  <h2>From Liverpool to the world</h2>
+  <p class="zh">点一点城市，看看乐队走过的路。示意图，不按比例。</p>
+  <div class="panel">
+    <svg class="route" viewBox="0 0 760 300" role="img" aria-label="Route map: Liverpool, Hamburg, London, New York">
+      <path class="land" d="M470 40 l40 -10 30 30 -6 40 30 30 10 60 -40 40 -60 10 -30 -30 20 -40 -16 -40 10 -50z"/>
+      <path class="land" d="M600 60 l120 -10 20 80 -40 110 -100 20 -20 -90z"/>
+      <path class="land" d="M20 60 l150 -20 60 60 -30 110 -120 50 -60 -70z"/>
+      <text x="36" y="40" class="zh" style="font-size:11px;fill:var(--muted)">North America</text>
+      <text x="470" y="26" style="font-size:11px;fill:var(--muted)">Britain</text>
+      <text x="640" y="44" style="font-size:11px;fill:var(--muted)">Europe</text>
+      <path d="M520 130 Q 600 70 660 120" fill="none" stroke="var(--pop1)" stroke-width="4" stroke-dasharray="8 7"/>
+      <path d="M660 120 Q 620 210 545 200" fill="none" stroke="var(--pop1)" stroke-width="4" stroke-dasharray="8 7"/>
+      <path d="M545 200 Q 330 10 140 150" fill="none" stroke="var(--pop5)" stroke-width="5" stroke-dasharray="10 8"/>
+      <text x="300" y="70" style="font-size:22px">✈️</text>
+      <g class="city" data-c="liv" tabindex="0" role="button"><circle cx="520" cy="130" r="13" fill="#ff5a36"/><text x="440" y="118">Liverpool</text></g>
+      <g class="city" data-c="ham" tabindex="0" role="button"><circle cx="660" cy="120" r="13" fill="#ffc93c"/><text x="676" y="116">Hamburg</text></g>
+      <g class="city" data-c="lon" tabindex="0" role="button"><circle cx="545" cy="200" r="13" fill="#2ec4b6"/><text x="560" y="226">London</text></g>
+      <g class="city" data-c="ny" tabindex="0" role="button"><circle cx="140" cy="150" r="13" fill="#4361ee"/><text x="96" y="186">New York</text></g>
+    </svg>
+    <p id="cityText" aria-live="polite" style="min-height:56px;margin:8px 0 0"><b>Tap a city.</b> <span class="zh">从家乡到汉堡、伦敦，再到纽约。</span></p>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="tag">04 · Listen & feel</span>
+  <h2>Two famous songs</h2>
+  <p class="zh">读一读歌曲背后的故事，选出最合适的情绪词。只引用很短的歌词。</p>
+  <div class="songs">
+    <div class="song">
+      <span class="yr">1968 · written by Paul McCartney</span>
+      <h3>Hey Jude</h3>
+      <blockquote>“Hey Jude, don't make it bad…”</blockquote>
+      <p>Paul wrote it for John's young son, Julian, when Julian's parents were splitting up. The song tells him: be brave, things will get better. It is over seven minutes long, and it ends with a long “na na na” that crowds love to sing together.</p>
+      <p><b>How does the song want Julian to feel?</b></p>
+      <div class="moods" data-right="hopeful"><button>angry</button><button>hopeful</button><button>bored</button><button>scared</button></div>
+      <p class="fb"></p>
+    </div>
+    <div class="song">
+      <span class="yr">1965 · written by Paul McCartney</span>
+      <h3>Yesterday</h3>
+      <blockquote>“Yesterday, all my troubles seemed so far away…”</blockquote>
+      <p>Paul said the music came to him in a dream! At first he didn't have the words, so he sang “Scrambled eggs…” to remember the tune. The final song is about missing the past.</p>
+      <p><b>Which word fits the song best?</b></p>
+      <div class="moods" data-right="sad"><button>excited</button><button>sad</button><button>funny</button><button>proud</button></div>
+      <p class="fb"></p>
+    </div>
+  </div>
+  <figure id="clip"><audio controls data-label="song-clip"></audio><figcaption class="zh">教师上传的授权片段</figcaption></figure>
+</section>
+
+<section class="sec">
+  <span class="tag">05 · Titles are English lessons</span>
+  <h2>What does the title mean?</h2>
+  <p class="zh">先自己猜，再点卡片看答案和语言点。</p>
+  <div class="titles" id="titles">
+    <button class="ttl"><b>Yesterday</b><span class="ans">昨天。歌里大量用过去时：seemed, was, believed。</span></button>
+    <button class="ttl"><b>Let It Be</b><span class="ans">顺其自然。let + 宾语 + 动词原形：let it be / let me go。</span></button>
+    <button class="ttl"><b>Here Comes the Sun</b><span class="ans">太阳出来了。倒装句：Here comes the bus! 车来了！</span></button>
+    <button class="ttl"><b>All You Need Is Love</b><span class="ans">你需要的只是爱。主语是 “All you need”（你所需要的一切）。</span></button>
+    <button class="ttl"><b>Help!</b><span class="ans">救命！/ 帮帮我！一个词就能成为一句话。</span></button>
+    <button class="ttl"><b>Hello, Goodbye</b><span class="ans">你好，再见。整首歌都在用反义词：yes / no，high / low。</span></button>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="panel">
+    <span class="tag">06 · Read</span>
+    <h2 style="font-size:30px">Why were they so special?</h2>
+    <p class="zh">点击高亮词查看中文。</p>
+    <p>The Beatles <button class="w" data-zh="写（歌）">wrote</button> most of their own songs. That was not very common for pop bands at the time. They also tried new sounds in the studio, like playing tapes backwards and using an orchestra.</p>
+    <p>In 1964, they played on a TV show in America. Millions of people watched. Fans screamed so loudly at concerts that the band could not hear their own music! People called this <button class="w" data-zh="披头士狂热">Beatlemania</button>.</p>
+    <p>The band <button class="w" data-zh="解散">broke up</button> in 1970, but their music lives on. Their songs are still <button class="w" data-zh="（被）翻唱；表演">performed</button> all over the world, and many young <button class="w" data-zh="音乐人">musicians</button> learn from them.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="tag">07 · Your turn</span>
+  <h2>Press your own record</h2>
+  <p class="zh">选一首你喜欢的歌（任何歌手都可以），用句架写 2–3 句话。</p>
+  <div class="panel make">
+    <div>
+      <label for="s1">My favourite song is…</label><input id="s1" maxlength="40" placeholder="Hey Jude">
+      <label for="s2">It makes me feel…</label>
+      <select id="s2"><option value="">— choose —</option><option>happy</option><option>hopeful</option><option>calm</option><option>sad but warm</option><option>excited</option><option>brave</option></select>
+      <label for="s3">I like it because…</label><input id="s3" maxlength="90" placeholder="everyone can sing the 'na na na' part together">
+    </div>
+    <div class="mylp"><div class="label" id="lp"><b>Your record</b>Fill in the blanks</div></div>
+  </div>
+</section>
+
+<p class="source">Original teaching text. Illustrations are original drawings, not photos of the band. Short lyric lines are quoted for teaching (© the copyright holders). Facts: The Beatles official site (thebeatles.com), BBC. 如需播放音频，请上传名为 <code>song-clip</code> 的授权片段。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    $$('#poll button').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
+    $('#pollSay').textContent = b.dataset.k === 'b'
+      ? 'Yes! The Beatles were famous together for only about 10 years (1960–1970). 只有大约十年！'
+      : 'Not quite. They were together as the Beatles from 1960 to 1970 — about 10 years.';
+    ED.done('big-question');
+  };
+});
+
+// 成员插画：同一个波普头像模板，换颜色和发型
+var people = [
+  ['john', 'John Lennon', 'Born 1940 · singer & songwriter', '#ff4f9a', '#3a2a1c', 'round', '🎸'],
+  ['paul', 'Paul McCartney', 'Born 1942 · singer & songwriter', '#2ec4b6', '#4a2f1b', 'none', '🎶'],
+  ['george', 'George Harrison', 'Born 1943 · "the quiet Beatle"', '#ffc93c', '#2a1d14', 'none', '⚡'],
+  ['ringo', 'Ringo Starr', 'Born 1940 · the drummer', '#4361ee', '#2e2018', 'beard', '🥁']
+];
+function face(p){
+  var glasses = p[5] === 'round' ? '<circle cx="82" cy="104" r="13" fill="none" stroke="#1d1a2f" stroke-width="4"/><circle cx="118" cy="104" r="13" fill="none" stroke="#1d1a2f" stroke-width="4"/><path d="M95 104h10" stroke="#1d1a2f" stroke-width="4"/>' : '<circle cx="84" cy="104" r="4" fill="#1d1a2f"/><circle cx="116" cy="104" r="4" fill="#1d1a2f"/>';
+  var beard = p[5] === 'beard' ? '<path d="M72 124 q28 34 56 0 q-4 22 -28 26 q-24 -4 -28 -26z" fill="' + p[4] + '"/>' : '';
+  return '<svg viewBox="0 0 200 190" aria-hidden="true"><rect width="200" height="190" fill="' + p[3] + '"/>' +
+    '<g opacity=".25" fill="#fff">' + [20,60,100,140,180].map(function(x){ return [20,60,100,140,180].map(function(y){ return '<circle cx="' + x + '" cy="' + y + '" r="6"/>'; }).join(''); }).join('') + '</g>' +
+    '<path d="M50 190 q50 -50 100 0z" fill="#1d1a2f"/><rect x="88" y="132" width="24" height="26" fill="#f2c9a0"/>' +
+    '<ellipse cx="100" cy="106" rx="38" ry="44" fill="#f6d2ad" stroke="#1d1a2f" stroke-width="4"/>' +
+    '<path d="M58 100 q-6 -58 42 -58 q48 0 42 58 q-8 -26 -20 -30 q-14 10 -44 6 q-14 4 -20 24z" fill="' + p[4] + '" stroke="#1d1a2f" stroke-width="4"/>' +
+    glasses + beard + '<path d="M88 128 q12 10 24 0" fill="none" stroke="#1d1a2f" stroke-width="4" stroke-linecap="round"/></svg>';
+}
+people.forEach(function(p){
+  var b = document.createElement('button');
+  b.className = 'm'; b.dataset.m = p[0];
+  b.innerHTML = face(p) + '<div class="cap"><b>' + p[1] + '</b><span>' + p[2] + '</span></div>';
+  $('#members').appendChild(b);
+});
+var insSel = null, insDone = 0;
+$$('.ins').forEach(function(i){ i.onclick = function(){ $$('.ins').forEach(function(x){ x.classList.remove('sel'); }); i.classList.add('sel'); insSel = i; }; });
+$$('.m').forEach(function(m){
+  m.onclick = function(){
+    if (!insSel){ $('#memberSay').textContent = 'Choose an instrument first. 先选一个乐器。'; return; }
+    if (insSel.dataset.m === m.dataset.m){
+      var badge = document.createElement('span'); badge.className = 'inst'; badge.textContent = insSel.textContent.split(' ')[0]; m.appendChild(badge);
+      m.classList.add('dropok'); insSel.classList.add('done'); insSel.classList.remove('sel'); insSel = null; insDone++;
+      $('#memberSay').textContent = insDone === 4 ? '🎉 The band is ready to play! John and Paul wrote most songs together.' : 'Yes!';
+      if (insDone === 4) ED.done('band');
+    } else {
+      $('#memberSay').textContent = 'Hmm, not this one. Ringo is the drummer — can you guess the others?';
+    }
+  };
+});
+
+// 唱片时间轴
+var years = [
+  ['1957', 'Meet', '#ff5a36', 'John meets Paul', 'At a church fair in Liverpool, 15-year-old Paul meets 16-year-old John. Paul plays guitar for him — and joins John\'s band.', '两个少年在利物浦一个教堂集市上相识。'],
+  ['1960', 'Name', '#ffc93c', 'The Beatles are born', 'The band takes the name "The Beatles" — beetles (insects) + beat (music). They play long nights in clubs in Hamburg, Germany.', '名字是双关：甲虫 beetle + 节拍 beat。'],
+  ['1962', 'Debut', '#2ec4b6', '"Love Me Do"', 'Ringo Starr joins as the drummer. Their first single, "Love Me Do", comes out in the UK.', '林戈加入，发行第一首单曲。'],
+  ['1964', 'USA', '#4361ee', 'Beatlemania in America', 'They play on The Ed Sullivan Show in New York. About 73 million people watch on TV!', '在美国电视节目上演出，约 7300 万人观看。'],
+  ['1965', 'Song', '#ff4f9a', '"Yesterday"', 'A quiet song with just Paul\'s voice, a guitar and a string quartet. It becomes one of the most covered songs ever.', '《昨日》，被翻唱次数最多的歌曲之一。'],
+  ['1968', 'Jude', '#8ac926', '"Hey Jude"', 'A seven-minute single — very long for its time. It goes to number one in the UK and the USA.', '七分多钟的单曲，在英美都拿到第一。'],
+  ['1969–70', 'End', '#9b5de5', 'Abbey Road & goodbye', 'The famous zebra crossing photo is taken outside Abbey Road Studios in London. In 1970 the band breaks up.', '在伦敦艾比路拍下斑马线照片；1970 年解散。']
+];
+var played = {};
+years.forEach(function(y, i){
+  var b = document.createElement('button'); b.className = 'rec';
+  b.innerHTML = '<div class="disc" style="--c:' + y[2] + '"></div><b>' + y[0] + '</b><small>' + y[1] + '</small>';
+  b.onclick = function(){
+    $$('.rec').forEach(function(x){ x.classList.remove('spin'); });
+    b.classList.add('spin', 'seen'); played[i] = 1;
+    $('#sleeve').textContent = y[0].slice(-2) === '70' ? '’69' : '’' + y[0].slice(2, 4);
+    $('#sleeve').style.background = y[2];
+    $('#liner > div:last-child').innerHTML = '<h3>' + y[3] + '</h3><p>' + y[4] + '</p><p class="zh">' + y[5] + '</p><p class="counter">Records played: ' + Object.keys(played).length + ' / 7</p>';
+    if (Object.keys(played).length === 7) ED.done('timeline');
+  };
+  $('#shelf').appendChild(b);
+});
+
+// 路线
+var cities = {
+  liv: 'Liverpool, England — their home town, a busy port city by the sea. 家乡：海港城市利物浦。',
+  ham: 'Hamburg, Germany — 1960–62. They played up to eight hours a night and became a strong live band. 在德国汉堡的夜店里练就了现场功夫。',
+  lon: 'London — they recorded most of their songs at Abbey Road Studios. 在伦敦艾比路录音室录歌。',
+  ny: 'New York, USA — February 1964, The Ed Sullivan Show. America goes crazy for the Beatles! 1964 年登陆美国。'
+};
+var cSeen = {};
+$$('.route .city').forEach(function(c){
+  var go = function(){ $('#cityText').innerHTML = '<b>' + cities[c.dataset.c].split(' — ')[0] + '</b> — ' + cities[c.dataset.c].split(' — ')[1]; cSeen[c.dataset.c] = 1; if (Object.keys(cSeen).length === 4) ED.done('route'); };
+  c.addEventListener('click', go);
+  c.addEventListener('keydown', function(e){ if (e.key === 'Enter') go(); });
+});
+
+// 情绪词
+var moodDone = 0;
+$$('.moods').forEach(function(box){
+  $$('button', box).forEach(function(b){
+    b.onclick = function(){
+      if (box.dataset.ok) return;
+      var fb = box.nextElementSibling;
+      if (b.textContent === box.dataset.right){ b.classList.add('right'); box.dataset.ok = 1; fb.textContent = '✔ Great listening!'; moodDone++; if (moodDone === 2) ED.done('song-mood'); }
+      else { b.classList.add('wrong'); fb.textContent = 'Read the story again and try another word.'; }
+    };
+  });
+});
+
+// 授权片段（老师上传 song-clip 时才出现）
+ED.media('song-clip').then(function(url){ var a = $('#clip audio'); a.src = url; $('#clip').classList.add('ready'); }).catch(function(){});
+
+// 歌名翻卡
+var tOpen = {};
+$$('.ttl').forEach(function(t, i){ t.onclick = function(){ t.classList.toggle('open'); tOpen[i] = 1; if (Object.keys(tOpen).length === 6) ED.done('titles'); }; });
+
+// 词汇
+$$('.w').forEach(function(w){
+  w.onclick = function(){
+    var n = w.nextElementSibling;
+    if (n && n.classList.contains('gl')){ n.remove(); return; }
+    var g = document.createElement('span'); g.className = 'gl'; g.textContent = w.dataset.zh; w.after(g);
+  };
+});
+
+// 我的唱片
+function lp(){
+  var a = $('#s1').value.trim(), b = $('#s2').value, c = $('#s3').value.trim(), out = [];
+  if (a) out.push('My favourite song is ' + a + '.');
+  if (b) out.push('It makes me feel ' + b + '.');
+  if (c) out.push('I like it because ' + c + '.');
+  $('#lp').innerHTML = '<b>' + (a ? a.replace(/[<>&]/g, '') : 'Your record') + '</b>' + (out.length ? out.slice(1).join(' ').replace(/[<>&]/g, '') : 'Fill in the blanks');
+  if (out.length === 3) ED.done('express');
+}
+['#s1', '#s2', '#s3'].forEach(function(s){ $(s).addEventListener('input', lp); $(s).addEventListener('change', lp); });
+</script>
+</body>
+</html>

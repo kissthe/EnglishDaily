@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everyday Idioms · Interactive</title>
+<!-- 风格实验 07：美式漫画。粗黑描边、网点、对话气泡、爆炸字；每个习语是一格漫画，点击翻到“真正的意思”。 -->
+<style>
+:root{--bg:#fdf3d0;--paper:#ffffff;--ink:#111111;--muted:#555555;--yellow:#ffe14d;--red:#ff4b4b;--blue:#4fa3ff;--pink:#ff8fc7;--green:#58d68d;--purple:#a77bff;--dot:rgba(0,0,0,.13);--ok:#13a05a;--bad:#e53935}
+html.dark{--bg:#14121c;--paper:#201d2c;--ink:#f5f2ff;--muted:#bdb6d6;--yellow:#e6c62e;--red:#ff6b6b;--blue:#5aa9ff;--pink:#ff8fc7;--green:#4fd18b;--purple:#b391ff;--dot:rgba(255,255,255,.08);--ok:#4ade80;--bad:#ff7a7a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 "Comic Sans MS","Chalkboard SE","Comic Neue","Marker Felt",system-ui,sans-serif;background-image:radial-gradient(var(--dot) 1.6px,transparent 1.7px);background-size:12px 12px}
+main{max-width:1020px;margin:0 auto;padding:18px 14px 44px}
+.zh{font:14px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{margin:0;font-family:"Impact","Arial Black","Comic Sans MS",sans-serif;font-weight:900;letter-spacing:.02em;text-transform:uppercase}
+button{font:700 15px/1.25 "Comic Sans MS","Chalkboard SE",system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+.box{border:4px solid var(--ink);background:var(--paper);box-shadow:6px 6px 0 var(--ink);border-radius:4px}
+/* 封面 */
+.cover{position:relative;overflow:hidden;padding:24px 20px 20px;background:var(--yellow);color:#111}
+.cover .rays{position:absolute;inset:-50%;background:repeating-conic-gradient(from 0deg at 50% 50%,rgba(255,255,255,.45) 0 8deg,transparent 8deg 16deg);pointer-events:none}
+.cover>*:not(.rays):not(.pow){position:relative}
+.issue{display:inline-block;background:#111;color:#ffe14d;font:900 13px/1 "Arial Black",sans-serif;padding:6px 10px;transform:rotate(-3deg)}
+.cover h1{font-size:clamp(44px,10vw,104px);line-height:.9;margin:14px 0 6px;color:#fff;-webkit-text-stroke:3px #111;text-shadow:6px 6px 0 #ff4b4b}
+.cover .sub{font-size:20px;font-weight:700;margin:0 0 6px}
+.cover .zh{color:#4a3d00}
+.bubble{position:relative;display:inline-block;background:#fff;color:#111;border:3px solid #111;border-radius:24px;padding:12px 18px;font-size:19px;font-weight:700;margin:12px 0 18px}
+.bubble::after{content:"";position:absolute;left:36px;bottom:-20px;border:10px solid transparent;border-top:12px solid #111}
+.bubble::before{content:"";position:absolute;left:39px;bottom:-13px;border:7px solid transparent;border-top:9px solid #fff;z-index:1}
+.opts{display:flex;flex-wrap:wrap;gap:10px}
+.opts button{background:#fff;color:#111;border:3px solid #111;border-radius:6px;padding:10px 14px;box-shadow:3px 3px 0 #111}
+.opts button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #111}
+.opts button.right{background:var(--green)}
+.opts button.wrong{background:var(--red);color:#fff}
+.say{min-height:26px;font-weight:700;margin-top:10px}
+.pow{position:absolute;right:16px;top:18px;width:120px;height:120px;display:grid;place-items:center;font:900 26px/1 "Impact","Arial Black",sans-serif;color:#111;transform:rotate(12deg)}
+.pow svg{position:absolute;inset:0}
+.pow span{position:relative}
+/* 章节标题 */
+.chap{display:flex;align-items:center;gap:12px;margin:40px 0 12px}
+.chap .n{flex:none;width:52px;height:52px;border:4px solid var(--ink);background:var(--red);color:#fff;display:grid;place-items:center;font:900 24px "Impact","Arial Black",sans-serif;transform:rotate(-6deg);box-shadow:3px 3px 0 var(--ink)}
+.chap h2{font-size:clamp(26px,4.6vw,40px);line-height:1}
+/* 漫画格 */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.panel{position:relative;padding:0;height:250px;perspective:900px;background:none;border:0;text-align:left}
+.panel.wide{grid-column:span 2}
+.panel .in{position:absolute;inset:0;transition:transform .55s;transform-style:preserve-3d}
+.panel.flip .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);overflow:hidden;display:flex;flex-direction:column}
+.front .art{flex:1;display:grid;place-items:center;position:relative;background-image:radial-gradient(rgba(0,0,0,.14) 1.5px,transparent 1.6px);background-size:9px 9px}
+.front .art svg{width:82%;max-height:150px}
+.front .cap{background:#fff;color:#111;border-top:4px solid var(--ink);padding:8px 10px;font:900 18px/1.1 "Arial Black","Impact",sans-serif;text-transform:uppercase}
+.front .lit{position:absolute;left:8px;top:8px;background:#111;color:#fff;font:700 11px/1 system-ui,sans-serif;padding:4px 6px;letter-spacing:.1em}
+.back{transform:rotateY(180deg);background:var(--paper);padding:14px;gap:6px}
+.back b{font:900 17px/1.15 "Arial Black",sans-serif;text-transform:uppercase}
+.back .mean{font-size:17px;line-height:1.4;background:var(--yellow);color:#111;padding:6px 8px;border:2px solid var(--ink)}
+.back .ex{font-size:14px;font-style:italic}
+.back .zh{margin-top:auto}
+.flipcount{font-weight:700;margin-top:12px}
+/* 情景对话 */
+.scene{display:grid;grid-template-columns:120px 1fr 120px;gap:12px;align-items:center;padding:16px;margin-bottom:14px}
+.who{display:flex;flex-direction:column;align-items:center;gap:4px;font:700 13px system-ui,sans-serif}
+.who svg{width:90px}
+.talk{display:flex;flex-direction:column;gap:10px}
+.sb{position:relative;background:var(--paper);border:3px solid var(--ink);border-radius:18px;padding:10px 14px;font-size:16px}
+.sb.l::after{content:"";position:absolute;left:-14px;top:14px;border:7px solid transparent;border-right:10px solid var(--ink)}
+.sb.r{background:#eaf4ff;color:#111}
+html.dark .sb.r{background:#22344d;color:var(--ink)}
+.sb.r::after{content:"";position:absolute;right:-14px;top:14px;border:7px solid transparent;border-left:10px solid var(--ink)}
+.blank{display:inline-block;min-width:150px;border-bottom:3px dashed var(--red);font-weight:700;color:var(--red)}
+.sc-opts{display:flex;flex-wrap:wrap;gap:6px}
+.sc-opts button{background:var(--paper);border:2px solid var(--ink);border-radius:99px;padding:6px 12px;font-size:14px}
+.sc-opts button.right{background:var(--green);color:#111}
+.sc-opts button.wrong{background:var(--red);color:#fff}
+/* 中英配对 */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.col{display:grid;gap:8px}
+.mi{background:var(--paper);border:3px solid var(--ink);border-radius:10px;padding:10px 12px;text-align:left;box-shadow:3px 3px 0 var(--ink)}
+.mi.sel{background:var(--yellow);color:#111}
+.mi.done{background:var(--green);color:#111;box-shadow:none;opacity:.6;pointer-events:none}
+.mi.shake{animation:sh .3s}
+@keyframes sh{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.zhcol .mi{font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;font-weight:600}
+/* 我的漫画 */
+.maker{display:grid;grid-template-columns:1fr 1.1fr;gap:20px;align-items:start}
+.maker label{display:block;font-weight:700;font-size:14px;margin:10px 0 4px}
+.maker select,.maker input{width:100%;font:16px "Comic Sans MS","Chalkboard SE",system-ui,sans-serif;padding:9px 11px;border:3px solid var(--ink);border-radius:8px;background:var(--paper);color:var(--ink)}
+.mycomic{display:grid;grid-template-columns:1fr 1fr;border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);background:var(--paper)}
+.mycomic .p{min-height:230px;padding:12px;position:relative;display:flex;flex-direction:column;justify-content:space-between;background-image:radial-gradient(var(--dot) 1.5px,transparent 1.6px);background-size:9px 9px}
+.mycomic .p+.p{border-left:4px solid var(--ink)}
+.mycomic .sb{font-size:15px;min-height:56px}
+.mycomic .ppl{font-size:56px;text-align:center;line-height:1}
+.mycomic .title{grid-column:1/-1;border-bottom:4px solid var(--ink);background:var(--red);color:#fff;font:900 18px/1 "Arial Black",sans-serif;padding:8px 12px;text-transform:uppercase}
+.source{font:12.5px/1.6 system-ui,sans-serif;color:var(--muted);margin-top:30px}
+@media(max-width:780px){.strip{grid-template-columns:repeat(2,1fr)}.panel{height:240px}.panel.wide{grid-column:span 2}.scene{grid-template-columns:1fr}.scene .who{flex-direction:row}.scene .who svg{width:52px}.scene .who.right{display:none}.maker{grid-template-columns:1fr}.match{gap:8px}.mi{font-size:13.5px;padding:8px}.pow{display:none}.back{padding:10px}.back .mean{font-size:15px}}
+@media(max-width:420px){.panel.wide{grid-column:span 2}.front .cap{font-size:15px}}
+</style>
+</head>
+<body>
+<main>
+
+<header class="box cover">
+  <div class="rays" aria-hidden="true"></div>
+  <div class="pow" aria-hidden="true"><svg viewBox="0 0 120 120"><path d="M60 0l12 32 34-14-16 32 30 14-34 8 12 34-30-20-14 32-8-34-34 12 22-28L4 50l34-6L26 12l26 18z" fill="#ff4b4b" stroke="#111" stroke-width="4"/></svg><span>WHAT?!</span></div>
+  <span class="issue">ISSUE #7 · IDIOMS · A2–B1 · 20 MIN</span>
+  <h1>Say What?!</h1>
+  <p class="sub">When English words don't mean what they say.</p>
+  <div class="bubble">Your big exam is tomorrow. Your friend says: <i>“Break a leg!”</i></div>
+  <p class="zh">明天大考，朋友对你说“Break a leg!”（字面：摔断一条腿）。他是什么意思？</p>
+  <div class="opts" id="poll">
+    <button data-k="angry">😠 He is angry with me.</button>
+    <button data-k="luck">🍀 Good luck!</button>
+    <button data-k="careful">⚠️ Be careful on the stairs.</button>
+  </div>
+  <p class="say" id="pollSay" aria-live="polite"></p>
+</header>
+
+<div class="chap"><span class="n">1</span><div><h2>Picture it… then flip it!</h2><p class="zh">先看“字面意思”的漫画，猜一猜，再点击翻到真正的意思。</p></div></div>
+<div class="strip" id="strip"></div>
+<p class="flipcount" id="flipCount">Panels flipped: 0 / 8</p>
+
+<div class="chap"><span class="n">2</span><div><h2>What would you say?</h2><p class="zh">读对话，给空白处选一个最合适的习语。</p></div></div>
+<div id="scenes"></div>
+
+<div class="chap"><span class="n">3</span><div><h2>English ↔ 中文</h2><p class="zh">中文里也有类似的说法。先点左边的英文，再点右边意思最接近的中文。</p></div></div>
+<div class="box" style="padding:16px">
+  <div class="match"><div class="col" id="enCol"></div><div class="col zhcol" id="zhCol"></div></div>
+  <p class="say" id="matchSay" aria-live="polite"></p>
+</div>
+
+<div class="chap"><span class="n">4</span><div><h2>Draw your own comic</h2><p class="zh">选一个习语，给两个人物写对话，生成你的两格漫画。</p></div></div>
+<div class="maker">
+  <div class="box" style="padding:16px">
+    <label for="m1">Choose an idiom</label>
+    <select id="m1"></select>
+    <label for="m2">Person A says… (the situation)</label><input id="m2" maxlength="80" placeholder="I have a test tomorrow and I feel nervous.">
+    <label for="m3">Person B answers… (use the idiom!)</label><input id="m3" maxlength="80" placeholder="Don't worry. It will be a piece of cake!">
+  </div>
+  <div class="mycomic" id="mycomic">
+    <div class="title" id="mcTitle">My comic</div>
+    <div class="p"><div class="sb l" id="mcA">…</div><div class="ppl">🧑</div></div>
+    <div class="p"><div class="sb r" id="mcB">…</div><div class="ppl">👩</div></div>
+  </div>
+</div>
+
+<p class="source">Original teaching text and drawings. Idiom meanings checked with the Cambridge Dictionary and Oxford Learner's Dictionaries. Nobody knows for sure where “break a leg” comes from; it is used mostly in the theatre. 教师可在此补充图片 / 视频来源与授权。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s){ return s.replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    if ($('#poll').dataset.done) return; $('#poll').dataset.done = 1;
+    if (b.dataset.k === 'luck'){ b.classList.add('right'); $('#pollSay').textContent = 'BINGO! "Break a leg" = Good luck! People say it before a show, a game or an exam.'; }
+    else { b.classList.add('wrong'); $$('#poll button')[1].classList.add('right'); $('#pollSay').textContent = 'Nope! It means "Good luck!" — English can be funny like that.'; }
+    ED.done('big-question');
+  };
+});
+
+// 漫画格插画（原创 SVG）
+var art = {
+  cake: '<svg viewBox="0 0 200 140"><path d="M30 110 L170 110 L170 70 L30 92Z" fill="#ffd6e7" stroke="#111" stroke-width="4"/><path d="M30 92 L170 70 L120 40 Z" fill="#fff6e0" stroke="#111" stroke-width="4"/><path d="M30 100 L170 80" stroke="#ff4b4b" stroke-width="6"/><circle cx="120" cy="34" r="10" fill="#ff4b4b" stroke="#111" stroke-width="3"/><path d="M120 24 q4 -12 14 -14" stroke="#111" stroke-width="3" fill="none"/><ellipse cx="100" cy="118" rx="80" ry="8" fill="#ccc" stroke="#111" stroke-width="3"/></svg>',
+  leg: '<svg viewBox="0 0 200 140"><rect x="20" y="110" width="160" height="14" fill="#a0522d" stroke="#111" stroke-width="3"/><path d="M80 10 h34 v70 l30 20 v16 h-64z" fill="#fff" stroke="#111" stroke-width="4"/><path d="M80 30 h34 M80 46 h34 M80 62 h34" stroke="#bbb" stroke-width="3"/><text x="88" y="54" font-size="18">✍️</text><path d="M30 20 l14 10 M40 10 l4 16 M160 20 l-14 10" stroke="#111" stroke-width="4"/><text x="140" y="60" font-size="22" font-family="Impact" fill="#ff4b4b">OUCH!</text></svg>',
+  weather: '<svg viewBox="0 0 200 140"><path d="M50 50 q-30 0 -26 -22 q6 -22 32 -14 q10 -22 40 -14 q24 -16 46 4 q30 -2 26 26 q-4 20 -30 20z" fill="#9db4c8" stroke="#111" stroke-width="4"/><g stroke="#4fa3ff" stroke-width="4" stroke-linecap="round"><path d="M60 66 l-6 14 M90 66 l-6 14 M120 66 l-6 14 M150 66 l-6 14"/></g><circle cx="100" cy="102" r="20" fill="#ffe0b8" stroke="#111" stroke-width="4"/><path d="M90 98 h4 M106 98 h4" stroke="#111" stroke-width="4"/><path d="M92 112 q8 -6 16 0" stroke="#111" stroke-width="3" fill="none"/><path d="M80 130 q20 -14 40 0" fill="#58d68d" stroke="#111" stroke-width="4"/><text x="122" y="100" font-size="16">🤒</text></svg>',
+  moon: '<svg viewBox="0 0 200 140"><rect width="200" height="140" fill="#1c2340"/><g fill="#fff"><circle cx="20" cy="20" r="2"/><circle cx="170" cy="30" r="2"/><circle cx="40" cy="110" r="2"/><circle cx="180" cy="100" r="2"/><circle cx="140" cy="14" r="1.5"/></g><circle cx="100" cy="70" r="44" fill="#6fb6ff" stroke="#111" stroke-width="4"/><circle cx="84" cy="56" r="8" fill="#4f95e0"/><circle cx="114" cy="86" r="11" fill="#4f95e0"/><circle cx="118" cy="52" r="5" fill="#4f95e0"/></svg>',
+  beans: '<svg viewBox="0 0 200 140"><path d="M40 40 h60 l10 16 v54 h-80 v-54z" fill="#e8f1ff" stroke="#111" stroke-width="4" transform="rotate(-28 70 80)"/><g fill="#c0392b" stroke="#111" stroke-width="2.5"><ellipse cx="120" cy="104" rx="9" ry="6"/><ellipse cx="140" cy="114" rx="9" ry="6" transform="rotate(30 140 114)"/><ellipse cx="158" cy="100" rx="9" ry="6"/><ellipse cx="132" cy="96" rx="9" ry="6" transform="rotate(-20 132 96)"/><ellipse cx="172" cy="118" rx="9" ry="6"/><ellipse cx="110" cy="120" rx="9" ry="6" transform="rotate(40 110 120)"/></g><text x="120" y="40" font-size="22" font-family="Impact" fill="#ff4b4b">OOPS!</text></svg>',
+  arm: '<svg viewBox="0 0 200 140"><path d="M20 90 q40 -10 80 -6 q30 -40 40 -46 q16 -6 18 8 q-10 20 -22 46 q-6 20 -40 22 l-76 4z" fill="#ffe0b8" stroke="#111" stroke-width="4"/><path d="M150 70 l40 -8 v28 l-40 4z" fill="#ffe14d" stroke="#111" stroke-width="4"/><circle cx="156" cy="80" r="3" fill="#111"/><text x="160" y="86" font-size="16" font-family="Impact" fill="#111">$$$</text><path d="M134 74 l16 6" stroke="#111" stroke-width="2"/></svg>',
+  books: '<svg viewBox="0 0 200 140"><rect x="40" y="96" width="120" height="20" fill="#4fa3ff" stroke="#111" stroke-width="4"/><rect x="50" y="76" width="104" height="20" fill="#ff8fc7" stroke="#111" stroke-width="4"/><rect x="44" y="56" width="112" height="20" fill="#58d68d" stroke="#111" stroke-width="4"/><path d="M100 4 l-8 44 h16z" fill="#ffe0b8" stroke="#111" stroke-width="4"/><circle cx="100" cy="46" r="14" fill="#ffe0b8" stroke="#111" stroke-width="4"/><path d="M60 40 l-14 -8 M140 40 l14 -8 M66 26 l-6 -12 M134 26 l6 -12" stroke="#111" stroke-width="4"/><text x="146" y="62" font-size="18" font-family="Impact" fill="#ff4b4b">POW!</text></svg>',
+  potato: '<svg viewBox="0 0 200 140"><path d="M20 120 v-44 q0 -14 14 -14 h132 q14 0 14 14 v44z" fill="#a77bff" stroke="#111" stroke-width="4"/><rect x="34" y="88" width="132" height="20" rx="6" fill="#c3a5ff" stroke="#111" stroke-width="3"/><ellipse cx="100" cy="72" rx="34" ry="24" fill="#d8b56a" stroke="#111" stroke-width="4"/><circle cx="90" cy="68" r="3" fill="#111"/><circle cx="110" cy="68" r="3" fill="#111"/><path d="M92 80 q8 6 16 0" stroke="#111" stroke-width="3" fill="none"/><circle cx="80" cy="60" r="2" fill="#8a6a2a"/><circle cx="122" cy="80" r="2" fill="#8a6a2a"/><text x="140" y="44" font-size="22">📺</text><text x="40" y="44" font-size="20">🍿</text></svg>'
+};
+var idioms = [
+  ['cake', 'A piece of cake', '#ffe14d', 'Very easy.', '“The test was a piece of cake!”', '小菜一碟；非常容易', 'wide'],
+  ['leg', 'Break a leg!', '#ff8fc7', 'Good luck! (said before a show or a performance)', '“Your concert is tonight? Break a leg!”', '祝你好运（多用于演出前）', ''],
+  ['weather', 'Under the weather', '#4fa3ff', 'A little ill; not feeling well.', '“I can\'t come today. I\'m a bit under the weather.”', '身体不舒服', ''],
+  ['moon', 'Once in a blue moon', '#a77bff', 'Very rarely; almost never.', '“I eat fast food once in a blue moon.”', '千载难逢；极少', ''],
+  ['beans', 'Spill the beans', '#58d68d', 'Tell a secret (often by mistake).', '“Don\'t spill the beans about the surprise party!”', '说漏嘴；泄露秘密', ''],
+  ['arm', 'Cost an arm and a leg', '#ff4b4b', 'Be very, very expensive.', '“That phone cost an arm and a leg!”', '贵得离谱', 'wide'],
+  ['books', 'Hit the books', '#4fa3ff', 'Start studying hard.', '“Exams are next week. Time to hit the books!”', '用功读书', 'wide'],
+  ['potato', 'A couch potato', '#d8b56a', 'Someone who sits and watches TV a lot.', '“Don\'t be a couch potato — let\'s go outside!”', '整天窝在沙发上看电视的人', 'wide']
+];
+var flipped = {};
+idioms.forEach(function(d, i){
+  var b = document.createElement('button'); b.className = 'panel ' + d[6];
+  b.innerHTML = '<div class="in"><div class="face front"><div class="art" style="background-color:' + d[2] + '"><span class="lit">LITERALLY…</span>' + art[d[0]] + '</div><div class="cap">' + d[1] + '</div></div>' +
+    '<div class="face back"><b>' + d[1] + '</b><span class="mean">= ' + d[3] + '</span><span class="ex">' + d[4] + '</span><span class="zh">' + d[5] + '</span></div></div>';
+  b.onclick = function(){ b.classList.toggle('flip'); flipped[i] = 1; var n = Object.keys(flipped).length; $('#flipCount').textContent = 'Panels flipped: ' + n + ' / 8' + (n === 8 ? ' · 💥 Great!' : ''); if (n === 8) ED.done('flip-panels'); };
+  $('#strip').appendChild(b);
+});
+
+// 小人头像
+function person(color, hair){ return '<svg viewBox="0 0 90 90"><circle cx="45" cy="45" r="42" fill="' + color + '" stroke="#111" stroke-width="4"/><circle cx="45" cy="50" r="24" fill="#ffe0b8" stroke="#111" stroke-width="3"/><path d="' + hair + '" fill="#3b2a1a" stroke="#111" stroke-width="3"/><circle cx="37" cy="50" r="3" fill="#111"/><circle cx="53" cy="50" r="3" fill="#111"/><path d="M38 60 q7 6 14 0" stroke="#111" stroke-width="3" fill="none"/></svg>'; }
+var tom = person('#4fa3ff', 'M22 46 q2 -24 23 -24 q22 0 24 24 q-8 -10 -24 -10 q-14 0 -23 10z');
+var amy = person('#ff8fc7', 'M20 60 q-4 -38 25 -38 q30 0 26 38 q-4 -20 -10 -24 q-16 6 -32 0 q-6 6 -9 24z');
+var scenes = [
+  ['Tom', 'Amy', 'Did you finish the maths homework? It looks really hard.', 'No, it was easy! It was ____.', ['a piece of cake', 'under the weather', 'a couch potato'], 0],
+  ['Amy', 'Tom', 'Where were you yesterday? You missed the football match.', 'Sorry, I had a cold. I was ____.', ['hitting the books', 'under the weather', 'breaking a leg'], 1],
+  ['Tom', 'Amy', 'It\'s Mum\'s birthday on Friday. We\'re planning a surprise party.', 'OK! I promise I won\'t ____.', ['spill the beans', 'cost an arm and a leg', 'hit the books'], 0],
+  ['Amy', 'Tom', 'Do you go to the cinema a lot?', 'No, only ____. Tickets ____!', ['once in a blue moon / cost an arm and a leg', 'a piece of cake / break a leg', 'under the weather / spill the beans'], 0],
+  ['Tom', 'Amy', 'I\'m singing in the school concert tonight. I\'m so nervous!', 'You\'ll be great. ____!', ['Spill the beans', 'Break a leg', 'Hit the books'], 1]
+];
+var scDone = 0, scRight = 0;
+scenes.forEach(function(s, i){
+  var d = document.createElement('div'); d.className = 'box scene';
+  var A = s[0] === 'Tom' ? tom : amy, B = s[0] === 'Tom' ? amy : tom;
+  d.innerHTML = '<div class="who">' + A + s[0] + '</div><div class="talk"><div class="sb l">' + s[2] + '</div><div class="sb r"><b>' + s[1] + ':</b> ' + s[3].replace(/____/g, '<span class="blank">?</span>') + '</div><div class="sc-opts"></div></div><div class="who right">' + B + s[1] + '</div>';
+  s[4].forEach(function(o, j){
+    var b = document.createElement('button'); b.textContent = o;
+    b.onclick = function(){
+      if (d.dataset.done) return;
+      if (j === s[5]){
+        d.dataset.done = 1; b.classList.add('right'); scDone++; if (!d.dataset.miss) scRight++;
+        var parts = o.split(' / '); $$('.blank', d).forEach(function(bl, k){ bl.textContent = parts[k] || parts[0]; bl.style.color = 'var(--ok)'; bl.style.borderColor = 'var(--ok)'; });
+        if (scDone === scenes.length) ED.done('situations');
+      } else { b.classList.add('wrong'); d.dataset.miss = 1; }
+    };
+    $('.sc-opts', d).appendChild(b);
+  });
+  $('#scenes').appendChild(d);
+});
+
+// 中英配对
+var pairs = [['a piece of cake', '小菜一碟'], ['once in a blue moon', '千载难逢'], ['spill the beans', '说漏嘴'], ['cost an arm and a leg', '贵得要命'], ['hit the books', '埋头苦读'], ['under the weather', '身体不适']];
+var enSel = null, mDone = 0;
+function shuffle(a){ return a.map(function(x){ return [Math.random(), x]; }).sort(function(p, q){ return p[0] - q[0]; }).map(function(p){ return p[1]; }); }
+pairs.forEach(function(p, i){ var b = document.createElement('button'); b.className = 'mi'; b.textContent = p[0]; b.dataset.i = i; b.onclick = function(){ $$('#enCol .mi').forEach(function(x){ x.classList.remove('sel'); }); b.classList.add('sel'); enSel = b; }; $('#enCol').appendChild(b); });
+shuffle(pairs.map(function(p, i){ return [p[1], i]; })).forEach(function(p){
+  var b = document.createElement('button'); b.className = 'mi'; b.textContent = p[0];
+  b.onclick = function(){
+    if (!enSel){ $('#matchSay').textContent = 'Pick an English idiom first. 先点左边的英文。'; return; }
+    if (+enSel.dataset.i === p[1]){ enSel.classList.add('done'); b.classList.add('done'); enSel = null; mDone++; $('#matchSay').textContent = mDone === pairs.length ? '💥 KAPOW! All matched!' : 'Match!'; if (mDone === pairs.length) ED.done('match-chinese'); }
+    else { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); $('#matchSay').textContent = 'Not quite. Try again!'; }
+  };
+  $('#zhCol').appendChild(b);
+});
+
+// 我的漫画
+$('#m1').innerHTML = '<option value="">— choose —</option>' + idioms.map(function(d){ return '<option>' + d[1] + '</option>'; }).join('');
+function comic(){
+  var t = $('#m1').value, a = $('#m2').value.trim(), b = $('#m3').value.trim();
+  $('#mcTitle').textContent = t || 'My comic';
+  $('#mcA').textContent = a || '…'; $('#mcB').textContent = b || '…';
+  if (t && a && b) ED.done('express');
+}
+['#m1', '#m2', '#m3'].forEach(function(s){ $(s).addEventListener('input', comic); $(s).addEventListener('change', comic); });
+</script>
+</body>
+</html>

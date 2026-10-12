@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The UK: Four Nations · Interactive</title>
+<!-- 风格实验 01：复古旅行海报 / 地图册。藏青 + 红 + 米白，粗衬线标题，邮票式卡片。 -->
+<style>
+:root{--bg:#f3ecdc;--paper:#fbf7ee;--ink:#14213d;--muted:#5d6475;--line:#d8cdb4;--navy:#012169;--red:#c8102e;--gold:#c9a227;--green:#2d7d46;--soft:#e9e1cc;--ok:#1f7a4d;--bad:#b42318;--sea:#b9d3e6}
+html.dark{--bg:#0d1424;--paper:#151f35;--ink:#ede6d6;--muted:#a8afc0;--line:#2c3a58;--navy:#7d9cff;--red:#ff6b7f;--gold:#e8c45a;--green:#5fc283;--soft:#1d2a47;--ok:#5fd39a;--bad:#ff8a7a;--sea:#1b3550}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.7 Georgia,"Times New Roman",serif;background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px}
+main{max-width:1000px;margin:0 auto;padding:22px 16px 40px}
+.zh{font:14.5px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{font-family:"Rockwell","Georgia",serif;margin:0}
+.kicker{font:700 12px/1 system-ui,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--red)}
+button{font:600 15px/1.2 system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+/* 海报 */
+.poster{position:relative;overflow:hidden;border:3px solid var(--ink);background:var(--navy);color:#fff;padding:28px 24px 24px;border-radius:6px;box-shadow:8px 8px 0 var(--red)}
+html.dark .poster{background:#0a1a4d}
+.poster .flagbg{position:absolute;inset:0;opacity:.18;width:100%;height:100%}
+.poster>*:not(.flagbg){position:relative}
+.poster .kicker{color:#ffd4da}
+.poster h1{font-size:clamp(34px,7vw,64px);line-height:1.02;margin:12px 0 10px;letter-spacing:-.01em}
+.poster h1 em{font-style:normal;color:#ffcf4d}
+.poster p{margin:0 0 8px;max-width:600px}
+.poster .zh{color:#d5dcf5}
+.poll{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.poll button{background:#fff;color:#012169;border:0;border-radius:4px;padding:14px 8px;font-size:16px;box-shadow:0 4px 0 #8a9acb}
+.poll button:active{transform:translateY(3px);box-shadow:0 1px 0 #8a9acb}
+.poll button.picked{background:#ffcf4d}
+.say{min-height:26px;margin-top:12px;font:15px/1.6 system-ui,sans-serif}
+/* 区块 */
+.block{margin:34px 0;background:var(--paper);border:2px solid var(--ink);border-radius:6px;padding:24px}
+.block h2{font-size:clamp(24px,4vw,32px);margin:6px 0 6px}
+.two{display:grid;grid-template-columns:1.05fr 1fr;gap:22px;align-items:start}
+/* 套娃圈 */
+.venn{width:100%;max-width:440px;display:block;margin:0 auto}
+.venn .ring{cursor:pointer;transition:opacity .2s}
+.venn text{font:700 13px system-ui,sans-serif;pointer-events:none}
+.venn .ring:hover{opacity:.85}
+.def{background:var(--soft);border-left:6px solid var(--red);padding:14px 16px;border-radius:0 6px 6px 0;min-height:150px}
+.def h3{font-size:22px;margin-bottom:4px}
+/* 地图 */
+.map{width:100%;max-width:420px;display:block;margin:0 auto}
+.map .sea{fill:var(--sea)}
+.map .nation{stroke:var(--ink);stroke-width:2;cursor:pointer;transition:filter .2s,transform .2s}
+.map .nation:hover,.map .nation:focus{filter:brightness(1.12);outline:none}
+.map .nation.on{stroke-width:3.5}
+.map .roi{fill:var(--line);stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 3}
+.map .cap{fill:var(--ink)}
+.map text{font:700 12px system-ui,sans-serif;fill:var(--ink);pointer-events:none}
+.map .small{font-weight:500;font-size:10px;fill:var(--muted)}
+.stamp{position:relative;background:var(--paper);padding:18px;border:2px dashed var(--line);border-radius:4px;min-height:280px}
+.stamp .badge{float:right;width:84px;height:96px;margin:0 0 8px 12px;border:4px dotted var(--gold);display:grid;place-items:center;font-size:44px;background:var(--soft)}
+.stamp h3{font-size:26px}
+.stamp ul{margin:8px 0 0;padding-left:18px}
+.stamp li{margin:3px 0}
+.visited{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.visited span{font:700 12px system-ui,sans-serif;padding:4px 10px;border-radius:99px;border:1.5px solid var(--line);color:var(--muted)}
+.visited span.ok{border-color:var(--ok);color:var(--ok)}
+/* 旗帜拼合 */
+.flagstage{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:center}
+.bigflag{width:100%;border:2px solid var(--ink);border-radius:4px;display:block;background:#fff}
+.bigflag .layer{opacity:0;transition:opacity .6s}
+.bigflag .layer.on{opacity:1}
+.pieces{display:grid;gap:10px}
+.piece{display:flex;gap:12px;align-items:center;text-align:left;background:var(--paper);border:2px solid var(--ink);border-radius:6px;padding:8px 10px;box-shadow:4px 4px 0 var(--ink);transition:transform .1s}
+.piece:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.piece svg{width:64px;flex:none;border:1px solid var(--line)}
+.piece small{display:block;font:13px/1.4 system-ui,sans-serif;color:var(--muted)}
+.piece.used{opacity:.45;box-shadow:none}
+.year{font:700 13px system-ui,sans-serif;color:var(--red)}
+/* 象征配对 */
+.symbols{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.sym{display:flex;gap:8px;align-items:center;background:var(--soft);border:2px solid transparent;border-radius:999px;padding:8px 14px}
+.sym .e{font-size:24px}
+.sym.sel{border-color:var(--red);background:var(--paper)}
+.sym.done{opacity:.35;pointer-events:none}
+.homes{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.home{min-height:130px;border:2px solid var(--ink);border-radius:6px;background:var(--paper);padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.home svg{width:58px;border:1px solid var(--line)}
+.home b{font:700 14px system-ui,sans-serif}
+.home .got{font-size:22px;min-height:26px}
+/* 阅读 */
+.read p{margin:0 0 12px}
+.w{font:inherit;color:inherit;background:none;border:0;padding:0 2px;border-bottom:2px dotted var(--red);cursor:pointer}
+.w.open{background:var(--soft)}
+.gl{display:inline-block;font:13px/1.4 system-ui,"PingFang SC",sans-serif;color:#fff;background:var(--red);padding:2px 8px;border-radius:4px;margin:0 4px}
+/* 小测 */
+.q{border-top:1px dashed var(--line);padding:12px 0}
+.q p{font-weight:700;margin:0 0 8px}
+.q .opts{display:flex;flex-wrap:wrap;gap:8px}
+.q .opts button{background:var(--paper);border:2px solid var(--ink);border-radius:4px;padding:9px 14px}
+.q .opts button.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.q .opts button.wrong{background:var(--bad);border-color:var(--bad);color:#fff;opacity:.8}
+.score{font:700 16px system-ui,sans-serif;color:var(--red)}
+/* 表达 */
+.frames{display:grid;gap:10px}
+.frames label{font:600 14px system-ui,sans-serif;color:var(--muted)}
+.frames select,.frames input{font:17px Georgia,serif;padding:9px 10px;border:2px solid var(--ink);border-radius:4px;background:var(--paper);color:var(--ink);width:100%}
+.ticket{margin-top:16px;display:grid;grid-template-columns:auto 1fr;border:2px solid var(--ink);border-radius:8px;overflow:hidden;background:var(--paper)}
+.ticket .stub{background:var(--red);color:#fff;writing-mode:vertical-rl;transform:rotate(180deg);padding:12px 8px;font:700 13px system-ui,sans-serif;letter-spacing:.2em;text-align:center}
+.ticket .body{padding:16px 18px;font-size:18px;min-height:110px;border-left:2px dashed var(--ink)}
+.source{font:12.5px/1.6 system-ui,sans-serif;color:var(--muted);margin-top:24px}
+@media(max-width:700px){.two,.flagstage{grid-template-columns:1fr}.homes{grid-template-columns:repeat(2,1fr)}.poll{grid-template-columns:1fr}.block{padding:18px 14px}.poster{padding:22px 16px}}
+</style>
+</head>
+<body>
+<main>
+
+<!-- 共用旗帜定义 -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <clipPath id="ukc"><rect width="60" height="30"/></clipPath>
+    <clipPath id="ukt"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath>
+    <symbol id="f-eng" viewBox="0 0 60 36"><rect width="60" height="36" fill="#fff"/><rect x="25" width="10" height="36" fill="#c8102e"/><rect y="13" width="60" height="10" fill="#c8102e"/></symbol>
+    <symbol id="f-sco" viewBox="0 0 60 36"><rect width="60" height="36" fill="#005eb8"/><path d="M0 0L60 36M60 0L0 36" stroke="#fff" stroke-width="7"/></symbol>
+    <symbol id="f-pat" viewBox="0 0 60 36"><rect width="60" height="36" fill="#fff"/><path d="M0 0L60 36M60 0L0 36" stroke="#c8102e" stroke-width="6"/></symbol>
+    <symbol id="f-wal" viewBox="0 0 60 36"><rect width="60" height="18" fill="#fff"/><rect y="18" width="60" height="18" fill="#00b140"/>
+      <path d="M14 22c3-6 9-8 14-7l4-5 2 3 6-2-3 5c5 1 9 4 10 9l4-1-3 5c-4 0-6-2-8-3-3 3-8 4-12 3l-2 5-3-4-4 3 1-5c-3-1-5-3-6-6z" fill="#d30731"/></symbol>
+  </defs>
+</svg>
+
+<header class="poster">
+  <svg class="flagbg" viewBox="0 0 60 30" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g clip-path="url(#ukc)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#ukt)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg>
+  <span class="kicker">Places · A2 · 20 min · Atlas series</span>
+  <h1>One kingdom,<br><em>four nations.</em></h1>
+  <p>Britain, England, the UK… Are they the same thing?</p>
+  <p class="zh">先猜一猜：下面哪个名字指的“范围”最大？</p>
+  <div class="poll" id="poll">
+    <button data-k="england">England</button>
+    <button data-k="gb">Great Britain</button>
+    <button data-k="uk">The United Kingdom</button>
+  </div>
+  <p class="say" id="pollSay" aria-live="polite"></p>
+</header>
+
+<section class="block">
+  <span class="kicker">01 · Zoom out</span>
+  <h2>Circles inside circles</h2>
+  <p class="zh">点击每一个圆圈，看看它包含哪些部分。</p>
+  <div class="two">
+    <svg class="venn" viewBox="0 0 420 330" role="img" aria-label="England, Scotland and Wales are in Great Britain. Great Britain and Northern Ireland make the UK.">
+      <g class="ring" data-r="uk"><rect x="6" y="6" width="408" height="318" rx="40" fill="#012169" opacity=".14" stroke="#012169" stroke-width="3"/><text x="26" y="36" fill="var(--navy)">THE UNITED KINGDOM (UK)</text></g>
+      <g class="ring" data-r="gb"><rect x="24" y="52" width="262" height="256" rx="34" fill="#c8102e" opacity=".14" stroke="#c8102e" stroke-width="3"/><text x="42" y="80" fill="var(--red)">GREAT BRITAIN (an island)</text></g>
+      <g class="ring" data-r="eng"><circle cx="112" cy="220" r="60" fill="#fff" stroke="#c8102e" stroke-width="3"/><use href="#f-eng" x="92" y="182" width="40" height="24"/><text x="80" y="232" fill="#14213d">England</text></g>
+      <g class="ring" data-r="sco"><circle cx="206" cy="160" r="50" fill="#dbe8ff" stroke="#005eb8" stroke-width="3"/><use href="#f-sco" x="188" y="126" width="36" height="22"/><text x="178" y="172" fill="#14213d">Scotland</text></g>
+      <g class="ring" data-r="wal"><circle cx="216" cy="256" r="40" fill="#e3f6e8" stroke="#00a03a" stroke-width="3"/><use href="#f-wal" x="200" y="228" width="32" height="20"/><text x="194" y="268" fill="#14213d">Wales</text></g>
+      <g class="ring" data-r="ni"><circle cx="350" cy="190" r="52" fill="#fff4f5" stroke="#c8102e" stroke-width="3" stroke-dasharray="6 4"/><text x="318" y="186" fill="#14213d">Northern</text><text x="324" y="202" fill="#14213d">Ireland</text></g>
+    </svg>
+    <div class="def" id="def" aria-live="polite">
+      <h3>Tap a circle</h3>
+      <p class="zh">提示：Great Britain 是一个岛的名字；the UK 是一个国家的名字。</p>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <span class="kicker">02 · Map stamps</span>
+  <h2>Collect four stamps</h2>
+  <p class="zh">点击地图上的四个部分，收集“邮票”。示意图，不按比例。</p>
+  <div class="two">
+    <svg class="map" viewBox="0 0 320 440" role="img" aria-label="Simplified map of the UK, not to scale">
+      <rect class="sea" width="320" height="440" rx="10"/>
+      <path class="roi" d="M40 182 L52 200 L72 206 L92 196 L98 232 L86 272 L60 292 L26 286 L10 250 L16 210 Z"/>
+      <text class="small" x="30" y="248">Ireland</text><text class="small" x="18" y="262">(another country)</text>
+      <path class="nation" data-n="ni" tabindex="0" role="button" aria-label="Northern Ireland" fill="#f7c8cf" d="M50 160 L80 148 L98 164 L92 196 L72 206 L52 200 L40 182 Z"/>
+      <path class="nation" data-n="sco" tabindex="0" role="button" aria-label="Scotland" fill="#9cc3f2" d="M120 34 L160 16 L206 26 L214 60 L196 86 L226 110 L216 150 L190 176 L160 182 L140 168 L122 176 L110 150 L96 130 L106 100 L90 76 L112 56 Z"/>
+      <path class="nation" data-n="eng" tabindex="0" role="button" aria-label="England" fill="#f4f0e6" d="M160 182 L190 176 L216 202 L236 240 L250 280 L276 318 L286 350 L262 376 L222 386 L182 392 L142 402 L110 412 L96 402 L130 378 L160 362 L166 330 L160 300 L168 270 L164 240 L150 214 L140 190 Z"/>
+      <path class="nation" data-n="wal" tabindex="0" role="button" aria-label="Wales" fill="#a8e0b5" d="M168 270 L160 300 L166 330 L160 362 L130 378 L118 360 L104 346 L114 320 L100 300 L120 286 L142 280 Z"/>
+      <circle class="cap" cx="182" cy="140" r="4"/><text x="148" y="132">Edinburgh</text>
+      <circle class="cap" cx="80" cy="172" r="4"/><text x="58" y="146">Belfast</text>
+      <circle class="cap" cx="146" cy="364" r="4"/><text x="100" y="392">Cardiff</text>
+      <circle class="cap" cx="244" cy="352" r="5"/><text x="226" y="342">London</text>
+      <text class="small" x="244" y="60">North Sea</text>
+      <text class="small" x="20" y="400">Atlantic</text>
+    </svg>
+    <div>
+      <div class="stamp" id="stamp" aria-live="polite">
+        <div class="badge">🗺️</div>
+        <h3>Choose a nation</h3>
+        <p class="zh">每一部分都有自己的首府、旗帜和特色。</p>
+      </div>
+      <div class="visited" id="visited"><span data-v="eng">England</span><span data-v="sco">Scotland</span><span data-v="wal">Wales</span><span data-v="ni">N. Ireland</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <span class="kicker">03 · Flag lab</span>
+  <h2>Build the Union Flag</h2>
+  <p class="zh">英国国旗（Union Jack）是由几面旗“叠”出来的。按时间顺序点击，把它们拼起来。哪一面不在里面？</p>
+  <div class="flagstage">
+    <svg class="bigflag" viewBox="0 0 60 30" role="img" aria-label="Union Flag being built">
+      <defs><clipPath id="bf-t"><path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z"/></clipPath></defs>
+      <rect width="60" height="30" fill="#fff"/>
+      <text id="flagHint" x="30" y="17" text-anchor="middle" font-size="3.4" fill="#8a8f9c" font-family="system-ui,sans-serif">Tap the flags to build me →</text>
+      <g class="layer" id="L-sco"><rect width="60" height="30" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/></g>
+      <g class="layer" id="L-pat"><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#bf-t)" stroke="#C8102E" stroke-width="4"/></g>
+      <g class="layer" id="L-eng"><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g>
+    </svg>
+    <div class="pieces" id="pieces">
+      <button class="piece" data-p="eng"><svg viewBox="0 0 60 36"><use href="#f-eng"/></svg><span>St George's Cross<small>England · red cross on white</small></span></button>
+      <button class="piece" data-p="sco"><svg viewBox="0 0 60 36"><use href="#f-sco"/></svg><span>St Andrew's Cross<small>Scotland · white X on blue</small></span></button>
+      <button class="piece" data-p="pat"><svg viewBox="0 0 60 36"><use href="#f-pat"/></svg><span>St Patrick's Cross<small>Ireland · red X on white</small></span></button>
+      <button class="piece" data-p="wal"><svg viewBox="0 0 60 36"><use href="#f-wal"/></svg><span>The Red Dragon<small>Wales · Y Ddraig Goch</small></span></button>
+    </div>
+  </div>
+  <p class="say" id="flagSay" aria-live="polite"></p>
+</section>
+
+<section class="block">
+  <span class="kicker">04 · Symbols</span>
+  <h2>Who does it belong to?</h2>
+  <p class="zh">先点一个象征物，再点它所属的地区。</p>
+  <div class="symbols" id="symbols">
+    <button class="sym" data-h="eng"><span class="e">🌹</span>the rose</button>
+    <button class="sym" data-h="sco"><span class="e">🦄</span>the unicorn</button>
+    <button class="sym" data-h="wal"><span class="e">🐉</span>the red dragon</button>
+    <button class="sym" data-h="ni"><span class="e">☘️</span>the shamrock</button>
+    <button class="sym" data-h="sco"><span class="e">🎶</span>bagpipes</button>
+    <button class="sym" data-h="wal"><span class="e">🌼</span>the daffodil</button>
+    <button class="sym" data-h="eng"><span class="e">🎡</span>the London Eye</button>
+    <button class="sym" data-h="ni"><span class="e">🚢</span>the Titanic (built in Belfast)</button>
+  </div>
+  <div class="homes" id="homes">
+    <button class="home" data-h="eng"><svg viewBox="0 0 60 36"><use href="#f-eng"/></svg><b>England</b><span class="got"></span></button>
+    <button class="home" data-h="sco"><svg viewBox="0 0 60 36"><use href="#f-sco"/></svg><b>Scotland</b><span class="got"></span></button>
+    <button class="home" data-h="wal"><svg viewBox="0 0 60 36"><use href="#f-wal"/></svg><b>Wales</b><span class="got"></span></button>
+    <button class="home" data-h="ni"><svg viewBox="0 0 60 36"><rect width="60" height="36" fill="#f7c8cf"/><text x="30" y="24" text-anchor="middle" font-size="18">☘️</text></svg><b>N. Ireland</b><span class="got"></span></button>
+  </div>
+  <p class="say" id="symSay" aria-live="polite"></p>
+</section>
+
+<section class="block read">
+  <span class="kicker">05 · Read</span>
+  <h2>Not just "England"</h2>
+  <p class="zh">点击带红色虚线的词查看中文。</p>
+  <p>The UK is short for <i>the United Kingdom of Great Britain and Northern Ireland</i>. It is one country, but it has four <button class="w" data-zh="（构成国家的）民族/地区">nations</button>: England, Scotland, Wales and Northern Ireland.</p>
+  <p>Great Britain is the name of the biggest <button class="w" data-zh="岛屿">island</button>. England, Scotland and Wales are on it. Northern Ireland is on the island of Ireland, so it is in the UK but not in Great Britain.</p>
+  <p>Each nation has its own <button class="w" data-zh="首府；首都">capital</button>, flag and <button class="w" data-zh="传统">traditions</button>. In Wales, many road signs are in two languages: Welsh and English. So please don't call a Scottish person "English" — they may <button class="w" data-zh="纠正">correct</button> you with a smile!</p>
+</section>
+
+<section class="block">
+  <span class="kicker">06 · Check</span>
+  <h2>Quick quiz</h2>
+  <div id="quiz"></div>
+  <p class="score" id="score"></p>
+</section>
+
+<section class="block">
+  <span class="kicker">07 · Your turn</span>
+  <h2>Book a trip</h2>
+  <p class="zh">选择你最想去的地方，用句架写一张“车票”。</p>
+  <div class="frames">
+    <label for="t-place">I would like to visit…</label>
+    <select id="t-place"><option value="">— choose —</option><option>Scotland</option><option>Wales</option><option>England</option><option>Northern Ireland</option></select>
+    <label for="t-city">I want to go to… (a city)</label>
+    <input id="t-city" maxlength="40" placeholder="Edinburgh">
+    <label for="t-why">because I want to see…</label>
+    <input id="t-why" maxlength="90" placeholder="the castle and hear the bagpipes">
+  </div>
+  <div class="ticket"><div class="stub">ONE WAY</div><div class="body" id="ticket">Your ticket will appear here.</div></div>
+</section>
+
+<p class="source">Original teaching text. Map and flags are simplified drawings, not to scale. Facts checked against GOV.UK and VisitBritain. Emoji symbols are used for illustration only. 教师可在此补充图片 / 视频来源与授权。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
+// 大问题
+var pollText = {
+  england: ['Not quite!', 'England is only one part. 英格兰只是其中一部分。'],
+  gb: ['Close!', 'Great Britain is an island with three nations on it. 大不列颠岛上只有三个部分。'],
+  uk: ['Yes!', 'The UK = England + Scotland + Wales + Northern Ireland. 范围最大的是“联合王国”。']
+};
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    $$('#poll button').forEach(function(x){ x.classList.remove('picked'); });
+    b.classList.add('picked');
+    var t = pollText[b.dataset.k];
+    $('#pollSay').innerHTML = '<b>' + t[0] + '</b> ' + t[1];
+    ED.done('big-question');
+  };
+});
+
+// 套娃圈
+var rings = {
+  uk: ['The United Kingdom', 'A country. Its full name is the United Kingdom of Great Britain and Northern Ireland.', '一个国家，由四个部分组成，首都 London。'],
+  gb: ['Great Britain', 'An island. England, Scotland and Wales are on it.', '一个岛的名字，不包括北爱尔兰。'],
+  eng: ['England', 'The biggest nation by population. Capital: London.', '人口最多的部分。'],
+  sco: ['Scotland', 'In the north. Capital: Edinburgh. Famous for castles, lochs (lakes) and kilts.', '在北部，loch 是苏格兰语里的“湖”。'],
+  wal: ['Wales', 'In the west. Capital: Cardiff. Many people speak Welsh as well as English.', '在西部，有自己的语言 Welsh。'],
+  ni: ['Northern Ireland', 'On the island of Ireland. Capital: Belfast. It is in the UK, but not in Great Britain!', '在爱尔兰岛上——属于 UK，但不属于 Great Britain。']
+};
+var ringSeen = {};
+$$('.venn .ring').forEach(function(g){
+  g.addEventListener('click', function(e){
+    e.stopPropagation();
+    var r = rings[g.dataset.r];
+    $('#def').innerHTML = '<h3>' + r[0] + '</h3><p>' + r[1] + '</p><p class="zh">' + r[2] + '</p>';
+    ringSeen[g.dataset.r] = 1;
+    if (Object.keys(ringSeen).length >= 4) ED.done('zoom-out');
+  });
+});
+
+// 地图邮票
+var nations = {
+  eng: ['🦁', 'England', ['Capital: London', 'Big Ben and the River Thames', 'Food: fish and chips', 'Symbol: the red rose'], '英格兰：人口最多，伦敦也是全英国的首都。'],
+  sco: ['🏰', 'Scotland', ['Capital: Edinburgh', 'Loch Ness and the Highlands', 'Music: bagpipes', 'National animal: the unicorn!'], '苏格兰的国兽是独角兽——真的！'],
+  wal: ['🐉', 'Wales', ['Capital: Cardiff', 'Hundreds of castles', 'Language: Welsh (Cymraeg)', 'Symbol: the red dragon'], '威尔士：路牌常用威尔士语和英语两种文字。'],
+  ni: ['🪨', 'Northern Ireland', ['Capital: Belfast', 'The Giant\'s Causeway', 'The Titanic was built in Belfast', 'Symbol: the shamrock'], '北爱尔兰：巨人之路由数万根石柱组成。']
+};
+var stamped = {};
+function showNation(el){
+  $$('.map .nation').forEach(function(x){ x.classList.remove('on'); });
+  el.classList.add('on');
+  var n = nations[el.dataset.n];
+  $('#stamp').innerHTML = '<div class="badge">' + n[0] + '</div><h3>' + n[1] + '</h3><ul>' + n[2].map(function(s){ return '<li>' + s + '</li>'; }).join('') + '</ul><p class="zh">' + n[3] + '</p>';
+  stamped[el.dataset.n] = 1;
+  $('#visited [data-v="' + el.dataset.n + '"]').classList.add('ok');
+  if (Object.keys(stamped).length === 4) ED.done('map');
+}
+$$('.map .nation').forEach(function(el){
+  el.addEventListener('click', function(){ showNation(el); });
+  el.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); showNation(el); } });
+});
+
+// 旗帜拼合：按历史顺序 England(底色无) → Scotland 1606 → Ireland 1801
+var flagFacts = {
+  eng: 'St George\'s Cross goes on top. ✔ England\'s flag is part of the Union Flag.',
+  sco: '1606: Scotland\'s blue and white joined England\'s cross. ✔',
+  pat: '1801: St Patrick\'s red X was added for Ireland. ✔ That is the flag we use today.',
+  wal: '🐉 Not on the flag! Wales was already joined with England when the first Union Flag was made in 1606. 威尔士不在国旗上。'
+};
+var layers = 0;
+$$('.piece').forEach(function(p){
+  p.onclick = function(){
+    var k = p.dataset.p;
+    $('#flagSay').textContent = flagFacts[k];
+    if (k === 'wal' || p.classList.contains('used')) return;
+    p.classList.add('used');
+    $('#flagHint').style.display = 'none';
+    $('#L-' + k).classList.add('on');
+    layers++;
+    if (layers === 3){ $('#flagSay').textContent += '  🎉 You built the Union Jack!'; ED.done('flag'); }
+  };
+});
+
+// 象征物配对
+var picked = null, matched = 0, total = $$('.sym').length;
+$$('.sym').forEach(function(s){
+  s.onclick = function(){ $$('.sym').forEach(function(x){ x.classList.remove('sel'); }); s.classList.add('sel'); picked = s; };
+});
+$$('.home').forEach(function(h){
+  h.onclick = function(){
+    if (!picked){ $('#symSay').textContent = 'Choose a symbol first. 先选一个象征物。'; return; }
+    if (picked.dataset.h === h.dataset.h){
+      $('.got', h).textContent += $('.e', picked).textContent;
+      picked.classList.remove('sel'); picked.classList.add('done'); picked = null; matched++;
+      $('#symSay').textContent = matched === total ? '🎉 All matched!' : 'Correct!';
+      if (matched === total) ED.done('symbols');
+    } else {
+      $('#symSay').textContent = 'Try again — think about the map stamps. 再想想刚才的邮票。';
+    }
+  };
+});
+
+// 词汇
+$$('.w').forEach(function(w){
+  w.onclick = function(){
+    var n = w.nextElementSibling;
+    if (n && n.classList.contains('gl')){ n.remove(); w.classList.remove('open'); return; }
+    var g = document.createElement('span'); g.className = 'gl'; g.textContent = w.dataset.zh;
+    w.classList.add('open'); w.after(g);
+  };
+});
+
+// 小测
+var Q = [
+  ['Which one is a country?', ['Great Britain', 'The UK', 'Wales and England'], 1],
+  ['What is the capital of Scotland?', ['Edinburgh', 'Cardiff', 'Belfast'], 0],
+  ['Northern Ireland is in…', ['Great Britain', 'the UK', 'both'], 1],
+  ['Which nation is NOT on the Union Flag?', ['Scotland', 'England', 'Wales'], 2]
+];
+var right = 0, answered = 0;
+Q.forEach(function(q, i){
+  var d = document.createElement('div'); d.className = 'q';
+  d.innerHTML = '<p>' + (i + 1) + '. ' + q[0] + '</p><div class="opts"></div>';
+  q[1].forEach(function(o, j){
+    var b = document.createElement('button'); b.textContent = o;
+    b.onclick = function(){
+      if (d.dataset.done) return;
+      d.dataset.done = 1; answered++;
+      if (j === q[2]){ b.classList.add('right'); right++; } else { b.classList.add('wrong'); $$('button', d)[q[2]].classList.add('right'); }
+      if (answered === Q.length){ $('#score').textContent = 'Score: ' + right + ' / ' + Q.length + (right === Q.length ? ' · Brilliant! 🇬🇧' : ' · Good try!'); ED.done('quiz'); }
+    };
+    $('.opts', d).appendChild(b);
+  });
+  $('#quiz').appendChild(d);
+});
+
+// 车票
+function ticket(){
+  var p = $('#t-place').value, c = $('#t-city').value.trim(), w = $('#t-why').value.trim(), out = [];
+  if (p) out.push('I would like to visit ' + p + '.');
+  if (c) out.push('I want to go to ' + c + '.');
+  if (w) out.push('I want to see ' + w + '.');
+  $('#ticket').textContent = out.join(' ') || 'Your ticket will appear here.';
+  if (out.length === 3) ED.done('express');
+}
+['#t-place', '#t-city', '#t-why'].forEach(function(s){ $(s).addEventListener('input', ticket); $(s).addEventListener('change', ticket); });
+</script>
+</body>
+</html>

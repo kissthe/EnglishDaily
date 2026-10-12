@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Car Brands · Interactive</title>
+<!-- 风格实验 06：工程蓝图。蓝底网格、白色线稿、等宽标注字体；像在看一张设计图纸。品牌只用文字徽章，不使用真实商标。 -->
+<style>
+:root{--bg:#0f4c9c;--bg2:#0d4289;--grid:rgba(255,255,255,.09);--grid2:rgba(255,255,255,.18);--ink:#f2f7ff;--muted:#b9cdee;--line:rgba(255,255,255,.55);--paper:rgba(255,255,255,.07);--hi:#ffd23f;--hi2:#ff8a5b;--ok:#7dffb3;--bad:#ff9b9b;--chipbg:rgba(255,255,255,.12)}
+html.dark{--bg:#06162f;--bg2:#051226;--grid:rgba(120,180,255,.07);--grid2:rgba(120,180,255,.14);--ink:#dbe8ff;--muted:#8ea6cc;--line:rgba(160,200,255,.45);--paper:rgba(120,180,255,.06);--hi:#ffd23f;--hi2:#ff9a70;--ok:#6ef0a6;--bad:#ff8c8c;--chipbg:rgba(120,180,255,.1)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);background-color:var(--bg);background-image:linear-gradient(var(--grid2) 1px,transparent 1px),linear-gradient(90deg,var(--grid2) 1px,transparent 1px),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:100px 100px,100px 100px,20px 20px,20px 20px;font:16.5px/1.7 "Avenir Next","Segoe UI",system-ui,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:18px 14px 40px}
+.mono{font-family:"Courier New",ui-monospace,Menlo,monospace}
+.zh{font:14px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:.02em}
+button{font:600 15px/1.2 "Avenir Next","Segoe UI",system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+.sheet{position:relative;border:2px solid var(--line);padding:22px;margin:26px 0;background:var(--paper)}
+.sheet::before,.sheet::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--hi)}
+.sheet::before{left:-8px;top:-8px;border-right:0;border-bottom:0}
+.sheet::after{right:-8px;bottom:-8px;border-left:0;border-top:0}
+.no{font:700 12px/1 "Courier New",monospace;letter-spacing:.2em;color:var(--hi)}
+.sheet h2{font-size:clamp(24px,4vw,34px);margin:8px 0 6px}
+/* 标题栏 */
+.titleblock{display:grid;grid-template-columns:1fr auto;border:2px solid var(--line);margin-top:6px}
+.titleblock>div{padding:10px 14px;border-right:2px solid var(--line)}
+.titleblock>div:last-child{border-right:0}
+.titleblock small{display:block;font:700 10px "Courier New",monospace;letter-spacing:.2em;color:var(--muted)}
+.titleblock b{font:700 15px "Courier New",monospace}
+.hero h1{font-size:clamp(36px,7vw,68px);line-height:1.02;margin:12px 0 8px}
+.hero h1 span{color:var(--hi)}
+.carsvg{display:block;width:100%;margin-top:6px}
+.carsvg .s{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linejoin:round}
+.carsvg .d{stroke:var(--muted);stroke-width:1;stroke-dasharray:6 4;fill:none}
+.carsvg .dim{font:12px "Courier New",monospace;fill:var(--muted)}
+.carsvg .hot{cursor:pointer}
+.carsvg .hot circle{fill:var(--hi);stroke:var(--bg);stroke-width:3;r:17px}
+.carsvg .hot text{font:700 18px "Courier New",monospace;text-anchor:middle;dominant-baseline:central;fill:var(--bg);pointer-events:none}
+.carsvg .hot.seen circle{fill:var(--ok)}
+.carsvg .hot:hover circle{r:20px}
+.poll{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.poll button,.btn{background:var(--chipbg);border:2px solid var(--line);padding:10px 16px;border-radius:2px}
+.poll button.on{background:var(--hi);color:#0b2a55;border-color:var(--hi)}
+.say{min-height:24px;font:600 14.5px/1.6 system-ui,sans-serif;color:var(--hi)}
+/* 部件词汇 */
+.partsgrid{display:grid;grid-template-columns:1fr;gap:12px}
+.callout{border:2px dashed var(--line);padding:16px;min-height:170px}
+.callout h3{font:700 24px/1.2 "Courier New",monospace;color:var(--hi)}
+.ukus{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.ukus div{background:var(--chipbg);padding:8px 10px}
+.ukus small{display:block;font:700 10px "Courier New",monospace;letter-spacing:.2em;color:var(--muted)}
+.ukus b{font-size:18px}
+.say-it{background:none;border:1px solid var(--line);border-radius:99px;padding:3px 9px;font-size:13px;margin-left:6px}
+/* 品牌卡 */
+.brands{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.brand{cursor:pointer;text-align:left;border:2px solid var(--line);background:var(--chipbg);padding:14px;min-height:150px;display:flex;flex-direction:column;gap:6px;position:relative}
+.badge{width:56px;height:56px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font:700 15px "Courier New",monospace;letter-spacing:-.02em}
+.brand b{font-size:17px}
+.brand .flag{position:absolute;top:12px;right:12px;font-size:20px}
+.brand .story{display:none;font-size:14px;line-height:1.55;color:var(--ink)}
+.brand .story i{display:block;font-style:normal;color:var(--muted);font-family:system-ui,"PingFang SC",sans-serif;font-size:13px;margin-top:4px}
+.brand.open{grid-column:span 2;background:rgba(255,210,63,.12);border-color:var(--hi)}
+.brand.open .story{display:block}
+.brand.seen .badge{border-color:var(--hi);color:var(--hi)}
+/* 分类车库 */
+.tray{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.tag{background:var(--chipbg);border:2px solid var(--line);padding:9px 14px;border-radius:2px;font-family:"Courier New",monospace;font-weight:700}
+.tag.sel{background:var(--hi);color:#0b2a55;border-color:var(--hi)}
+.tag.gone{visibility:hidden}
+.garages{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.garage{border:2px solid var(--line);border-top:10px solid var(--line);background:repeating-linear-gradient(0deg,transparent 0 16px,var(--grid) 16px 17px);min-height:170px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.garage>b{font:700 13px "Courier New",monospace;letter-spacing:.14em;color:var(--hi)}
+.garage>small{font-size:12.5px;color:var(--muted);font-weight:400;font-family:system-ui,"PingFang SC",sans-serif}
+.garage .parked{font:700 14px "Courier New",monospace;background:var(--ok);color:#0b2a55;padding:3px 8px}
+/* 时间轴 */
+.road{position:relative;margin:18px 0 8px;padding:0 0 0 30px}
+.road::before{content:"";position:absolute;left:11px;top:0;bottom:0;border-left:3px dashed var(--line)}
+.stop{position:relative;margin:0 0 14px;padding:10px 14px;border:2px solid var(--line);background:var(--chipbg);display:block;width:100%;text-align:left}
+.stop::before{content:"";position:absolute;left:-27px;top:16px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--hi)}
+.stop b{font:700 20px "Courier New",monospace;color:var(--hi)}
+.stop .hid{display:none}
+.stop.open .hid{display:block}
+.stop.open{border-color:var(--hi)}
+/* 真假 */
+.mf{display:grid;gap:10px}
+.mfq{border:2px solid var(--line);padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:var(--chipbg)}
+.mfq .b2{display:flex;gap:6px}
+.mfq .b2 button{border:2px solid var(--line);background:none;padding:7px 12px;font-family:"Courier New",monospace;font-weight:700}
+.mfq .ex{grid-column:1/-1;display:none;font-size:14px;color:var(--muted)}
+.mfq.done .ex{display:block}
+.mfq.ok{border-color:var(--ok)}.mfq.bad{border-color:var(--bad)}
+/* 设计你的品牌 */
+.design{display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:center}
+.design label{display:block;font:700 11px "Courier New",monospace;letter-spacing:.16em;color:var(--muted);margin:10px 0 4px}
+.design input,.design select{width:100%;font:16px "Courier New",monospace;padding:10px;border:2px solid var(--line);background:var(--chipbg);color:var(--ink);border-radius:0}
+.design select option{color:#0b2a55}
+.emblem{width:260px;height:260px;margin:0 auto;border-radius:50%;border:3px solid var(--hi);display:grid;place-items:center;text-align:center;padding:30px;position:relative}
+.emblem::before{content:"";position:absolute;inset:10px;border-radius:50%;border:1px dashed var(--line)}
+.emblem b{display:block;font:700 30px/1.1 "Courier New",monospace;color:var(--hi);word-break:break-word}
+.emblem span{font-size:14px;line-height:1.45;display:block;margin-top:8px}
+.source{font:12px/1.6 "Courier New",monospace;color:var(--muted);margin-top:24px}
+@media(max-width:760px){.partsgrid,.design{grid-template-columns:1fr}.brands{grid-template-columns:repeat(2,1fr)}.garages{grid-template-columns:1fr}.mfq{grid-template-columns:1fr}.sheet{padding:16px}.titleblock{grid-template-columns:1fr}.titleblock>div{border-right:0;border-bottom:2px solid var(--line)}.titleblock>div:last-child{border-bottom:0}}
+</style>
+</head>
+<body>
+<main>
+
+<section class="sheet hero">
+  <span class="no">DRAWING NO. ED-06 · BRANDS & LIFE · A2 · 20 MIN</span>
+  <h1>Where do car names<br><span>come from?</span></h1>
+  <p>Ford, Tesla, BMW, Mercedes-Benz… You see these names every day. Some are people. Some are short for long words. One is a girl's name!</p>
+  <p class="zh">先猜：Mercedes-Benz 里的 “Mercedes” 是什么？</p>
+  <div class="poll" id="poll">
+    <button data-k="city">A city in Germany</button><button data-k="girl">A girl's name</button><button data-k="word">A Latin word for "fast"</button>
+  </div>
+  <p class="say" id="pollSay" aria-live="polite"></p>
+  <svg class="carsvg" viewBox="0 0 900 230" aria-hidden="true">
+    <path class="s" d="M60 170 L70 130 Q90 112 160 106 L270 98 Q330 52 420 46 L560 46 Q620 50 690 98 L790 112 Q840 120 846 150 L846 170 Z"/>
+    <path class="s" d="M300 98 Q350 60 420 58 L480 58 L480 98 Z M500 58 L560 58 Q610 62 660 98 L500 98 Z"/>
+    <circle class="s" cx="210" cy="172" r="40"/><circle class="s" cx="210" cy="172" r="18"/>
+    <circle class="s" cx="700" cy="172" r="40"/><circle class="s" cx="700" cy="172" r="18"/>
+    <path class="d" d="M20 212 H880"/><path class="d" d="M210 212 V218 M700 212 V218"/>
+    <text class="dim" x="410" y="226">WHEELBASE 2 900 mm</text>
+    <text class="dim" x="600" y="30">SCALE: NOT TO SCALE</text>
+  </svg>
+  <div class="titleblock mono">
+    <div><small>PROJECT</small><b>CAR BRAND NAMES · 汽车品牌名称的来历</b></div>
+    <div><small>NOTE</small><b>For teaching only · 仅用于教学介绍</b></div>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="no">SHEET 01 · PARTS OF A CAR</span>
+  <h2>British or American?</h2>
+  <p class="zh">点击图纸上的编号。同一个部件，英国人和美国人的叫法可能不一样！🔊 可以听发音（如果设备支持）。</p>
+  <div class="partsgrid">
+    <svg class="carsvg" viewBox="0 0 900 260" role="img" aria-label="Car drawing with numbered parts">
+      <path class="s" d="M60 190 L70 150 Q90 132 160 126 L270 118 Q330 72 420 66 L560 66 Q620 70 690 118 L790 132 Q840 140 846 170 L846 190 Z"/>
+      <path class="s" d="M300 118 Q350 80 420 78 L480 78 L480 118 Z M500 78 L560 78 Q610 82 660 118 L500 118 Z"/>
+      <path class="s" d="M808 150 h30 v14 h-30z"/><path class="s" d="M60 176 h26 v14 h-26z"/>
+      <circle class="s" cx="210" cy="192" r="40"/><circle class="s" cx="210" cy="192" r="18"/>
+      <circle class="s" cx="700" cy="192" r="40"/><circle class="s" cx="700" cy="192" r="18"/>
+      <path class="s" d="M455 112 a16 16 0 1 1 0.1 0" opacity=".6"/>
+      <g class="hot" data-p="bonnet" tabindex="0" role="button"><circle cx="750" cy="118" r="17"/><text x="750" y="118">1</text></g>
+      <g class="hot" data-p="boot" tabindex="0" role="button"><circle cx="120" cy="124" r="17"/><text x="120" y="124">2</text></g>
+      <g class="hot" data-p="windscreen" tabindex="0" role="button"><circle cx="610" cy="88" r="17"/><text x="610" y="88">3</text></g>
+      <g class="hot" data-p="tyre" tabindex="0" role="button"><circle cx="700" cy="244" r="17"/><text x="700" y="244">4</text></g>
+      <g class="hot" data-p="headlight" tabindex="0" role="button"><circle cx="860" cy="140" r="17"/><text x="860" y="140">5</text></g>
+      <g class="hot" data-p="wheel" tabindex="0" role="button"><circle cx="455" cy="96" r="17"/><text x="455" y="96">6</text></g>
+    </svg>
+    <div class="poll" id="partBtns" aria-label="Parts"><button data-n="1">Part 1</button><button data-n="2">Part 2</button><button data-n="3">Part 3</button><button data-n="4">Part 4</button><button data-n="5">Part 5</button><button data-n="6">Part 6</button></div>
+    <div class="callout" id="callout" aria-live="polite"><h3>PART —</h3><p class="zh">选择一个编号。</p></div>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="no">SHEET 02 · THE STORIES</span>
+  <h2>Eight names, eight stories</h2>
+  <p class="zh">点击每个品牌，读读名字的来历。徽章是文字示意，不是真实商标。</p>
+  <div class="brands" id="brands"></div>
+</section>
+
+<section class="sheet">
+  <span class="no">SHEET 03 · SORTING</span>
+  <h2>Park the cars</h2>
+  <p class="zh">名字来源有三种：人名、缩写、有意义的词。先点品牌，再点车库。</p>
+  <div class="tray" id="tray">
+    <button class="tag" data-g="person">Ford</button><button class="tag" data-g="abbr">BMW</button><button class="tag" data-g="person">Tesla</button>
+    <button class="tag" data-g="word">Volkswagen</button><button class="tag" data-g="person">Rolls-Royce</button><button class="tag" data-g="word">Audi</button>
+    <button class="tag" data-g="person">Ferrari</button><button class="tag" data-g="abbr">BYD</button>
+  </div>
+  <div class="garages">
+    <button class="garage" data-g="person"><b>GARAGE A · PERSON</b><small>来自人名</small></button>
+    <button class="garage" data-g="abbr"><b>GARAGE B · ABBREVIATION</b><small>首字母缩写</small></button>
+    <button class="garage" data-g="word"><b>GARAGE C · A WORD</b><small>一个有意义的词</small></button>
+  </div>
+  <p class="say" id="parkSay" aria-live="polite"></p>
+</section>
+
+<section class="sheet">
+  <span class="no">SHEET 04 · ROUTE MAP</span>
+  <h2>Milestones on the road</h2>
+  <p class="zh">沿着路线点开每一站。</p>
+  <div class="road" id="road">
+    <button class="stop"><b>1886</b> · Karl Benz<span class="hid">Karl Benz gets a patent for his "Motorwagen" in Germany. Many people call it the first real car. <span class="zh">卡尔·本茨的三轮汽车获得专利，被视为第一辆真正的汽车。</span></span></button>
+    <button class="stop"><b>1904</b> · Rolls meets Royce<span class="hid">Charles Rolls (a car seller) meets Henry Royce (an engineer) in Manchester, England. <span class="zh">销售商罗尔斯遇到工程师莱斯。</span></span></button>
+    <button class="stop"><b>1908</b> · Ford Model T<span class="hid">Henry Ford's Model T is cheap and simple. Soon, ordinary families in America can buy a car. <span class="zh">普通家庭也买得起汽车了。</span></span></button>
+    <button class="stop"><b>1913</b> · The assembly line<span class="hid">Ford uses a moving assembly line. Making one car now takes about 1.5 hours instead of 12. <span class="zh">流水线让造一辆车的时间大大缩短。</span></span></button>
+    <button class="stop"><b>1916</b> · BMW begins<span class="hid">The company that becomes BMW starts in Munich — making engines for planes, not cars! <span class="zh">宝马最早造的是飞机发动机。</span></span></button>
+    <button class="stop"><b>2003</b> · Tesla is founded<span class="hid">A new company in California makes electric cars and names itself after the inventor Nikola Tesla. <span class="zh">以发明家特斯拉的名字命名的电动车公司。</span></span></button>
+  </div>
+</section>
+
+<section class="sheet">
+  <span class="no">SHEET 05 · INSPECTION</span>
+  <h2>Myth or fact?</h2>
+  <div class="mf" id="mf"></div>
+  <p class="say" id="mfSay" aria-live="polite"></p>
+</section>
+
+<section class="sheet">
+  <span class="no">SHEET 06 · YOUR DESIGN</span>
+  <h2>Name your own car company</h2>
+  <p class="zh">给你的汽车公司起个英文名，说明它来自哪里，再写一句广告语。</p>
+  <div class="design">
+    <div>
+      <label for="d1">COMPANY NAME</label><input id="d1" maxlength="18" placeholder="Lightning">
+      <label for="d2">THE NAME COMES FROM…</label>
+      <select id="d2"><option value="">— choose —</option><option value="my name">my name</option><option value="an abbreviation">an abbreviation</option><option value="an English word">an English word</option><option value="a place">a place</option></select>
+      <label for="d3">IT MEANS… / IT IS SHORT FOR…</label><input id="d3" maxlength="60" placeholder="something very fast and bright">
+      <label for="d4">SLOGAN (广告语)</label><input id="d4" maxlength="50" placeholder="Fast, clean, and quiet.">
+    </div>
+    <div class="emblem" id="emblem"><div><b>YOUR CO.</b><span>Fill in the form</span></div></div>
+  </div>
+</section>
+
+<p class="source">SOURCES: company history pages (Mercedes-Benz Group, BMW Group, Ford, Rolls-Royce Motor Cars, Audi, Volkswagen, BYD). Brand names and logos belong to their owners; this page uses text badges only, for teaching. 🔊 uses the device's built-in voice. 教师可在此补充来源与授权。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+// 设备自带语音朗读（不联网）；不支持时不显示按钮
+var canSpeak = 'speechSynthesis' in window && typeof SpeechSynthesisUtterance === 'function';
+function speak(text, lang){ if (!canSpeak) return; try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text); u.lang = lang || 'en-US'; u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }
+function sayBtn(text, lang){ return canSpeak ? '<button class="say-it" data-say="' + text + '" data-lang="' + (lang || 'en-US') + '" aria-label="Listen">🔊</button>' : ''; }
+document.addEventListener('click', function(e){ var b = e.target.closest && e.target.closest('.say-it'); if (b){ e.stopPropagation(); speak(b.dataset.say, b.dataset.lang); } });
+
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    $$('#poll button').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
+    $('#pollSay').textContent = b.dataset.k === 'girl'
+      ? '✔ Yes! Mercedes was the name of a businessman\'s daughter. Read her story on Sheet 02.'
+      : '✘ Surprise — Mercedes is a girl\'s name! Find out why on Sheet 02.';
+    ED.done('big-question');
+  };
+});
+
+// 部件
+var parts = {
+  bonnet: ['bonnet', 'hood', '引擎盖', 'The cover over the engine (at the front of most cars).'],
+  boot: ['boot', 'trunk', '后备箱', 'The space at the back for bags. In British English, a boot is also a kind of shoe!'],
+  windscreen: ['windscreen', 'windshield', '挡风玻璃', 'The big front window.'],
+  tyre: ['tyre', 'tire', '轮胎', 'Same sound, different spelling!'],
+  headlight: ['headlight', 'headlight', '前大灯', 'Same in both! Not everything is different.'],
+  wheel: ['steering wheel', 'steering wheel', '方向盘', 'In the UK, the steering wheel is on the right. In the USA and China, it is on the left.']
+};
+var partSeen = {};
+$$('.hot').forEach(function(g){
+  var show = function(){
+    var p = parts[g.dataset.p];
+    $('#callout').innerHTML = '<h3>PART ' + $('text', g).textContent + ' · ' + p[2] + '</h3><div class="ukus"><div><small>🇬🇧 BRITISH</small><b>' + p[0] + '</b>' + sayBtn(p[0], 'en-GB') + '</div><div><small>🇺🇸 AMERICAN</small><b>' + p[1] + '</b>' + sayBtn(p[1], 'en-US') + '</div></div><p style="margin:10px 0 0">' + p[3] + '</p>';
+    g.classList.add('seen'); partSeen[g.dataset.p] = 1;
+    if (Object.keys(partSeen).length === 6) ED.done('car-parts');
+  };
+  g.addEventListener('click', show); g.addEventListener('keydown', function(e){ if (e.key === 'Enter') show(); });
+});
+
+$$('#partBtns button').forEach(function(b, i){ b.onclick = function(){ $$('.hot')[i].dispatchEvent(new MouseEvent('click')); }; });
+
+// 品牌故事
+var brands = [
+  ['Mercedes-Benz', 'M-B', '#9aa7b8', '🇩🇪', 'Two names in one. <b>Mercedes</b> was the daughter of Emil Jellinek, a businessman who sold Daimler cars and named them after her. <b>Benz</b> is Karl Benz, who built one of the first cars in 1886.', '梅赛德斯是一位商人女儿的名字；奔驰来自汽车发明人卡尔·本茨。'],
+  ['BMW', 'BMW', '#4aa3ff', '🇩🇪', 'Short for <b>Bayerische Motoren Werke</b> — German for "Bavarian Motor Works". Bavaria is a state in the south of Germany.', '德语“巴伐利亚发动机制造厂”的缩写。'],
+  ['Ford', 'F', '#2c6bd6', '🇺🇸', 'Named after its founder, <b>Henry Ford</b>. He wanted to make cars that ordinary families could buy.', '以创始人亨利·福特命名。'],
+  ['Tesla', 'T', '#e04a4a', '🇺🇸', 'Named after <b>Nikola Tesla</b>, a famous inventor who worked with electricity. But he did not start the company — he died in 1943!', '以发明家尼古拉·特斯拉命名，但他并不是创始人。'],
+  ['Rolls-Royce', 'RR', '#c7c7c7', '🇬🇧', 'Two founders: <b>Charles Rolls</b>, who sold cars, and <b>Henry Royce</b>, who built them. They met in 1904.', '两位创始人的姓氏：罗尔斯和莱斯。'],
+  ['Volkswagen', 'VW', '#5b8def', '🇩🇪', 'German for <b>"people\'s car"</b>: Volk = people, Wagen = car.', '德语“人民的汽车”。'],
+  ['Audi', 'A', '#d9d9d9', '🇩🇪', 'The founder was August <b>Horch</b>. "Horch!" means "Listen!" in German. In Latin, "listen!" is <b>"Audi!"</b> — think of the English word "audio".', '创始人姓 Horch（德语“听”），翻成拉丁语就是 Audi。'],
+  ['BYD', 'BYD', '#3ccf8e', '🇨🇳', 'A Chinese company. In English, the letters are explained as <b>"Build Your Dreams"</b>.', '中国品牌比亚迪，英文解释为 Build Your Dreams。']
+];
+var bSeen = {};
+brands.forEach(function(b, i){
+  var el = document.createElement('div'); el.className = 'brand'; el.tabIndex = 0; el.setAttribute('role', 'button');
+  el.innerHTML = '<span class="flag">' + b[3] + '</span><span class="badge">' + b[1] + '</span><b>' + b[0] + sayBtn(b[0], i === 0 || i === 5 || i === 6 ? 'de-DE' : 'en-US') + '</b><span class="story">' + b[4] + '<i>' + b[5] + '</i></span>';
+  el.onclick = function(){
+    var was = el.classList.contains('open');
+    $$('.brand').forEach(function(x){ x.classList.remove('open'); });
+    if (!was) el.classList.add('open');
+    el.classList.add('seen'); bSeen[i] = 1;
+    if (Object.keys(bSeen).length === brands.length) ED.done('brand-stories');
+  };
+  el.addEventListener('keydown', function(e){ if (e.key === 'Enter') el.onclick(); });
+  $('#brands').appendChild(el);
+});
+
+// 分类
+var tagSel = null, parked = 0, totalTags = $$('.tag').length;
+$$('.tag').forEach(function(t){ t.onclick = function(){ $$('.tag').forEach(function(x){ x.classList.remove('sel'); }); t.classList.add('sel'); tagSel = t; }; });
+$$('.garage').forEach(function(g){
+  g.onclick = function(){
+    if (!tagSel){ $('#parkSay').textContent = 'Choose a brand first. 先选一个品牌。'; return; }
+    if (tagSel.dataset.g === g.dataset.g){
+      var p = document.createElement('span'); p.className = 'parked'; p.textContent = '🚗 ' + tagSel.textContent; g.appendChild(p);
+      tagSel.classList.add('gone'); tagSel.classList.remove('sel'); tagSel = null; parked++;
+      $('#parkSay').textContent = parked === totalTags ? '🏁 All cars parked! Ferrari = Enzo Ferrari; BYD = Build Your Dreams.' : 'Parked ✓';
+      if (parked === totalTags) ED.done('sort-names');
+    } else {
+      $('#parkSay').textContent = 'Wrong garage! Check the stories on Sheet 02. 再看看品牌故事。';
+    }
+  };
+});
+
+// 时间轴
+var opened = {};
+$$('.stop').forEach(function(s, i){ s.onclick = function(){ s.classList.toggle('open'); opened[i] = 1; if (Object.keys(opened).length === 6) ED.done('timeline'); }; });
+
+// 真假
+var mf = [
+  ['Nikola Tesla started the Tesla company.', 'myth', 'Myth. Nikola Tesla died in 1943. The company was started in 2003 and took his name.'],
+  ['The name Audi comes from a Latin word.', 'fact', 'Fact. "Audi" means "listen!" in Latin — like "audio".'],
+  ['BMW started by making engines for planes.', 'fact', 'Fact. The company began in 1916 making aircraft engines.'],
+  ['The blue and white in the BMW badge show a spinning propeller.', 'myth', 'Mostly a myth! The colours come from the flag of Bavaria. The propeller idea came from an old advert in 1929.'],
+  ['Henry Ford made cars cheaper with an assembly line.', 'fact', 'Fact. From 1913, a moving assembly line made the Model T faster and cheaper to build.']
+];
+var mfDone = 0, mfRight = 0;
+mf.forEach(function(q){
+  var d = document.createElement('div'); d.className = 'mfq';
+  d.innerHTML = '<span>' + q[0] + '</span><span class="b2"><button data-v="fact">FACT</button><button data-v="myth">MYTH</button></span><span class="ex">' + q[2] + '</span>';
+  $$('button', d).forEach(function(b){
+    b.onclick = function(){
+      if (d.classList.contains('done')) return;
+      var ok = b.dataset.v === q[1]; d.classList.add('done', ok ? 'ok' : 'bad'); mfDone++; if (ok) mfRight++;
+      if (mfDone === mf.length){ $('#mfSay').textContent = 'Inspection complete: ' + mfRight + ' / ' + mf.length + ' correct.'; ED.done('myth-or-fact'); }
+    };
+  });
+  $('#mf').appendChild(d);
+});
+
+// 设计徽章
+function esc(s){ return s.replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+function emblem(){
+  var n = $('#d1').value.trim(), f = $('#d2').value, m = $('#d3').value.trim(), s = $('#d4').value.trim(), out = [];
+  if (n && f) out.push('The name ' + n + ' comes from ' + f + '.');
+  if (m) out.push(f === 'an abbreviation' ? 'It is short for ' + m + '.' : 'It means ' + m + '.');
+  if (s) out.push('“' + s + '”');
+  $('#emblem').innerHTML = '<div><b>' + esc(n || 'YOUR CO.') + '</b><span>' + esc(out.join(' ') || 'Fill in the form') + '</span></div>';
+  if (n && f && m && s) ED.done('express');
+}
+['#d1', '#d2', '#d3', '#d4'].forEach(function(s){ $(s).addEventListener('input', emblem); $(s).addEventListener('change', emblem); });
+</script>
+</body>
+</html>

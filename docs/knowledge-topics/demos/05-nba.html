@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NBA · Interactive</title>
+<!-- 风格实验 05：体育转播 / 记分牌。粗压缩字体、LED 数字、木地板球场；每完成一个活动，记分牌加分（游戏化）。 -->
+<style>
+:root{--bg:#eef1f6;--panel:#ffffff;--ink:#0f1729;--muted:#5b6478;--line:#d6dbe6;--orange:#f26a1b;--orange2:#ffb072;--blue:#1d428a;--red:#c8102e;--wood:#e7b77a;--wood2:#d49a55;--led:#ffcf33;--board:#0f1729;--ok:#15803d;--bad:#dc2626;--soft:#f6f8fb}
+html.dark{--bg:#070b14;--panel:#111a2d;--ink:#eef2fb;--muted:#9aa6c0;--line:#22304d;--orange:#ff8a3d;--orange2:#ffb98a;--blue:#6b93ff;--red:#ff5c6c;--wood:#7a5a33;--wood2:#5e4426;--led:#ffd84d;--board:#02050b;--ok:#4ade80;--bad:#f87171;--soft:#0c1324}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16.5px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1060px;margin:0 auto;padding:16px 14px 40px}
+.zh{font:14px/1.7 system-ui,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--muted)}
+h1,h2,h3,.cond{font-family:Impact,"Haettenschweiler","Arial Narrow Bold","Oswald",sans-serif;font-weight:400;letter-spacing:.01em;text-transform:uppercase;margin:0}
+button{font:700 15px/1.2 system-ui,sans-serif;cursor:pointer;color:var(--ink)}
+.chip{display:inline-block;font:800 11px/1 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;background:var(--orange);color:#fff;padding:6px 9px;border-radius:3px}
+/* 记分牌 */
+.board{background:var(--board);color:#fff;border-radius:16px;padding:16px;display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;border:3px solid #26324d;box-shadow:inset 0 0 0 2px #000}
+.team{display:flex;gap:10px;align-items:center}
+.team.r{justify-content:flex-end;text-align:right}
+.team .logo{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:24px;background:#1d428a;flex:none}
+.team.r .logo{background:#c8102e}
+.team b{font:400 22px/1 Impact,"Arial Narrow Bold",sans-serif;letter-spacing:.04em}
+.team small{display:block;font:600 11px system-ui,sans-serif;color:#8d9ab8;letter-spacing:.1em}
+.digits{display:flex;gap:10px;align-items:center}
+.led{font:700 46px/1 "Courier New",ui-monospace,monospace;color:var(--led);background:#000;border-radius:8px;padding:6px 12px;min-width:92px;text-align:center;text-shadow:0 0 10px rgba(255,207,51,.6);letter-spacing:.06em}
+.clock{font:700 14px/1 "Courier New",monospace;color:#ff5c5c;text-align:center;margin-top:6px}
+.led.bump{animation:bump .4s}
+@keyframes bump{50%{transform:scale(1.15)}}
+.ticker{grid-column:1/-1;overflow:hidden;white-space:nowrap;border-top:1px solid #26324d;padding-top:8px;font:600 13px system-ui,sans-serif;color:#c7d0e4}
+.ticker span{display:inline-block;padding-left:100%;animation:tick 26s linear infinite}
+@keyframes tick{to{transform:translateX(-100%)}}
+/* 标题区 */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center;margin:20px 0}
+.hero h1{font-size:clamp(46px,9vw,92px);line-height:.9;margin:10px 0}
+.hero h1 span{color:var(--orange)}
+.qbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.qbtns button{background:var(--panel);border:2px solid var(--ink);border-radius:8px;padding:10px 16px;font:400 22px/1 Impact,"Arial Narrow Bold",sans-serif}
+.qbtns button.on{background:var(--orange);border-color:var(--orange);color:#fff}
+.say{min-height:24px;font:600 14.5px/1.6 system-ui,sans-serif;margin-top:8px}
+.ballart{width:100%;max-width:340px;display:block;margin:0 auto}
+/* 面板 */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;margin:22px 0;position:relative}
+.panel h2{font-size:clamp(28px,4.4vw,40px);line-height:1;margin:10px 0 6px}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:start}
+/* 地图 */
+.usmap{width:100%;display:block}
+.usmap .land{fill:var(--soft);stroke:var(--muted);stroke-width:1.5}
+.usmap .canada{fill:none;stroke:var(--muted);stroke-dasharray:5 5}
+.usmap .lbl{font:700 11px system-ui,sans-serif;fill:var(--muted);letter-spacing:.2em}
+.usmap .t{cursor:pointer}
+.usmap .t circle{stroke:#fff;stroke-width:2.5;transition:r .15s}
+.usmap .t:hover circle,.usmap .t:focus circle{r:13}
+.usmap .t text{font:700 11px system-ui,sans-serif;fill:var(--ink);pointer-events:none}
+.usmap .t.seen circle{stroke:var(--led);stroke-width:4}
+.card{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--soft)}
+.card .top{padding:14px 16px;color:#fff;background:var(--blue)}
+.card .top b{display:block;font:400 30px/1 Impact,"Arial Narrow Bold",sans-serif;text-transform:uppercase}
+.card .top small{font:600 12px system-ui,sans-serif;opacity:.85;letter-spacing:.1em}
+.card .bd{padding:14px 16px}
+.card .why{font-weight:700}
+.progress{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;width:0;background:var(--orange);transition:width .3s}
+/* 球场 */
+.court{width:100%;display:block;border-radius:12px}
+.court .floor{fill:var(--wood)}
+.court .paint{fill:var(--orange);opacity:.35}
+.court .lines{fill:none;stroke:#fff;stroke-width:3}
+.court .pos{cursor:pointer}
+.court .pos circle{stroke:#fff;stroke-width:3}
+.court .pos text{font:400 18px Impact,"Arial Narrow Bold",sans-serif;fill:#fff;pointer-events:none}
+.court .pos.on circle{stroke:var(--led);stroke-width:5}
+.posinfo{min-height:140px}
+.posinfo h3{font-size:28px;color:var(--orange)}
+/* 翻卡词汇 */
+.terms{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.term{height:132px;perspective:700px;background:none;border:0;padding:0}
+.term .in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.term.flip .in{transform:rotateY(180deg)}
+.term .f,.term .b{position:absolute;inset:0;border-radius:12px;backface-visibility:hidden;padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.term .f{background:var(--board);color:#fff;border-bottom:5px solid var(--orange)}
+.term .f b{font:400 24px/1.05 Impact,"Arial Narrow Bold",sans-serif;text-transform:uppercase}
+.term .f span{font-size:24px}
+.term .b{background:var(--soft);border:2px solid var(--orange);transform:rotateY(180deg);font-size:13.5px;line-height:1.45}
+.term .b i{display:block;color:var(--muted);font-style:normal;font-family:system-ui,"PingFang SC",sans-serif}
+/* 名字游戏 */
+.namegame{display:grid;gap:10px}
+.nq{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;border-bottom:1px dashed var(--line);padding-bottom:10px}
+.nq b{font:400 22px/1 Impact,"Arial Narrow Bold",sans-serif;text-transform:uppercase}
+.nq .opts{display:flex;flex-wrap:wrap;gap:6px}
+.nq .opts button{background:var(--soft);border:1.5px solid var(--line);border-radius:99px;padding:7px 12px;font-weight:600;font-size:14px}
+.nq .opts button.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.nq .opts button.wrong{background:var(--bad);border-color:var(--bad);color:#fff;opacity:.75}
+/* 投篮小游戏 */
+.arena{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}
+.hoop{width:100%;display:block;max-width:360px;margin:0 auto}
+#ball{transition:transform .9s cubic-bezier(.3,-.6,.6,1)}
+.meter{position:relative;height:28px;border-radius:99px;background:linear-gradient(90deg,var(--bad) 0 38%,var(--ok) 38% 62%,var(--bad) 62%);margin:12px 0;overflow:hidden}
+.meter i{position:absolute;top:0;bottom:0;width:6px;margin-left:-3px;background:#fff;box-shadow:0 0 0 2px var(--ink);left:0}
+.shoot{width:100%;background:var(--orange);color:#fff;border:0;border-radius:12px;padding:14px;font:400 26px/1 Impact,"Arial Narrow Bold",sans-serif;letter-spacing:.06em}
+.shoot:disabled{opacity:.4;cursor:default}
+.gq p{font-weight:700;margin:0 0 8px}
+.gq .opts{display:grid;gap:6px}
+.gq .opts button{text-align:left;background:var(--soft);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-weight:600}
+.gq .opts button.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.gq .opts button.wrong{background:var(--bad);border-color:var(--bad);color:#fff}
+/* 姚明 */
+.legend{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.height{display:flex;align-items:flex-end;gap:14px;height:200px;padding:0 6px;border-bottom:3px solid var(--ink)}
+.bar{width:54px;border-radius:8px 8px 0 0;position:relative;display:flex;justify-content:center}
+.bar span{position:absolute;top:-22px;font:700 13px system-ui,sans-serif;white-space:nowrap}
+.bar em{position:absolute;bottom:-24px;font:600 12px system-ui,sans-serif;font-style:normal;color:var(--muted);white-space:nowrap}
+/* 球员卡 */
+.maker{display:grid;grid-template-columns:1fr 260px;gap:20px;align-items:center}
+.maker label{display:block;font:700 13px system-ui,sans-serif;color:var(--muted);margin:10px 0 4px}
+.maker input,.maker select{width:100%;font:16px system-ui,sans-serif;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--soft);color:var(--ink)}
+.tcard{width:260px;margin:0 auto;border-radius:16px;padding:10px;background:linear-gradient(135deg,var(--orange),#ffcf33);box-shadow:0 10px 24px rgba(0,0,0,.2)}
+.tcard .inner{background:var(--board);color:#fff;border-radius:10px;padding:14px;min-height:300px;display:flex;flex-direction:column}
+.tcard .num{font:400 64px/1 Impact,"Arial Narrow Bold",sans-serif;color:var(--led)}
+.tcard .nm{font:400 28px/1 Impact,"Arial Narrow Bold",sans-serif;text-transform:uppercase;margin:6px 0}
+.tcard .ps{font:700 12px system-ui,sans-serif;letter-spacing:.14em;color:var(--orange2)}
+.tcard p{font-size:14px;margin:auto 0 0;color:#c7d0e4}
+.hero{position:relative}
+.toast{position:absolute;right:16px;top:14px;background:var(--orange);color:#fff;font:400 22px/1 Impact,"Arial Narrow Bold",sans-serif;padding:8px 16px;border-radius:99px;pointer-events:none;z-index:3;animation:pop 1.6s ease forwards}
+@keyframes pop{0%{transform:translateY(10px) scale(.6);opacity:0}15%{transform:none;opacity:1}75%{opacity:1}100%{transform:translateY(-16px);opacity:0}}
+.source{font:12.5px/1.6 system-ui,sans-serif;color:var(--muted);margin-top:26px}
+@media(max-width:760px){.hero,.grid2,.arena,.legend,.maker{grid-template-columns:1fr}.terms{grid-template-columns:repeat(2,1fr)}.board{grid-template-columns:1fr auto 1fr;padding:12px;gap:6px}.team .logo{width:34px;height:34px;font-size:18px}.team b{font-size:15px}.team small{display:none}.led{font-size:32px;min-width:66px;padding:4px 8px}.nq{grid-template-columns:1fr}.panel{padding:16px}}
+</style>
+</head>
+<body>
+<main>
+
+<div class="board" aria-live="polite">
+  <div class="team"><div class="logo">🏀</div><div><b>YOU</b><small>HOME</small></div></div>
+  <div><div class="digits"><div class="led" id="score">00</div><div class="led" style="color:#ff5c5c" id="q">Q1</div></div><div class="clock">TOPIC · SPORTS · A2</div></div>
+  <div class="team r"><div><b>NBA</b><small>CHALLENGE</small></div><div class="logo">⭐</div></div>
+  <div class="ticker"><span>🏀 30 TEAMS · 29 IN THE USA, 1 IN CANADA  ·  EACH TEAM PLAYS 82 GAMES IN THE REGULAR SEASON  ·  A GAME HAS FOUR 12-MINUTE QUARTERS  ·  YAO MING JOINED THE HOUSTON ROCKETS IN 2002  ·  EARN POINTS BY FINISHING EACH ACTIVITY BELOW!</span></div>
+</div>
+
+<section class="hero">
+  <div>
+    <span class="chip">Tip-off · 开球</span>
+    <h1>30 teams.<br><span>One league.</span></h1>
+    <p><b>How many NBA teams are there — and are they all in the USA?</b></p>
+    <p class="zh">猜一猜：NBA 有多少支球队？都在美国吗？</p>
+    <div class="qbtns" id="poll"><button data-k="20">20 · all USA</button><button data-k="30">30 · USA + Canada</button><button data-k="50">50 · one per state</button></div>
+    <p class="say" id="pollSay"></p>
+  </div>
+  <svg class="ballart" viewBox="0 0 300 300" role="img" aria-label="Illustration of a basketball">
+    <defs><radialGradient id="bg1" cx=".35" cy=".3"><stop offset="0" stop-color="#ffb072"/><stop offset=".6" stop-color="#f26a1b"/><stop offset="1" stop-color="#b8440c"/></radialGradient></defs>
+    <ellipse cx="150" cy="282" rx="90" ry="12" fill="#000" opacity=".15"/>
+    <circle cx="150" cy="140" r="120" fill="url(#bg1)"/>
+    <g fill="none" stroke="#3a1606" stroke-width="5"><path d="M30 140h240"/><path d="M150 20v240"/><path d="M62 56c40 30 40 138 0 168"/><path d="M238 56c-40 30 -40 138 0 168"/></g>
+    <g fill="#3a1606" opacity=".25">
+      <circle cx="100" cy="90" r="2"/><circle cx="120" cy="110" r="2"/><circle cx="190" cy="80" r="2"/><circle cx="200" cy="190" r="2"/><circle cx="110" cy="200" r="2"/><circle cx="170" cy="220" r="2"/>
+    </g>
+  </svg>
+</section>
+
+<section class="panel">
+  <span class="chip">1st quarter · Map</span>
+  <h2>Where do they play?</h2>
+  <p class="zh">点击地图上的球队，看看队名从哪里来。很多队名都和城市有关！示意图，不按比例。</p>
+  <div class="grid2">
+    <svg class="usmap" viewBox="0 0 600 360" role="img" aria-label="Simplified map of the USA with some NBA teams">
+      <path class="canada" d="M30 34 L560 34"/>
+      <text class="lbl" x="250" y="22">CANADA</text>
+      <path class="land" d="M40 40 L250 44 L380 50 L430 72 L470 62 L520 42 L565 50 L556 92 L520 122 L508 162 L488 202 L470 232 L500 292 L488 334 L466 320 L448 272 L420 256 L360 262 L330 302 L300 322 L270 284 L230 272 L200 252 L150 252 L110 232 L70 204 L44 152 L32 92 Z"/>
+      <text class="lbl" x="240" y="200">THE USA</text>
+      <text class="lbl" x="10" y="300">PACIFIC</text><text class="lbl" x="530" y="230">ATLANTIC</text>
+    </svg>
+    <div>
+      <div class="card" id="teamCard" aria-live="polite"><div class="top"><small>SCOUTING REPORT</small><b>Tap a team</b></div><div class="bd"><p class="zh">每支球队都用“城市 + 队名”：Los Angeles + Lakers。</p></div></div>
+      <div class="progress"><i id="mapBar"></i></div>
+      <p class="zh" id="mapCount">Teams scouted: 0 / 10</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <span class="chip">2nd quarter · Positions</span>
+  <h2>Five players, five jobs</h2>
+  <p class="zh">每队场上 5 人。点击球场上的号码，认识五个位置。</p>
+  <div class="grid2">
+    <svg class="court" viewBox="0 0 500 330" role="img" aria-label="Half basketball court with five positions">
+      <rect class="floor" width="500" height="330"/>
+      <g opacity=".18" stroke="var(--wood2)" stroke-width="2">
+        <path d="M0 30h500M0 60h500M0 90h500M0 120h500M0 150h500M0 180h500M0 210h500M0 240h500M0 270h500M0 300h500"/>
+      </g>
+      <rect class="paint" x="190" y="0" width="120" height="150"/>
+      <g class="lines">
+        <rect x="6" y="6" width="488" height="318"/>
+        <rect x="190" y="6" width="120" height="144"/>
+        <path d="M200 150 a50 50 0 0 0 100 0"/>
+        <path d="M40 6 v70 a210 210 0 0 0 420 0 v-70"/>
+        <path d="M200 324 a50 50 0 0 1 100 0"/>
+        <circle cx="250" cy="40" r="10"/>
+        <path d="M222 26 h56"/>
+      </g>
+      <g class="pos" data-p="pg" tabindex="0" role="button"><circle cx="250" cy="275" r="22" fill="#1d428a"/><text x="250" y="282" text-anchor="middle">1</text></g>
+      <g class="pos" data-p="sg" tabindex="0" role="button"><circle cx="420" cy="200" r="22" fill="#1d428a"/><text x="420" y="207" text-anchor="middle">2</text></g>
+      <g class="pos" data-p="sf" tabindex="0" role="button"><circle cx="80" cy="200" r="22" fill="#1d428a"/><text x="80" y="207" text-anchor="middle">3</text></g>
+      <g class="pos" data-p="pf" tabindex="0" role="button"><circle cx="340" cy="110" r="22" fill="#c8102e"/><text x="340" y="117" text-anchor="middle">4</text></g>
+      <g class="pos" data-p="c" tabindex="0" role="button"><circle cx="230" cy="90" r="22" fill="#c8102e"/><text x="230" y="97" text-anchor="middle">5</text></g>
+    </svg>
+    <div class="posinfo" id="posInfo" aria-live="polite"><h3>Tap a number</h3><p class="zh">蓝色是 guards / forward（外线），红色靠近篮筐（内线）。</p></div>
+  </div>
+</section>
+
+<section class="panel">
+  <span class="chip">Halftime · Name game</span>
+  <h2>Why that name?</h2>
+  <p class="zh">根据刚才在地图上看到的内容，选出队名的来历。</p>
+  <div class="namegame" id="names"></div>
+</section>
+
+<section class="panel">
+  <span class="chip">3rd quarter · Court talk</span>
+  <h2>Basketball English</h2>
+  <p class="zh">翻开卡片。有些说法已经进入了日常英语！</p>
+  <div class="terms" id="terms"></div>
+</section>
+
+<section class="panel">
+  <span class="chip">4th quarter · Quiz & shoot</span>
+  <h2>Answer, then shoot!</h2>
+  <p class="zh">答对一题就能投篮一次。在指针走到绿色区域时点 SHOOT！投进得 2 分。</p>
+  <div class="arena">
+    <div>
+      <div class="gq" id="gq"></div>
+      <div class="meter" aria-hidden="true"><i id="needle"></i></div>
+      <button class="shoot" id="shootBtn" disabled>Shoot!</button>
+      <p class="say" id="shotSay" aria-live="polite"></p>
+    </div>
+    <svg class="hoop" viewBox="0 0 300 260" role="img" aria-label="Basketball hoop">
+      <rect x="90" y="20" width="120" height="80" rx="4" fill="#fff" stroke="#0f1729" stroke-width="4"/>
+      <rect x="125" y="50" width="50" height="36" fill="none" stroke="#c8102e" stroke-width="4"/>
+      <rect x="145" y="100" width="10" height="160" fill="#0f1729"/>
+      <ellipse cx="150" cy="104" rx="36" ry="7" fill="none" stroke="#f26a1b" stroke-width="5"/>
+      <path d="M116 106 l10 40 h48 l10 -40 M126 146 l12 -40 M174 146 l-12 -40 M138 146 l12 -40 l12 40" fill="none" stroke="#ccd" stroke-width="2"/>
+      <g id="ball"><circle cx="60" cy="230" r="18" fill="#f26a1b" stroke="#3a1606" stroke-width="2"/><path d="M42 230h36M60 212v36" stroke="#3a1606" stroke-width="2"/></g>
+    </svg>
+  </div>
+</section>
+
+<section class="panel">
+  <span class="chip">Hall of Fame · 名人堂</span>
+  <h2>Yao Ming: a giant step</h2>
+  <div class="legend">
+    <div class="height" aria-label="Height comparison">
+      <div class="bar" style="height:113px;background:var(--line)"><span>1.6 m</span><em>You?</em></div>
+      <div class="bar" style="height:140px;background:var(--blue)"><span>1.98 m</span><em>A guard</em></div>
+      <div class="bar" style="height:162px;background:var(--orange)"><span>2.29 m</span><em>Yao Ming</em></div>
+    </div>
+    <div>
+      <p>In 2002, the Houston Rockets chose Yao Ming as the <b>No. 1 pick</b> in the NBA draft. He was 2.29 metres tall! He played as a <b>center</b> and became an All-Star eight times. In 2016 he joined the Basketball Hall of Fame.</p>
+      <p class="zh">2002 年状元秀，八次入选全明星，2016 年入选篮球名人堂。第一位进入 NBA 的中国球员是王治郅（2001 年）。</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <span class="chip">Post-game · Your turn</span>
+  <h2>Make a player card</h2>
+  <p class="zh">介绍你喜欢的球员（或者你自己！），写 2–3 句话。</p>
+  <div class="maker">
+    <div>
+      <label for="c1">Name</label><input id="c1" maxlength="30" placeholder="Yao Ming">
+      <label for="c2">Number</label><input id="c2" maxlength="2" inputmode="numeric" placeholder="11">
+      <label for="c3">He / She plays…</label>
+      <select id="c3"><option value="">— position —</option><option>point guard</option><option>shooting guard</option><option>small forward</option><option>power forward</option><option>center</option></select>
+      <label for="c4">I like him / her because…</label><input id="c4" maxlength="90" placeholder="he is tall, kind and works hard">
+    </div>
+    <div class="tcard"><div class="inner"><div class="num" id="tNum">00</div><div class="nm" id="tName">Your player</div><div class="ps" id="tPos">POSITION</div><p id="tWhy">Fill in the form…</p></div></div>
+  </div>
+</section>
+
+<p class="source">Original teaching text. Team facts: NBA.com and team histories. Team logos are not used; emoji and drawings are for illustration only. Map is simplified. 教师可在此补充图片 / 视频来源与授权。</p>
+</main>
+
+<script>
+var ED = window.EnglishDaily || { done: function(){}, media: function(){ return Promise.reject(); }, onTheme: function(){} };
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+
+// 记分牌：每个活动只加一次分
+var points = 0, quarter = 1, earned = {}, lastTarget = null;
+document.addEventListener('click', function(e){ lastTarget = e.target; }, true);
+document.addEventListener('input', function(e){ lastTarget = e.target; }, true);
+function score(n, key, label){
+  if (key){ if (earned[key]) return; earned[key] = 1; ED.done(key); }
+  points += n;
+  var led = $('#score'); led.textContent = (points < 10 ? '0' : '') + points; led.classList.remove('bump'); void led.offsetWidth; led.classList.add('bump');
+  // 在刚刚操作的区块角上弹出“+分”（iframe 高度随内容变化，不能用 fixed 定位）
+  var host = (lastTarget && lastTarget.closest && lastTarget.closest('.panel, .hero')) || $('.hero');
+  if (n > 0){ var t = document.createElement('div'); t.className = 'toast'; t.textContent = '+' + n + (label ? ' · ' + label : ''); host.appendChild(t); setTimeout(function(){ t.remove(); }, 1700); }
+  if (key && quarter < 4){ quarter++; $('#q').textContent = 'Q' + quarter; }
+}
+
+$$('#poll button').forEach(function(b){
+  b.onclick = function(){
+    $$('#poll button').forEach(function(x){ x.classList.remove('on'); }); b.classList.add('on');
+    $('#pollSay').textContent = b.dataset.k === '30'
+      ? '✔ Swish! 30 teams: 29 in the USA and 1 in Canada — the Toronto Raptors.'
+      : 'Airball! There are 30 teams: 29 in the USA and 1 in Canada (Toronto).';
+    score(3, 'big-question', 'three-pointer!');
+  };
+});
+
+// 地图
+var teams = [
+  ['lakers', 'Los Angeles Lakers', 72, 214, '#552583', 'Los Angeles, California', 'The team started in Minnesota, "the Land of 10,000 Lakes". It moved to LA in 1960 but kept the name — LA does not have many lakes!', '湖人队最早在“万湖之州”明尼苏达。'],
+  ['warriors', 'Golden State Warriors', 46, 160, '#1d428a', 'San Francisco, California', '"The Golden State" is a nickname for California, because of the Gold Rush in 1848–1855.', '“金州”是加州的昵称。'],
+  ['jazz', 'Utah Jazz', 150, 132, '#002b5c', 'Salt Lake City, Utah', 'The team started in New Orleans, the home of jazz music, then moved to Utah in 1979.', '最早在爵士乐之乡新奥尔良。'],
+  ['nuggets', 'Denver Nuggets', 214, 150, '#0e2240', 'Denver, Colorado', 'A nugget is a small piece of gold. People came to Colorado to look for gold in the 1850s.', 'nugget = 天然金块。'],
+  ['rockets', 'Houston Rockets', 300, 266, '#ce1141', 'Houston, Texas', 'Houston is home to NASA\'s Johnson Space Center — a perfect city for "Rockets". Yao Ming played here.', '休斯敦有 NASA 约翰逊航天中心。'],
+  ['bulls', 'Chicago Bulls', 380, 110, '#ce1141', 'Chicago, Illinois', 'Chicago was once famous for its huge meat markets and cattle. Michael Jordan made this team famous in the 1990s.', '芝加哥曾以牲畜市场闻名。'],
+  ['knicks', 'New York Knicks', 518, 100, '#f58426', 'New York City', 'Short for "Knickerbockers" — the knee-length trousers of early Dutch settlers in New York.', 'Knickerbockers：早期荷兰移民穿的及膝裤。'],
+  ['celtics', 'Boston Celtics', 545, 74, '#007a33', 'Boston, Massachusetts', 'Many people in Boston have Irish (Celtic) families. That is why the team colour is green, with a shamrock.', '波士顿有很多爱尔兰裔居民。'],
+  ['heat', 'Miami Heat', 490, 314, '#98002e', 'Miami, Florida', 'Miami is hot almost all year. Simple!', '迈阿密一年四季都很热。'],
+  ['raptors', 'Toronto Raptors', 452, 48, '#ce1141', 'Toronto, Canada', 'The only team outside the USA. It was named in 1994, when the dinosaur film Jurassic Park was very popular.', '唯一一支不在美国的球队，名字来自恐龙。']
+];
+var NS = 'http://www.w3.org/2000/svg', scouted = {};
+teams.forEach(function(t){
+  var g = document.createElementNS(NS, 'g'); g.setAttribute('class', 't'); g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.setAttribute('aria-label', t[1]);
+  var short = t[1].split(' ').pop();
+  g.innerHTML = '<circle cx="' + t[2] + '" cy="' + t[3] + '" r="10" fill="' + t[4] + '"/><text x="' + (t[2] + 13) + '" y="' + (t[3] + 4) + '">' + short + '</text>';
+  var show = function(){
+    $('#teamCard').innerHTML = '<div class="top" style="background:' + t[4] + '"><small>' + t[5].toUpperCase() + '</small><b>' + t[1] + '</b></div><div class="bd"><p class="why">Why the name?</p><p>' + t[6] + '</p><p class="zh">' + t[7] + '</p></div>';
+    g.classList.add('seen'); scouted[t[0]] = 1;
+    var n = Object.keys(scouted).length;
+    $('#mapBar').style.width = n * 10 + '%'; $('#mapCount').textContent = 'Teams scouted: ' + n + ' / 10';
+    if (n === 10) score(2, 'map', 'map complete');
+  };
+  g.addEventListener('click', show); g.addEventListener('keydown', function(e){ if (e.key === 'Enter') show(); });
+  $('.usmap').appendChild(g);
+});
+
+// 位置
+var pos = {
+  pg: ['1 · Point guard', 'The leader on the court. Brings the ball up and passes to teammates. Usually good at passing and fast.', '控球后卫：组织进攻，传球好、速度快。'],
+  sg: ['2 · Shooting guard', 'A great shooter, often from far away — the three-point line.', '得分后卫：擅长投篮，尤其是三分球。'],
+  sf: ['3 · Small forward', 'Can do a bit of everything: shoot, run, pass and defend.', '小前锋：全能型。'],
+  pf: ['4 · Power forward', 'Strong. Plays near the basket and fights for rebounds.', '大前锋：强壮，在篮下争抢篮板。'],
+  c:  ['5 · Center', 'Usually the tallest player. Stays close to the basket, blocks shots and grabs rebounds.', '中锋：通常是最高的球员，例如姚明。']
+};
+var posSeen = {};
+$$('.court .pos').forEach(function(g){
+  var show = function(){
+    $$('.court .pos').forEach(function(x){ x.classList.remove('on'); }); g.classList.add('on');
+    var p = pos[g.dataset.p];
+    $('#posInfo').innerHTML = '<h3>' + p[0] + '</h3><p>' + p[1] + '</p><p class="zh">' + p[2] + '</p>';
+    posSeen[g.dataset.p] = 1; if (Object.keys(posSeen).length === 5) score(2, 'positions', 'positions');
+  };
+  g.addEventListener('click', show); g.addEventListener('keydown', function(e){ if (e.key === 'Enter') show(); });
+});
+
+// 名字游戏
+var nq = [
+  ['Lakers', ['lots of lakes in LA', 'the team came from Minnesota', 'the players like swimming'], 1],
+  ['Jazz', ['Utah is famous for jazz', 'the team came from New Orleans', 'the owner played jazz'], 1],
+  ['Rockets', ['NASA is in Houston', 'the players are very fast', 'fireworks in Texas'], 0],
+  ['Knicks', ['a kind of old trousers', 'a New York pizza', 'a famous player'], 0]
+];
+var nRight = 0, nDone = 0;
+nq.forEach(function(q){
+  var d = document.createElement('div'); d.className = 'nq';
+  d.innerHTML = '<b>' + q[0] + '</b><div class="opts"></div>';
+  q[1].forEach(function(o, j){
+    var b = document.createElement('button'); b.textContent = o;
+    b.onclick = function(){
+      if (d.dataset.done) return; d.dataset.done = 1; nDone++;
+      if (j === q[2]){ b.classList.add('right'); nRight++; } else { b.classList.add('wrong'); $$('button', d)[q[2]].classList.add('right'); }
+      if (nDone === nq.length) score(nRight, 'name-game', nRight + '/4 names');
+    };
+    $('.opts', d).appendChild(b);
+  });
+  $('#names').appendChild(d);
+});
+
+// 术语翻卡
+var terms = [
+  ['🏀', 'Slam dunk', 'Jumping and pushing the ball down into the basket.<i>扣篮。日常英语里也指“十拿九稳的事”。</i>'],
+  ['🔁', 'Rebound', 'Catching the ball after a missed shot.<i>篮板球。</i>'],
+  ['🤝', 'Assist', 'A pass that helps a teammate score.<i>助攻。</i>'],
+  ['🎯', 'Three-pointer', 'A shot from behind the three-point line.<i>三分球。</i>'],
+  ['⏱️', 'Buzzer-beater', 'A shot that goes in just as time runs out.<i>压哨球。</i>'],
+  ['✋', 'Block', 'Stopping a shot with your hand.<i>盖帽。</i>'],
+  ['🧢', 'Rookie', 'A player in his first year.<i>新秀。也可以指任何“新手”。</i>'],
+  ['⭐', 'MVP', 'Most Valuable Player.<i>最有价值球员。</i>']
+];
+var tFlip = {};
+terms.forEach(function(t, i){
+  var b = document.createElement('button'); b.className = 'term';
+  b.innerHTML = '<div class="in"><div class="f"><span>' + t[0] + '</span><b>' + t[1] + '</b></div><div class="b">' + t[2] + '</div></div>';
+  b.onclick = function(){ b.classList.toggle('flip'); tFlip[i] = 1; if (Object.keys(tFlip).length === terms.length) score(2, 'terms', 'vocab'); };
+  $('#terms').appendChild(b);
+});
+
+// 答题 + 投篮
+var gq = [
+  ['Which position is usually the tallest?', ['point guard', 'center', 'shooting guard'], 1],
+  ['A pass that helps a teammate score is…', ['an assist', 'a rebound', 'a block'], 0],
+  ['Which team is in Canada?', ['Miami Heat', 'Toronto Raptors', 'Boston Celtics'], 1],
+  ['How many players from one team are on the court?', ['five', 'six', 'eleven'], 0],
+  ['"It\'s a slam dunk!" in daily English means…', ['it\'s very easy / sure to succeed', 'it\'s very loud', 'it\'s broken'], 0]
+];
+var gi = 0, made = 0, needle = 0, dir = 1, running = false, raf;
+function showQ(){
+  if (gi >= gq.length){ $('#gq').innerHTML = '<p>🏆 Game over! You made ' + made + ' of ' + gq.length + ' shots.</p>'; score(0, 'quiz-shoot'); return; }
+  var q = gq[gi];
+  $('#gq').innerHTML = '<p>Q' + (gi + 1) + '. ' + q[0] + '</p><div class="opts"></div>';
+  q[1].forEach(function(o, j){
+    var b = document.createElement('button'); b.textContent = o;
+    b.onclick = function(){
+      if ($('#gq').dataset.lock) return; $('#gq').dataset.lock = 1;
+      if (j === q[2]){ b.classList.add('right'); $('#shotSay').textContent = 'Correct! Now take your shot…'; startMeter(); }
+      else { b.classList.add('wrong'); $$('#gq .opts button')[q[2]].classList.add('right'); $('#shotSay').textContent = 'Turnover! No shot this time.'; setTimeout(nextQ, 1400); }
+    };
+    $('#gq .opts').appendChild(b);
+  });
+}
+function nextQ(){ gi++; delete $('#gq').dataset.lock; resetBall(); showQ(); }
+function startMeter(){ running = true; $('#shootBtn').disabled = false; (function loop(){ needle += dir * 1.6; if (needle > 100 || needle < 0) dir = -dir; $('#needle').style.left = needle + '%'; if (running) raf = requestAnimationFrame(loop); })(); }
+function resetBall(){ $('#ball').style.transition = 'none'; $('#ball').style.transform = ''; void $('#ball').getBoundingClientRect(); $('#ball').style.transition = ''; }
+$('#shootBtn').onclick = function(){
+  if (!running) return; running = false; cancelAnimationFrame(raf); $('#shootBtn').disabled = true;
+  var good = needle >= 38 && needle <= 62;
+  $('#ball').style.transform = good ? 'translate(90px,-140px)' : 'translate(' + (needle < 38 ? 40 : 150) + 'px,-120px)';
+  setTimeout(function(){
+    if (good){ made++; $('#shotSay').textContent = '🔥 Swish! +2'; score(2); } else { $('#shotSay').textContent = 'Clank! Off the rim. 没进！'; }
+    setTimeout(nextQ, 1000);
+  }, 900);
+};
+showQ();
+
+// 球员卡
+function card(){
+  var n = $('#c1').value.trim(), num = $('#c2').value.replace(/\D/g, ''), p = $('#c3').value, w = $('#c4').value.trim();
+  $('#tName').textContent = n || 'Your player';
+  $('#tNum').textContent = num || '00';
+  $('#tPos').textContent = (p || 'position').toUpperCase();
+  var out = [];
+  if (n && p) out.push(n + ' plays ' + p + '.');
+  if (w) out.push('I like ' + (n || 'this player') + ' because ' + w + '.');
+  $('#tWhy').textContent = out.join(' ') || 'Fill in the form…';
+  if (n && p && w) score(2, 'express', 'player card');
+}
+['#c1', '#c2', '#c3', '#c4'].forEach(function(s){ $(s).addEventListener('input', card); $(s).addEventListener('change', card); });
+</script>
+</body>
+</html>
