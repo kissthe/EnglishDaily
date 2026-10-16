@@ -3,6 +3,7 @@ import "./globals.css";
 import "./theme.css";
 import "./dark.css";
 import "./vocabulary.css";
+import "./grammar.css";
 import "./mobile.css";
 import "./home-features.css";
 import {AppTheme} from "./theme-provider";

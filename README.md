@@ -269,3 +269,16 @@ Next.js App Router、React、TypeScript、现有 shadcn/Radix 组件。后端沿
 - 静态页面保持原有的清洗和划线批注方式。无须数据库迁移。
 
 写法与 AI 提示词见 [互动页面规范](docs/knowledge-topics/互动页面规范.md)，起始模板见 [interactive-template.html](docs/knowledge-topics/interactive-template.html)，示例见 [California 与 Los Angeles 互动版](docs/knowledge-topics/california-los-angeles-interactive.html)，主题清单见 [主题库](docs/knowledge-topics/主题库.md)。
+
+### 语法每日练
+
+导航中的“语法练习”提供北京中考语法选择题的每日自动练习，题库来自 `data-content/grammar/` 中的两份 Markdown（100 题与 60 题，共 160 题，13 个语法类别），首次访问时导入数据库，之后老师的修改保存在数据库中。
+
+- **每日组题**：老师设置每日题量（默认 10 题）和开放的语法类别。系统每天为学生生成一组题：到期错题最多占一半；其余优先从近 30 天正确率低于 80% 的类别出新题，再按“最久没练”轮流覆盖其他类别；题库做完后重做较早做对的题。同一组内不同类别混合出现。
+- **即时反馈**：学生每做完一题立即看到对错、正确答案、考点和解析。作答前接口不返回答案与解析；每题当天只记录第一次作答。完成后可以“再练 5 题”。
+- **错题间隔复习**：答错或标记“不确定”的题次日再练，之后连续答对按 3、7、14 天复习；连续答对两次视为已掌握，四次后不再安排。
+- **统计**：师生都能看到各类别近 30 天与累计正确率、已练题数、错题本；老师还能看到学生当天进度和最近 7 天练习量。
+- **题库管理**：老师可以按类别、状态筛选和搜索题目，修改、暂停或启用题目，并粘贴同格式的 Markdown 预览后导入新题。两道答案有歧义的原题（100 题第 42、95 题）默认暂停并标为“需核对”。
+- 新增迁移 `0009_grammar.sql`，启动时自动执行。修改 `data-content/grammar/` 中的题库后，运行 `node --experimental-strip-types scripts/import-grammar-bank.mjs` 重新生成 `data-content/grammar-bank.json`；已部署的数据库不会被覆盖，新题请在网页中导入。
+
+原有的“语法”材料类型（老师整篇布置）保持不变。
