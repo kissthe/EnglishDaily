@@ -1,0 +1,2724 @@
+[
+ {
+  "id": "g100-001",
+  "topic": "代词",
+  "point": "名词性物主代词",
+  "level": "",
+  "prompt": "My brother loves painting. Look! These colourful pictures are ____.",
+  "options": [
+   "he",
+   "him",
+   "his",
+   "himself"
+  ],
+  "answer": 2,
+  "explanation": "前句提到 `My brother`（男性单数）。后句意为“看！这些彩色的画是他的（画）”。空格后没有名词，需用名词性物主代词 `his`（相当于 `his pictures`）作表语。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-002",
+  "topic": "代词",
+  "point": "人称代词宾格",
+  "level": "",
+  "prompt": "Miss Smith is very kind and always helps ____ with our English.",
+  "options": [
+   "we",
+   "us",
+   "our",
+   "ours"
+  ],
+  "answer": 1,
+  "explanation": "`helps` 是及物动词，动词后需用人称代词宾格作宾语。结合后面的 `our English` 可知指“帮助我们”，故填 `us`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-003",
+  "topic": "代词",
+  "point": "反身代词",
+  "level": "",
+  "prompt": "Little Mary is only four years old, but she can dress ____ every morning.",
+  "options": [
+   "she",
+   "her",
+   "hers",
+   "herself"
+  ],
+  "answer": 3,
+  "explanation": "当主语和宾语指代同一个人时，宾语用反身代词。固定搭配 `dress oneself` 表示“自己穿衣服”，主语是 `she`，对应反身代词为 `herself`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-004",
+  "topic": "代词",
+  "point": "人称代词宾格",
+  "level": "",
+  "prompt": "Mr. Zhang teaches ____ history this term. His classes are always lively and interesting.",
+  "options": [
+   "we",
+   "us",
+   "our",
+   "ours"
+  ],
+  "answer": 1,
+  "explanation": "`teach sb. sth.` 为双宾语结构，动词 `teaches` 后缺间接宾语，应用人称代词宾格 `us`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-005",
+  "topic": "代词",
+  "point": "人称代词主格",
+  "level": "",
+  "prompt": "My sister and I like reading. ____ often go to the Capital Library on weekends.",
+  "options": [
+   "We",
+   "Us",
+   "Our",
+   "Ours"
+  ],
+  "answer": 0,
+  "explanation": "设空处在第二句句首作主语，指代前句的 `My sister and I`（我们），应用主格形式 `We`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-006",
+  "topic": "代词",
+  "point": "名词性物主代词",
+  "level": "",
+  "prompt": "— Whose camera is this? Is it yours, Tom?\n— No, it's not ____. It belongs to Lucy.",
+  "options": [
+   "I",
+   "me",
+   "my",
+   "mine"
+  ],
+  "answer": 3,
+  "explanation": "空格后没有名词，表示“它不是我的（相机）”，应用名词性物主代词 `mine`（相当于 `my camera`）。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-007",
+  "topic": "代词",
+  "point": "人称代词宾格",
+  "level": "",
+  "prompt": "My grandma's birthday is coming. I want to make a special card for ____.",
+  "options": [
+   "she",
+   "her",
+   "hers",
+   "herself"
+  ],
+  "answer": 1,
+  "explanation": "介词 `for` 后面需要接人称代词宾格作宾语；指代前文的 `My grandma`（女性单数），故用宾格 `her`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-008",
+  "topic": "代词",
+  "point": "形容词性物主代词",
+  "level": "",
+  "prompt": "The robotics club is very popular in ____ school. Many students want to join it.",
+  "options": [
+   "they",
+   "them",
+   "their",
+   "theirs"
+  ],
+  "answer": 2,
+  "explanation": "空格后有名词 `school`，修饰名词需用形容词性物主代词 `their`（他们的）。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-009",
+  "topic": "介词",
+  "point": "时间介词",
+  "level": "",
+  "prompt": "The astronauts of Shenzhou-18 returned to Earth safely ____ November, 2024.",
+  "options": [
+   "in",
+   "on",
+   "at",
+   "to"
+  ],
+  "answer": 0,
+  "explanation": "`November, 2024` 为月份和年份，没有具体到某一天，在月份或年份前用介词 `in`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-010",
+  "topic": "介词",
+  "point": "时间介词",
+  "level": "",
+  "prompt": "We usually have a big family dinner ____ Sunday evenings.",
+  "options": [
+   "in",
+   "on",
+   "at",
+   "for"
+  ],
+  "answer": 1,
+  "explanation": "泛指晚上用 `in the evening`，但当早中晚前有具体某一天（如 `Sunday`）修饰，表示“具体某一天的晚上”时，必须用介词 `on`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-011",
+  "topic": "介词",
+  "point": "方式介词",
+  "level": "",
+  "prompt": "Many students in Beijing go to school ____ subway because it is fast and green.",
+  "options": [
+   "in",
+   "on",
+   "by",
+   "with"
+  ],
+  "answer": 2,
+  "explanation": "`by + 交通工具名词（零冠词）` 表示出行方式，`by subway` 意为“乘坐地铁”。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-012",
+  "topic": "介词",
+  "point": "时间介词",
+  "level": "",
+  "prompt": "The Beijing Central Axis (北京中轴线) was added to the World Heritage List ____ July 27, 2024.",
+  "options": [
+   "in",
+   "on",
+   "at",
+   "from"
+  ],
+  "answer": 1,
+  "explanation": "`July 27, 2024` 具体到了某月某日（2024年7月27日），在具体的某一天前用介词 `on`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-013",
+  "topic": "介词",
+  "point": "时间介词",
+  "level": "",
+  "prompt": "Our school library opens ____ 8:00 a.m. every weekday.",
+  "options": [
+   "in",
+   "on",
+   "at",
+   "of"
+  ],
+  "answer": 2,
+  "explanation": "`8:00 a.m.` 是具体的钟点时刻，在具体时刻前用介词 `at`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-014",
+  "topic": "介词",
+  "point": "地点介词",
+  "level": "",
+  "prompt": "Spring is the best season to fly kites ____ Beijing.",
+  "options": [
+   "in",
+   "on",
+   "at",
+   "to"
+  ],
+  "answer": 0,
+  "explanation": "`Beijing` 是大城市、大地点，表示“在北京”用介词 `in`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-015",
+  "topic": "介词",
+  "point": "地点介词",
+  "level": "",
+  "prompt": "Let's meet ____ the school gate at 9 o'clock tomorrow morning.",
+  "options": [
+   "in",
+   "at",
+   "on",
+   "under"
+  ],
+  "answer": 1,
+  "explanation": "`the school gate`（校门口）属于较小、具体的聚点位置，用介词 `at`。`at the school gate` 为固定搭配。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-016",
+  "topic": "介词",
+  "point": "固定介词搭配",
+  "level": "",
+  "prompt": "Thanks ____ the teacher's help, I made great progress in English this term.",
+  "options": [
+   "for",
+   "to",
+   "with",
+   "of"
+  ],
+  "answer": 1,
+  "explanation": "`thanks to` 意为“多亏，由于”，后接促成好结果的原因；`thanks for` 意为“因……而感谢”。句意为“多亏了老师的帮助，我取得了很大进步”，故选 `to`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-017",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词疑问句回答",
+  "level": "",
+  "prompt": "— Must I hand in the book report today, Mr. Liu?\n— No, you ____. You can give it to me tomorrow.",
+  "options": [
+   "mustn't",
+   "can't",
+   "shouldn't",
+   "needn't"
+  ],
+  "answer": 3,
+  "explanation": "以 `Must I...` 提问时，否定回答用 `No, you needn't.` 或 `No, you don't have to.`，意为“不必”。`mustn't` 意为“禁止”，不符合语境。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-018",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表推测",
+  "level": "",
+  "prompt": "— Look at the boy playing basketball on the playground. Is that Tom?\n— It ____ be him. He has gone to Shanghai with his parents.",
+  "options": [
+   "mustn't",
+   "can't",
+   "needn't",
+   "shouldn't"
+  ],
+  "answer": 1,
+  "explanation": "后句说“他和父母去上海了”，说明操场上的男孩“不可能”是他。有把握的否定推测用 `can't`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-019",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表过去的能力",
+  "level": "",
+  "prompt": "— ____ you swim when you were seven years old?\n— Yes, I could. My father taught me.",
+  "options": [
+   "Can",
+   "Could",
+   "Must",
+   "Need"
+  ],
+  "answer": 1,
+  "explanation": "根据时间状语 `when you were seven years old` 及答语 `Yes, I could.` 可知，此处询问过去具备的能力，用 `Could`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-020",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表义务与规定",
+  "level": "",
+  "prompt": "According to the traffic rules, people ____ wear helmets when riding e-bikes.",
+  "options": [
+   "can",
+   "may",
+   "must",
+   "could"
+  ],
+  "answer": 2,
+  "explanation": "根据 `According to the traffic rules`（根据交通规则）可知，骑电动车戴头盔是强制规定，意为“必须”，用 `must`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-021",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表禁止",
+  "level": "",
+  "prompt": "You ____ cross the road when the traffic lights are red. It's very dangerous.",
+  "options": [
+   "mustn't",
+   "needn't",
+   "wouldn't",
+   "couldn't"
+  ],
+  "answer": 0,
+  "explanation": "红灯时过马路非常危险，此处表示明令“禁止，千万不要”，用 `mustn't`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-022",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表请求许可",
+  "level": "",
+  "prompt": "— ____ I borrow your dictionary, Lily? I left mine at home.\n— Sure, here you are.",
+  "options": [
+   "Must",
+   "Should",
+   "Need",
+   "May"
+  ],
+  "answer": 3,
+  "explanation": "表示委婉请求他人许可，“我可以借你的字典吗？”，可用 `May / Can / Could I...`，结合选项应选 `May`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-023",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表肯定推测",
+  "level": "",
+  "prompt": "— Whose English book is this on the desk?\n— It ____ be Daming's. Look! His name is written on the cover.",
+  "options": [
+   "can",
+   "may",
+   "must",
+   "need"
+  ],
+  "answer": 2,
+  "explanation": "后句说“看！封面上写着他的名字”，说明非常确定是他的书。表示十分有把握的肯定推测（“一定，准是”）用 `must`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-024",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表礼貌请求",
+  "level": "",
+  "prompt": "— Excuse me, ____ you please tell me the way to the nearest post office?\n— Go straight and turn left at the first crossing.",
+  "options": [
+   "must",
+   "could",
+   "should",
+   "need"
+  ],
+  "answer": 1,
+  "explanation": "`Could you please do sth.?` 是固定句型，表示委婉、礼貌地提出请求，意为“请问你能……吗？”。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-025",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词组",
+  "level": "",
+  "prompt": "— ____ do you visit the National Museum of China?\n— About twice a year.",
+  "options": [
+   "How long",
+   "How soon",
+   "How often",
+   "How far"
+  ],
+  "answer": 2,
+  "explanation": "答语 `About twice a year`（大约一年两次）表频率，对频率提问用 `How often`（多久一次）。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-026",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词组",
+  "level": "",
+  "prompt": "— ____ is it from your home to the nearest library?\n— It's about fifteen minutes' walk.",
+  "options": [
+   "How far",
+   "How long",
+   "How much",
+   "How many"
+  ],
+  "answer": 0,
+  "explanation": "答语 `fifteen minutes' walk`（步行15分钟的路程）表距离，对距离提问用 `How far`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-027",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词组",
+  "level": "",
+  "prompt": "— ____ will your father come back from his business trip?\n— In three days.",
+  "options": [
+   "How long",
+   "How soon",
+   "How often",
+   "How far"
+  ],
+  "answer": 1,
+  "explanation": "问句为一般将来时，答语为 `In + 时间段`（`In three days` 三天之后），对“多久以后”提问必须用 `How soon`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-028",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词组",
+  "level": "",
+  "prompt": "— ____ have you lived in Haidian District?\n— For more than ten years.",
+  "options": [
+   "How soon",
+   "How often",
+   "How long",
+   "How much"
+  ],
+  "answer": 2,
+  "explanation": "答语 `For more than ten years`（十多年了）表示持续的时间段，对时长提问用 `How long`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-029",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词组",
+  "level": "",
+  "prompt": "— ____ are these traditional Chinese paper-cuttings?\n— They are 30 yuan in total.",
+  "options": [
+   "How many",
+   "How much",
+   "How old",
+   "How tall"
+  ],
+  "answer": 1,
+  "explanation": "答语 `30 yuan in total`（总共30元）表示价格，询问价格用 `How much`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-030",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词",
+  "level": "",
+  "prompt": "— ____ badminton racket is this?\n— It's Mr. Green's. He just played badminton here.",
+  "options": [
+   "Who",
+   "Whom",
+   "Whose",
+   "Which"
+  ],
+  "answer": 2,
+  "explanation": "空格后有名词词组 `badminton racket`，且答语 `It's Mr. Green's` 表示所属关系，询问“谁的”用 `Whose`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-031",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词",
+  "level": "",
+  "prompt": "— ____ didn't you go to the cinema with us yesterday?\n— Because I had to look after my little sister at home.",
+  "options": [
+   "Why",
+   "When",
+   "Where",
+   "How"
+  ],
+  "answer": 0,
+  "explanation": "答语以 `Because`（因为）开头，回答的是原因，故用 `Why` 提问。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-032",
+  "topic": "特殊疑问词",
+  "point": "特殊疑问词",
+  "level": "",
+  "prompt": "— ____ did you go for your school trip last Friday?\n— We went to the Beijing Botanical Garden.",
+  "options": [
+   "What",
+   "When",
+   "Where",
+   "How"
+  ],
+  "answer": 2,
+  "explanation": "答语 `the Beijing Botanical Garden`（北京植物园）表示地点，询问去哪里用 `Where`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-033",
+  "topic": "形容词与副词",
+  "point": "形容词比较级",
+  "level": "",
+  "prompt": "After taking the high-speed train, the trip from Beijing to Zhangjiakou becomes much ____ than before.",
+  "options": [
+   "fast",
+   "faster",
+   "fastest",
+   "the fastest"
+  ],
+  "answer": 1,
+  "explanation": "句中有比较级标志词 `than` 以及修饰比较级的程度副词 `much`，故填比较级 `faster`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-034",
+  "topic": "形容词与副词",
+  "point": "形容词最高级",
+  "level": "",
+  "prompt": "The Great Wall is one of ____ wonders in the world, attracting millions of tourists every year.",
+  "options": [
+   "famous",
+   "more famous",
+   "most famous",
+   "the most famous"
+  ],
+  "answer": 3,
+  "explanation": "考查固定结构 `one of the + 形容词最高级 + 可数名词复数`（最……的……之一）。`famous` 为多音节词，最高级为 `the most famous`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-035",
+  "topic": "形容词与副词",
+  "point": "比较级固定句型",
+  "level": "",
+  "prompt": "Believe in yourself! The harder you work, the ____ results you will get.",
+  "options": [
+   "good",
+   "better",
+   "best",
+   "the best"
+  ],
+  "answer": 1,
+  "explanation": "考查 `The + 比较级..., the + 比较级...`（越……，就越……）。空格前已有 `the`，故填 `good` 的比较级 `better`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-036",
+  "topic": "形容词与副词",
+  "point": "形容词比较级",
+  "level": "",
+  "prompt": "In my opinion, health is ____ than wealth. We should exercise every day.",
+  "options": [
+   "important",
+   "more important",
+   "most important",
+   "the most important"
+  ],
+  "answer": 1,
+  "explanation": "根据标志词 `than` 可知用比较级；`important` 为多音节词，比较级形式为 `more important`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-037",
+  "topic": "形容词与副词",
+  "point": "形容词最高级",
+  "level": "",
+  "prompt": "David is ____ student in our class. Nobody else is taller than him.",
+  "options": [
+   "tall",
+   "taller",
+   "tallest",
+   "the tallest"
+  ],
+  "answer": 3,
+  "explanation": "比较范围是 `in our class`（在我们班里，大于三者），且后句“没有其他人比他更高”印证了他是全班最高的学生，形容词最高级前需加定冠词 `the`，选 `the tallest`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-038",
+  "topic": "形容词与副词",
+  "point": "副词原级比较",
+  "level": "",
+  "prompt": "Although Betty is only ten years old, she can play the piano as ____ as her music teacher.",
+  "options": [
+   "well",
+   "better",
+   "best",
+   "the best"
+  ],
+  "answer": 0,
+  "explanation": "`as + 形容词/副词原级 + as` 表示“和……一样……”。此处修饰动词 `play`，用副词原级 `well`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-039",
+  "topic": "形容词与副词",
+  "point": "比较级固定句型",
+  "level": "",
+  "prompt": "As spring comes, the weather in Beijing is getting ____ and ____.",
+  "options": [
+   "warm; warm",
+   "warmer; warmer",
+   "warmest; warmest",
+   "the warmest; the warmest"
+  ],
+  "answer": 1,
+  "explanation": "`比较级 + and + 比较级` 表示“越来越……”。`warmer and warmer` 意为“越来越暖和”。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-040",
+  "topic": "形容词与副词",
+  "point": "副词最高级",
+  "level": "",
+  "prompt": "— Which subject do you like ____, physics, chemistry or biology?\n— Physics. I think it's really fascinating.",
+  "options": [
+   "well",
+   "better",
+   "best",
+   "the best"
+  ],
+  "answer": 2,
+  "explanation": "句中给出了三个选项 `physics, chemistry or biology`（三者之间比较），应用最高级。`like... best` 为固定搭配（副词最高级前可省略 `the`），意为“最喜欢……”。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-041",
+  "topic": "形容词与副词",
+  "point": "形容词比较级",
+  "level": "",
+  "prompt": "This year's school sports meeting was even ____ than last year's. Everyone enjoyed it.",
+  "options": [
+   "exciting",
+   "more exciting",
+   "most exciting",
+   "the most exciting"
+  ],
+  "answer": 1,
+  "explanation": "标志词 `even`（甚至）和 `than`（比）均提示使用比较级，`exciting` 的比较级为 `more exciting`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-042",
+  "topic": "形容词与副词",
+  "point": "副词最高级",
+  "level": "",
+  "prompt": "Among all the competitors, Linda spoke ____ and won the first prize in the speech contest.",
+  "options": [
+   "clearly",
+   "more clearly",
+   "most clearly",
+   "the most clearly"
+  ],
+  "answer": 2,
+  "explanation": "范围 `Among all the competitors`（在所有参赛者中）表三者以上，修饰动词 `spoke` 用副词 `clearly` 的最高级 `most clearly`（副词最高级前通常省略 `the`，若带 `the` 亦可，中考真题一般只设不带 `the` 的副词最高级或考查形容词最高级）。",
+  "note": "题干中 C、D 两项都可以接受（原题已注明），请修改选项后再启用。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": false
+ },
+ {
+  "id": "g100-043",
+  "topic": "连词与状语从句",
+  "point": "并列连词",
+  "level": "",
+  "prompt": "Wash your hands before meals, ____ you may get sick easily.",
+  "options": [
+   "and",
+   "but",
+   "or",
+   "so"
+  ],
+  "answer": 2,
+  "explanation": "“祈使句 + or + 陈述句”结构，`or` 意为“否则，要不然”。句意：饭前要洗手，否则你可能会容易生病。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-044",
+  "topic": "连词与状语从句",
+  "point": "从属连词（让步状语从句）",
+  "level": "",
+  "prompt": "Mr. Wang still went to work on time ____ it rained heavily yesterday morning.",
+  "options": [
+   "because",
+   "although",
+   "if",
+   "so"
+  ],
+  "answer": 1,
+  "explanation": "前句“按时去上班”与后句“昨天早上雨下得很大”构成让步转折关系，用 `although`（尽管，虽然）。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-045",
+  "topic": "连词与状语从句",
+  "point": "从属连词（条件状语从句）",
+  "level": "",
+  "prompt": "You won't fully understand the beauty of Beijing ____ you visit it in person.",
+  "options": [
+   "unless",
+   "because",
+   "though",
+   "as soon as"
+  ],
+  "answer": 0,
+  "explanation": "句意：“除非你亲自游览北京，否则你无法完全领略它的美。” `unless` 意为“除非，如果不”。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-046",
+  "topic": "连词与状语从句",
+  "point": "并列连词",
+  "level": "",
+  "prompt": "I'd love to go to the concert with you tonight, ____ I have to finish my science project first.",
+  "options": [
+   "and",
+   "but",
+   "or",
+   "so"
+  ],
+  "answer": 1,
+  "explanation": "前句“我很想今晚和你去听音乐会”与后句“我必须先完成科学项目”是明显的转折关系，用 `but`（但是）。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-047",
+  "topic": "连词与状语从句",
+  "point": "从属连词（时间状语从句）",
+  "level": "",
+  "prompt": "The little boy didn't go to bed ____ his mother came back home last night.",
+  "options": [
+   "until",
+   "if",
+   "because",
+   "since"
+  ],
+  "answer": 0,
+  "explanation": "考查固定搭配 `not... until...`（直到……才……）。句意：昨晚这个小男孩直到他妈妈回家才去睡觉。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-048",
+  "topic": "连词与状语从句",
+  "point": "并列连词",
+  "level": "",
+  "prompt": "Put on your warm coat, ____ you will catch a cold in such freezing weather.",
+  "options": [
+   "and",
+   "so",
+   "or",
+   "but"
+  ],
+  "answer": 2,
+  "explanation": "“祈使句 + or + 陈述句”，句意：穿上你的保暖外套，否则在这么冷的天气里你会感冒的。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-049",
+  "topic": "连词与状语从句",
+  "point": "并列连词",
+  "level": "",
+  "prompt": "My legs were hurting badly, ____ I didn't give up and finally reached the top of the mountain.",
+  "options": [
+   "so",
+   "or",
+   "because",
+   "but"
+  ],
+  "answer": 3,
+  "explanation": "前句“我的双腿疼得厉害”与后句“我没有放弃并最终到达山顶”构成转折关系，用 `but`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-050",
+  "topic": "连词与状语从句",
+  "point": "从属连词（时间状语从句）",
+  "level": "",
+  "prompt": "Please call me ____ you arrive at Beijing Daxing International Airport.",
+  "options": [
+   "as soon as",
+   "although",
+   "unless",
+   "so that"
+  ],
+  "answer": 0,
+  "explanation": "句意：“你一到达北京大兴国际机场就请给我打电话。” `as soon as` 意为“一……就……”。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-051",
+  "topic": "连词与状语从句",
+  "point": "并列连词",
+  "level": "",
+  "prompt": "Study hard right now, ____ you will make great progress in the final exam.",
+  "options": [
+   "or",
+   "and",
+   "but",
+   "though"
+  ],
+  "answer": 1,
+  "explanation": "“祈使句 + and + 陈述句”表示顺承关系，意为“那么”。句意：现在努力学习，那么你就会在期末考试中取得巨大进步。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-052",
+  "topic": "连词与状语从句",
+  "point": "从属连词（目的状语从句）",
+  "level": "",
+  "prompt": "Our teacher spoke very slowly and clearly ____ everyone in the classroom could understand him.",
+  "options": [
+   "even though",
+   "as soon as",
+   "so that",
+   "as long as"
+  ],
+  "answer": 2,
+  "explanation": "老师讲得慢且清楚的目的是“为了让教室里的每个人都能听懂”，`so that` 意为“以便，为了”，引导目的状语从句。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-053",
+  "topic": "动词时态",
+  "point": "现在进行时",
+  "level": "",
+  "prompt": "— Be quiet, please! Your father ____ an online meeting in the study right now.\n— Sorry, Mom.",
+  "options": [
+   "has",
+   "had",
+   "is having",
+   "will have"
+  ],
+  "answer": 2,
+  "explanation": "祈使句 `Be quiet, please!` 和 `right now`（此刻）表明动作正在发生，用现在进行时 `is having`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-054",
+  "topic": "动词时态",
+  "point": "一般现在时",
+  "level": "",
+  "prompt": "My grandfather ____ a walk in the park every morning to keep healthy.",
+  "options": [
+   "takes",
+   "took",
+   "is taking",
+   "has taken"
+  ],
+  "answer": 0,
+  "explanation": "`every morning` 表示经常性、习惯性的动作，用一般现在时；主语 `My grandfather` 为第三人称单数，用 `takes`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-055",
+  "topic": "动词时态",
+  "point": "一般过去时",
+  "level": "",
+  "prompt": "Last Saturday, our class ____ to the Capital Museum and learned a lot about Beijing's history.",
+  "options": [
+   "go",
+   "went",
+   "will go",
+   "have gone"
+  ],
+  "answer": 1,
+  "explanation": "时间状语 `Last Saturday` 及并列动词 `learned` 均提示动作发生在过去，用一般过去时 `went`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-056",
+  "topic": "动词时态",
+  "point": "一般将来时（主将从现）",
+  "level": "",
+  "prompt": "If it is sunny tomorrow, we ____ a picnic by the lake.",
+  "options": [
+   "have",
+   "had",
+   "will have",
+   "are having"
+  ],
+  "answer": 2,
+  "explanation": "`If` 引导条件状语从句遵循“主将从现”原则，从句用一般现在时 `is`，主句需用一般将来时 `will have`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-057",
+  "topic": "动词时态",
+  "point": "过去进行时",
+  "level": "",
+  "prompt": "— What were you doing at 8 o'clock last night? I called you, but nobody answered.\n— Oh, I ____ my mom cook dinner in the kitchen.",
+  "options": [
+   "help",
+   "helped",
+   "am helping",
+   "was helping"
+  ],
+  "answer": 3,
+  "explanation": "问句询问 `at 8 o'clock last night`（昨晚8点）正在做的事，为过去进行时，答语时态保持一致，用 `was helping`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-058",
+  "topic": "动词时态",
+  "point": "现在完成时",
+  "level": "",
+  "prompt": "Mr. Li ____ as a volunteer in this community since he retired five years ago.",
+  "options": [
+   "works",
+   "worked",
+   "will work",
+   "has worked"
+  ],
+  "answer": 3,
+  "explanation": "`since + 一般过去时从句` 是现在完成时的标志，主句需用现在完成时 `has worked`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-059",
+  "topic": "动词时态",
+  "point": "现在完成时",
+  "level": "",
+  "prompt": "— ____ you ever ____ the Universal Beijing Resort?\n— Yes, I went there with my friends last summer.",
+  "options": [
+   "Do; visit",
+   "Have; visited",
+   "Did; visit",
+   "Will; visit"
+  ],
+  "answer": 1,
+  "explanation": "句中含有标志词 `ever`（曾经），询问过往经历用现在完成时 `Have... visited`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-060",
+  "topic": "动词时态",
+  "point": "过去进行时",
+  "level": "",
+  "prompt": "I ____ the book Red Star Over China when my friend knocked at the door.",
+  "options": [
+   "read",
+   "am reading",
+   "was reading",
+   "have read"
+  ],
+  "answer": 2,
+  "explanation": "`when my friend knocked at the door` 表示过去某个瞬间发生的动作，主句表示该瞬间正在进行的背景动作，用过去进行时 `was reading`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-061",
+  "topic": "动词时态",
+  "point": "一般将来时",
+  "level": "",
+  "prompt": "Look at the dark clouds in the sky! I think it ____ soon.",
+  "options": [
+   "rains",
+   "rained",
+   "was raining",
+   "is going to rain"
+  ],
+  "answer": 3,
+  "explanation": "根据当前迹象（天上的乌云）以及时间状语 `soon` 预测即将发生的事，用 `is going to rain`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-062",
+  "topic": "动词时态",
+  "point": "现在完成时",
+  "level": "",
+  "prompt": "My sister ____ three English novels since the winter vacation started.",
+  "options": [
+   "reads",
+   "read",
+   "has read",
+   "is reading"
+  ],
+  "answer": 2,
+  "explanation": "`since the winter vacation started` 为 `since` 引导的时间状语从句，主句表示从过去持续到现在的动作结果，用现在完成时 `has read`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-063",
+  "topic": "动词时态",
+  "point": "现在进行时",
+  "level": "",
+  "prompt": "Listen! Some girls ____ an English song in the next classroom.",
+  "options": [
+   "sing",
+   "sang",
+   "are singing",
+   "have sung"
+  ],
+  "answer": 2,
+  "explanation": "句首的 `Listen!`（听！）提示动作此刻正在进行，用现在进行时 `are singing`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-064",
+  "topic": "动词时态",
+  "point": "一般现在时（客观真理）",
+  "level": "",
+  "prompt": "Our geography teacher told us that the Earth ____ around the Sun.",
+  "options": [
+   "moves",
+   "moved",
+   "is moving",
+   "will move"
+  ],
+  "answer": 0,
+  "explanation": "尽管主句动词 `told` 是过去时，但从句“地球绕着太阳转”属于客观真理和科学事实，永远使用一般现在时 `moves`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-065",
+  "topic": "动词时态",
+  "point": "现在进行时",
+  "level": "",
+  "prompt": "— Where is your brother, Jim?\n— He ____ his bike in the yard at the moment.",
+  "options": [
+   "fixes",
+   "fixed",
+   "is fixing",
+   "has fixed"
+  ],
+  "answer": 2,
+  "explanation": "问句询问“你哥哥现在在哪”，且答语有标志词 `at the moment`（此刻，现在），应用现在进行时 `is fixing`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-066",
+  "topic": "动词时态",
+  "point": "现在完成时",
+  "level": "",
+  "prompt": "Great changes ____ in my hometown in the past ten years.",
+  "options": [
+   "take place",
+   "took place",
+   "will take place",
+   "have taken place"
+  ],
+  "answer": 3,
+  "explanation": "`in the past ten years`（在过去的十年里）是典型的现在完成时标志词，故填 `have taken place`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-067",
+  "topic": "动词时态",
+  "point": "一般过去时",
+  "level": "",
+  "prompt": "— Peter, you look so tired today. What's wrong?\n— I ____ up late last night to prepare for the speech.",
+  "options": [
+   "stay",
+   "stayed",
+   "am staying",
+   "will stay"
+  ],
+  "answer": 1,
+  "explanation": "句中有明确过去时间状语 `last night`（昨晚），应用一般过去时 `stayed`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-068",
+  "topic": "动词时态",
+  "point": "一般将来时（主将从现）",
+  "level": "",
+  "prompt": "Don't worry. I ____ you as soon as I get the ticket tomorrow.",
+  "options": [
+   "tell",
+   "told",
+   "will tell",
+   "have told"
+  ],
+  "answer": 2,
+  "explanation": "`as soon as` 引导时间状语从句遵循“主将从现”原则，从句 `I get...` 为一般现在时表将来，主句用一般将来时 `will tell`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-069",
+  "topic": "动词时态",
+  "point": "过去进行时",
+  "level": "",
+  "prompt": "While my mother ____ dinner yesterday evening, my father was cleaning the living room.",
+  "options": [
+   "cooks",
+   "cooked",
+   "is cooking",
+   "was cooking"
+  ],
+  "answer": 3,
+  "explanation": "`While` 引导时间状语从句，强调过去同一时间段内两个长动作同时正在进行，主句是 `was cleaning`，从句也用过去进行时 `was cooking`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-070",
+  "topic": "动词时态",
+  "point": "一般过去时与现在完成时的辨析",
+  "level": "",
+  "prompt": "— Have you finished your homework yet, Sam?\n— Yes. I ____ it half an hour ago.",
+  "options": [
+   "finish",
+   "finished",
+   "have finished",
+   "will finish"
+  ],
+  "answer": 1,
+  "explanation": "虽然问句用了现在完成时，但答语中有非常明确的过去时间状语 `half an hour ago`（半小时前）。凡是有具体过去时间状语（`...ago, yesterday, last...`）的句子，必须用一般过去时 `finished`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-071",
+  "topic": "动词时态",
+  "point": "现在完成时",
+  "level": "",
+  "prompt": "Miss Wang ____ English in our school for twelve years. All the students love her.",
+  "options": [
+   "teaches",
+   "taught",
+   "is teaching",
+   "has taught"
+  ],
+  "answer": 3,
+  "explanation": "时间状语 `for twelve years`（长达十二年）且后句 `love` 为一般现在时，说明她现在依然在学校教书，动作从过去持续到现在，用现在完成时 `has taught`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-072",
+  "topic": "动词时态",
+  "point": "现在进行时",
+  "level": "",
+  "prompt": "Look! The children ____ happily on the snow. Let's go and join them.",
+  "options": [
+   "play",
+   "played",
+   "are playing",
+   "have played"
+  ],
+  "answer": 2,
+  "explanation": "句首 `Look!`（看！）和后句“我们去加入他们吧”说明孩子们此刻正在雪地上玩耍，用现在进行时 `are playing`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-073",
+  "topic": "动词时态",
+  "point": "一般将来时",
+  "level": "",
+  "prompt": "My uncle ____ to New York on business next Monday.",
+  "options": [
+   "flies",
+   "flew",
+   "will fly",
+   "has flown"
+  ],
+  "answer": 2,
+  "explanation": "时间状语 `next Monday`（下周一）表示将来时间，用一般将来时 `will fly`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-074",
+  "topic": "动词时态",
+  "point": "过去进行时",
+  "level": "",
+  "prompt": "— Why didn't you see the red light just now?\n— Sorry, I ____ at my phone at that moment.",
+  "options": [
+   "look",
+   "looked",
+   "am looking",
+   "was looking"
+  ],
+  "answer": 3,
+  "explanation": "问句问刚才为什么没看见红灯，答语 `at that moment`（在刚才那个时刻）表示过去某个具体时刻正在进行的动作，用过去进行时 `was looking`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-075",
+  "topic": "动词时态",
+  "point": "现在完成时",
+  "level": "",
+  "prompt": "China ____ many communications satellites into space so far.",
+  "options": [
+   "sends",
+   "sent",
+   "will send",
+   "has sent"
+  ],
+  "answer": 3,
+  "explanation": "句末的 `so far`（到目前为止）是现在完成时的核心标志词，主语 `China` 为单数，故用 `has sent`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-076",
+  "topic": "动词时态",
+  "point": "一般现在时",
+  "level": "",
+  "prompt": "Every year, millions of people ____ the Palace Museum during the National Day holiday.",
+  "options": [
+   "visit",
+   "visited",
+   "are visiting",
+   "have visited"
+  ],
+  "answer": 0,
+  "explanation": "句首 `Every year`（每年）表示规律性、周期性发生的动作，用一般现在时 `visit`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-077",
+  "topic": "被动语态",
+  "point": "一般现在时的被动语态",
+  "level": "",
+  "prompt": "Today, AI technology ____ widely in many fields, such as education and medicine.",
+  "options": [
+   "uses",
+   "is used",
+   "used",
+   "was used"
+  ],
+  "answer": 1,
+  "explanation": "主语 `AI technology` 是被使用的，排除A、C；时间状语 `Today`（如今）表示现在，用一般现在时的被动语态 `is used`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-078",
+  "topic": "被动语态",
+  "point": "一般过去时的被动语态",
+  "level": "",
+  "prompt": "The 24th Winter Olympic Games ____ successfully in Beijing and Zhangjiakou in 2022.",
+  "options": [
+   "hold",
+   "held",
+   "are held",
+   "were held"
+  ],
+  "answer": 3,
+  "explanation": "主语“第24届冬奥会”是被举办的；时间状语 `in 2022` 为过去时间，且主语 `Games` 为复数，故用 `were held`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-079",
+  "topic": "被动语态",
+  "point": "一般将来时的被动语态",
+  "level": "",
+  "prompt": "A new sports center ____ in our school next year. We are all looking forward to it.",
+  "options": [
+   "builds",
+   "will build",
+   "is built",
+   "will be built"
+  ],
+  "answer": 3,
+  "explanation": "主语 `A new sports center` 是被建造的；时间状语 `next year` 表将来，故用一般将来时的被动语态 `will be built`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-080",
+  "topic": "被动语态",
+  "point": "一般现在时的被动语态",
+  "level": "",
+  "prompt": "Many trees and flowers ____ along the streets in our city every spring.",
+  "options": [
+   "plant",
+   "planted",
+   "are planted",
+   "were planted"
+  ],
+  "answer": 2,
+  "explanation": "主语 `Many trees and flowers` 是被种植的；时间状语 `every spring` 表经常性动作，用一般现在时的被动语态 `are planted`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-081",
+  "topic": "被动语态",
+  "point": "一般过去时的被动语态",
+  "level": "",
+  "prompt": "— Mom, where is my raincoat? I can't find it anywhere.\n— Oh, it ____ to your cousin yesterday because it was raining hard when he left.",
+  "options": [
+   "lends",
+   "lent",
+   "is lent",
+   "was lent"
+  ],
+  "answer": 3,
+  "explanation": "主语 `it`（雨衣）是被借出的；时间状语 `yesterday` 表过去，用一般过去时的被动语态 `was lent`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-082",
+  "topic": "被动语态",
+  "point": "一般过去时的被动语态",
+  "level": "",
+  "prompt": "The classic novel Journey to the West ____ by Wu Cheng'en in the Ming Dynasty.",
+  "options": [
+   "writes",
+   "wrote",
+   "is written",
+   "was written"
+  ],
+  "answer": 3,
+  "explanation": "主语《西游记》是被写的，且有标志词 `by Wu Cheng'en`；时间状语 `in the Ming Dynasty`（在明朝）表过去，用 `was written`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-083",
+  "topic": "被动语态",
+  "point": "一般现在时的被动语态",
+  "level": "",
+  "prompt": "Chinese ____ by more and more people around the world nowadays.",
+  "options": [
+   "speaks",
+   "spoke",
+   "is spoken",
+   "was spoken"
+  ],
+  "answer": 2,
+  "explanation": "主语 `Chinese`（汉语）是被讲的；时间状语 `nowadays`（现今）表现在，用一般现在时的被动语态 `is spoken`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-084",
+  "topic": "被动语态",
+  "point": "一般将来时的被动语态",
+  "level": "",
+  "prompt": "A speech on space science ____ in our school hall tomorrow afternoon.",
+  "options": [
+   "gives",
+   "will give",
+   "is given",
+   "will be given"
+  ],
+  "answer": 3,
+  "explanation": "主语 `A speech`（一场演讲）是被做的；时间状语 `tomorrow afternoon` 表将来，用一般将来时的被动语态 `will be given`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-085",
+  "topic": "被动语态",
+  "point": "一般过去时的被动语态",
+  "level": "",
+  "prompt": "These beautiful clay pieces ____ by the students in the art club last week.",
+  "options": [
+   "make",
+   "made",
+   "are made",
+   "were made"
+  ],
+  "answer": 3,
+  "explanation": "主语 `These beautiful clay pieces`（这些漂亮的陶艺作品，复数）是被制作的；时间状语 `last week` 表过去，用 `were made`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-086",
+  "topic": "被动语态",
+  "point": "一般现在时的被动语态",
+  "level": "",
+  "prompt": "Passengers ____ to show their ID cards before they get on the high-speed train.",
+  "options": [
+   "ask",
+   "asked",
+   "are asked",
+   "were asked"
+  ],
+  "answer": 2,
+  "explanation": "主语 `Passengers`（乘客）是被要求出示身份证的；从句 `before they get on...` 为一般现在时，陈述日常规定，用 `are asked`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-087",
+  "topic": "被动语态",
+  "point": "一般过去时的被动语态",
+  "level": "",
+  "prompt": "Look at the old bridge over there! It ____ more than three hundred years ago.",
+  "options": [
+   "builds",
+   "built",
+   "is built",
+   "was built"
+  ],
+  "answer": 3,
+  "explanation": "主语 `It`（老桥）是被建造的；时间状语 `more than three hundred years ago`（三百多年前）表过去，用 `was built`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-088",
+  "topic": "被动语态",
+  "point": "一般将来时的被动语态",
+  "level": "",
+  "prompt": "Don't worry about the lost books. They ____ to the library as soon as we find them.",
+  "options": [
+   "return",
+   "returned",
+   "are returned",
+   "will be returned"
+  ],
+  "answer": 3,
+  "explanation": "主语 `They`（丢失的书）是被归还的；`as soon as` 引导的时间状语从句遵循“主将从现”原则，主句需用一般将来时的被动语态 `will be returned`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-089",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 连接词）",
+  "level": "",
+  "prompt": "— Could you please tell me ____?\n— Next Friday afternoon.",
+  "options": [
+   "when will we have the school sports meeting",
+   "when we will have the school sports meeting",
+   "where will we have the school sports meeting",
+   "where we will have the school sports meeting"
+  ],
+  "answer": 1,
+  "explanation": "第一步：排除疑问语序 A 和 C；第二步：答语 `Next Friday afternoon`（下周五下午）回答的是时间，故用连接词 `when`，选B。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-090",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 连接词）",
+  "level": "",
+  "prompt": "— Do you know ____ the Beijing Library in Tongzhou?\n— Yes. You can take Subway Line 1 and then take a bus.",
+  "options": [
+   "how I can get to",
+   "how can I get to",
+   "when I can get to",
+   "when can I get to"
+  ],
+  "answer": 0,
+  "explanation": "第一步：排除疑问语序 B 和 D；第二步：答语“坐地铁1号线然后转公交车”回答的是交通方式，用连接词 `how`，选A。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-091",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 时态）",
+  "level": "",
+  "prompt": "— Excuse me, I'd like to know ____ yesterday.\n— Because the traffic was too heavy.",
+  "options": [
+   "why are you late",
+   "why you are late",
+   "why were you late",
+   "why you were late"
+  ],
+  "answer": 3,
+  "explanation": "第一步：排除疑问语序 A 和 C；第二步：句末有过去时间状语 `yesterday`，从句必须用一般过去时，选D。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-092",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 连接词）",
+  "level": "",
+  "prompt": "— Jack, do you remember ____ when we visited the Palace Museum last month?\n— Of course! We took it in front of the Hall of Supreme Harmony (太和殿).",
+  "options": [
+   "where did we take this photo",
+   "where we took this photo",
+   "when did we take this photo",
+   "when we took this photo"
+  ],
+  "answer": 1,
+  "explanation": "第一步：排除疑问语序 A 和 C；第二步：答语 `in front of the Hall of Supreme Harmony`（在太和殿前）表地点，用连接词 `where`，选B。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-093",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 时态）",
+  "level": "",
+  "prompt": "— Have you decided ____ for your mother's birthday?\n— Yes, I'm going to make a birthday cake for her by myself.",
+  "options": [
+   "what will you buy",
+   "what you will buy",
+   "what did you buy",
+   "what you bought"
+  ],
+  "answer": 1,
+  "explanation": "第一步：排除疑问语序 A 和 C；第二步：根据答语 `I'm going to make...` 可知妈妈生日还没到，动作发生在将来，用一般将来时，选B。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-094",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 时态）",
+  "level": "",
+  "prompt": "— Can you tell me ____ the coming summer vacation?\n— I'm going to visit my grandparents in Chengdu.",
+  "options": [
+   "how will you spend",
+   "how you will spend",
+   "how did you spend",
+   "how you spent"
+  ],
+  "answer": 1,
+  "explanation": "第一步：排除疑问语序 A 和 C；第二步：`the coming summer vacation`（即将到来的暑假）及答语 `I'm going to...` 表明是将来时间，从句用一般将来时，选B。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-095",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 连接词）",
+  "level": "",
+  "prompt": "— Could you tell me ____ the book Three Days to See?\n— I bought it in Xinhua Bookstore last Sunday.",
+  "options": [
+   "where did you buy",
+   "where you bought",
+   "when did you buy",
+   "when you bought"
+  ],
+  "answer": 1,
+  "explanation": "第一步：排除疑问语序 A 和 C；第二步：答语重点信息（通常看介词短语的核心或语境侧重，此处虽然有地点和时间，但在中考设题中若同时出现，需看选项设计——本题为让您清晰区分，答语核心地点为 `in Xinhua Bookstore`，若严格单选，通常答语只给 `In Xinhua Bookstore.`）。用 `where` 提问地点，选B。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": false,
+  "note": "答语同时给出了地点和时间，B、D 两项都能成立，请修改答语后再启用。"
+ },
+ {
+  "id": "g100-096",
+  "topic": "宾语从句",
+  "point": "宾语从句（连接词辨析）",
+  "level": "",
+  "prompt": "— Do you know ____ the school science festival will start?\n— At 9:00 tomorrow morning.",
+  "options": [
+   "when",
+   "where",
+   "why",
+   "how"
+  ],
+  "answer": 0,
+  "explanation": "答语 `At 9:00 tomorrow morning` 为具体时间，故连接词用 `when`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-097",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 时态）",
+  "level": "",
+  "prompt": "— Hi, Alice! I wonder ____ last weekend.\n— I went camping with my family in Yanqing.",
+  "options": [
+   "what do you do",
+   "what you do",
+   "what did you do",
+   "what you did"
+  ],
+  "answer": 3,
+  "explanation": "第一步：排除疑问语序 A 和 C；第二步：时间状语 `last weekend`（上周末）表过去，从句用一般过去时 `what you did`，选D。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-098",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 连接词）",
+  "level": "",
+  "prompt": "— Could you please tell me ____?\n— It's next to the bank on the second floor.",
+  "options": [
+   "where is the nearest restroom",
+   "where the nearest restroom is",
+   "when is the nearest restroom open",
+   "when the nearest restroom is open"
+  ],
+  "answer": 1,
+  "explanation": "第一步：注意判断主语是 `the nearest restroom`，因此 `is` 在主语后面才是陈述语序，排除疑问语序 A 和 C；第二步：答语 `next to the bank on the second floor` 表示位置地点，用 `where`，选B。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-099",
+  "topic": "宾语从句",
+  "point": "宾语从句（连接词作主语 + 时态）",
+  "level": "",
+  "prompt": "— Do you know ____ the speech at the graduation ceremony tomorrow?\n— Yes. Our headmaster, Mr. Zhang.",
+  "options": [
+   "who will give",
+   "who gives",
+   "what will give",
+   "what gives"
+  ],
+  "answer": 0,
+  "explanation": "答语 `Our headmaster, Mr. Zhang` 指人，用 `who` 提问（且 `who` 在从句中本身作主语，自然构成陈述语序）；时间状语 `tomorrow` 表将来，用一般将来时 `who will give`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g100-100",
+  "topic": "宾语从句",
+  "point": "宾语从句（语序 + 连接词）",
+  "level": "",
+  "prompt": "— Dad, do you know ____ so many people like watching the village basketball games (村BA) in Guizhou?\n— Because the games are full of passion and local culture.",
+  "options": [
+   "why do",
+   "why",
+   "how do",
+   "how"
+  ],
+  "answer": 1,
+  "explanation": "第一步：宾语从句用陈述语序，不能多加助动词 `do`，排除 A 和 C；第二步：答语以 `Because` 开头表原因，故用连接词 `why`。",
+  "source": "北京中考核心语法选择题100题",
+  "enabled": true
+ },
+ {
+  "id": "g60-001",
+  "topic": "代词",
+  "point": "人称代词主格",
+  "level": "基础",
+  "prompt": "My brother enjoys reading science books. ____ often spends his weekends in the library.",
+  "options": [
+   "He",
+   "She",
+   "It",
+   "They"
+  ],
+  "answer": 0,
+  "explanation": "My brother 指男性单数，空格作主语，故用 He。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-002",
+  "topic": "代词",
+  "point": "名词性物主代词",
+  "level": "基础",
+  "prompt": "This is not my dictionary. I think it is ____.",
+  "options": [
+   "her",
+   "hers",
+   "she",
+   "herself"
+  ],
+  "answer": 1,
+  "explanation": "空格后没有名词，需用名词性物主代词 hers，相当于 her dictionary。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-003",
+  "topic": "代词",
+  "point": "反身代词",
+  "level": "提升",
+  "prompt": "The students made the model plane by ____.",
+  "options": [
+   "they",
+   "them",
+   "their",
+   "themselves"
+  ],
+  "answer": 3,
+  "explanation": "by oneself 意为“独立地、靠自己”，主语为复数 students，故用 themselves。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-004",
+  "topic": "代词",
+  "point": "不定代词",
+  "level": "提升",
+  "prompt": "There are two notebooks on the desk. One is mine, and ____ is Lucy’s.",
+  "options": [
+   "another",
+   "other",
+   "the other",
+   "others"
+  ],
+  "answer": 2,
+  "explanation": "两者中的“另一个”用 the other；another 常指三者及以上中的另一个。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-005",
+  "topic": "代词",
+  "point": "不定代词",
+  "level": "易错",
+  "prompt": "—Which of these two T-shirts would you like? —____ is fine. I like both colours.",
+  "options": [
+   "Either",
+   "Neither",
+   "All",
+   "None"
+  ],
+  "answer": 0,
+  "explanation": "两件T恤中的任意一件都可以，用 either；neither 表示两者都不。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-006",
+  "topic": "名词、冠词与数词",
+  "point": "不定冠词",
+  "level": "基础",
+  "prompt": "My uncle is ____ engineer. He works on new energy projects.",
+  "options": [
+   "a",
+   "an",
+   "the",
+   "/"
+  ],
+  "answer": 1,
+  "explanation": "engineer 以元音音素开头，表示职业且首次提及，用 an。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-007",
+  "topic": "名词、冠词与数词",
+  "point": "定冠词",
+  "level": "基础",
+  "prompt": "The children are looking at ____ moon through the window.",
+  "options": [
+   "a",
+   "an",
+   "the",
+   "/"
+  ],
+  "answer": 2,
+  "explanation": "moon 表示通常意义上的月亮，为独一无二的事物，常用 the。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-008",
+  "topic": "名词、冠词与数词",
+  "point": "可数名词复数",
+  "level": "基础",
+  "prompt": "There are many ____ in the school library.",
+  "options": [
+   "book",
+   "books",
+   "book’s",
+   "books’"
+  ],
+  "answer": 1,
+  "explanation": "many 修饰可数名词复数，故用 books。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-009",
+  "topic": "名词、冠词与数词",
+  "point": "序数词",
+  "level": "提升",
+  "prompt": "We held a party for my grandfather’s ____ birthday yesterday.",
+  "options": [
+   "seventy",
+   "seventieth",
+   "the seventy",
+   "seventies"
+  ],
+  "answer": 1,
+  "explanation": "表示“第七十个生日”要用序数词 seventieth，前面已有物主代词 grandfather’s，不再加 the。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-010",
+  "topic": "名词、冠词与数词",
+  "point": "复数名词所有格",
+  "level": "易错",
+  "prompt": "—What a beautiful painting! Who made it? —It’s one of the ____ works.",
+  "options": [
+   "student",
+   "students",
+   "students’",
+   "student’s"
+  ],
+  "answer": 2,
+  "explanation": "one of 后接复数名词，works 属于多个学生，故用 students’。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-011",
+  "topic": "介词",
+  "point": "时间介词",
+  "level": "基础",
+  "prompt": "The school sports meeting will be held ____ Friday morning.",
+  "options": [
+   "in",
+   "on",
+   "at",
+   "to"
+  ],
+  "answer": 1,
+  "explanation": "具体到某天的早晨用 on，如 on Friday morning。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-012",
+  "topic": "介词",
+  "point": "形容词与介词搭配",
+  "level": "基础",
+  "prompt": "My sister has been interested ____ space science since she was little.",
+  "options": [
+   "on",
+   "at",
+   "in",
+   "for"
+  ],
+  "answer": 2,
+  "explanation": "be interested in 是固定搭配，意为“对……感兴趣”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-013",
+  "topic": "介词",
+  "point": "方位介词",
+  "level": "基础",
+  "prompt": "The new bridge goes ____ the river and connects the two villages.",
+  "options": [
+   "across",
+   "through",
+   "along",
+   "between"
+  ],
+  "answer": 0,
+  "explanation": "across 表示从表面横跨；through 表示从内部穿过。桥横跨河流用 across。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-014",
+  "topic": "介词",
+  "point": "时间介词与现在完成时",
+  "level": "提升",
+  "prompt": "We have studied English ____ nearly six years.",
+  "options": [
+   "since",
+   "for",
+   "at",
+   "until"
+  ],
+  "answer": 1,
+  "explanation": "for 后接时间段 nearly six years；since 后通常接时间点或从句。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-015",
+  "topic": "介词",
+  "point": "交通方式",
+  "level": "基础",
+  "prompt": "—How did you get to the museum? —I went there ____ underground.",
+  "options": [
+   "by",
+   "with",
+   "in",
+   "on"
+  ],
+  "answer": 0,
+  "explanation": "by underground 意为“乘地铁”，by 后接交通工具名词时通常不加冠词。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-016",
+  "topic": "形容词与副词",
+  "point": "形容词比较级",
+  "level": "基础",
+  "prompt": "This maths problem is ____ than the one we did yesterday.",
+  "options": [
+   "difficult",
+   "more difficult",
+   "most difficult",
+   "the most difficult"
+  ],
+  "answer": 1,
+  "explanation": "than 是比较级标志，多音节形容词 difficult 用 more difficult。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-017",
+  "topic": "形容词与副词",
+  "point": "副词最高级",
+  "level": "基础",
+  "prompt": "Of all the students in the team, Amy runs ____.",
+  "options": [
+   "fast",
+   "faster",
+   "fastest",
+   "the faster"
+  ],
+  "answer": 2,
+  "explanation": "of all 表示三者及以上的比较，应使用最高级 fastest；副词最高级前的 the 可省略。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-018",
+  "topic": "形容词与副词",
+  "point": "副词比较级",
+  "level": "提升",
+  "prompt": "Please speak ____ so that everyone can hear you clearly.",
+  "options": [
+   "loud",
+   "louder",
+   "more loudly",
+   "most loudly"
+  ],
+  "answer": 2,
+  "explanation": "语境含有“比现在更响亮”的要求，speak 用副词修饰，more loudly 表示“更大声地”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-019",
+  "topic": "形容词与副词",
+  "point": "-ed/-ing 形容词",
+  "level": "基础",
+  "prompt": "The boy felt ____ when he heard the good news.",
+  "options": [
+   "excite",
+   "exciting",
+   "excited",
+   "excitement"
+  ],
+  "answer": 2,
+  "explanation": "描述人的感受用 excited；exciting 通常描述令人兴奋的事物。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-020",
+  "topic": "形容词与副词",
+  "point": "enough 的位置",
+  "level": "易错",
+  "prompt": "The weather today is ____ for us to have a picnic outside.",
+  "options": [
+   "enough warm",
+   "warm enough",
+   "too warmly",
+   "enough warmly"
+  ],
+  "answer": 1,
+  "explanation": "形容词 + enough 表示“足够……”，warm enough 正确；warmly 为副词。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-021",
+  "topic": "情态动词与祈使句",
+  "point": "请求许可",
+  "level": "基础",
+  "prompt": "—____ I borrow your pen, please? —Of course. Here you are.",
+  "options": [
+   "May",
+   "Must",
+   "Should",
+   "Need"
+  ],
+  "answer": 0,
+  "explanation": "May I ...? 是礼貌地请求许可的表达。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-022",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表禁止",
+  "level": "基础",
+  "prompt": "You ____ take photos here. Look at the “No Photos” sign.",
+  "options": [
+   "needn’t",
+   "mustn’t",
+   "may",
+   "could"
+  ],
+  "answer": 1,
+  "explanation": "mustn’t 表示“不准、禁止”，与 No Photos 标识一致。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-023",
+  "topic": "情态动词与祈使句",
+  "point": "must 提问的否定回答",
+  "level": "易错",
+  "prompt": "—Must I finish the report tonight? —No, you ____. You can do it tomorrow.",
+  "options": [
+   "mustn’t",
+   "can’t",
+   "needn’t",
+   "shouldn’t"
+  ],
+  "answer": 2,
+  "explanation": "Must I ...? 的否定回答可用 No, you needn’t / don’t have to，表示“不必”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-024",
+  "topic": "情态动词与祈使句",
+  "point": "肯定祈使句",
+  "level": "基础",
+  "prompt": "____ careful when you cross the busy street.",
+  "options": [
+   "Be",
+   "Being",
+   "To be",
+   "Been"
+  ],
+  "answer": 0,
+  "explanation": "祈使句以动词原形开头；be careful 意为“小心”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-025",
+  "topic": "情态动词与祈使句",
+  "point": "情态动词表推测",
+  "level": "提升",
+  "prompt": "—Whose bag is this? —It ____ be Mike’s. His name is on it.",
+  "options": [
+   "can’t",
+   "must",
+   "need",
+   "shouldn’t"
+  ],
+  "answer": 1,
+  "explanation": "根据包上有 Mike 的名字可作较有把握的肯定推测，用 must。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-026",
+  "topic": "动词时态",
+  "point": "一般现在时",
+  "level": "基础",
+  "prompt": "My father ____ to work by bike every day.",
+  "options": [
+   "goes",
+   "went",
+   "is going",
+   "has gone"
+  ],
+  "answer": 0,
+  "explanation": "every day 表示习惯性动作；主语 my father 为第三人称单数，故用 goes。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-027",
+  "topic": "动词时态",
+  "point": "一般过去时",
+  "level": "基础",
+  "prompt": "We ____ a wonderful science show at the museum last Saturday.",
+  "options": [
+   "watch",
+   "watched",
+   "are watching",
+   "have watched"
+  ],
+  "answer": 1,
+  "explanation": "last Saturday 是过去时间状语，谓语用一般过去时 watched。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-028",
+  "topic": "动词时态",
+  "point": "现在进行时",
+  "level": "基础",
+  "prompt": "—Where is your mother? —She ____ dinner in the kitchen.",
+  "options": [
+   "cooks",
+   "cooked",
+   "is cooking",
+   "has cooked"
+  ],
+  "answer": 2,
+  "explanation": "问句询问此刻所在位置，答句描述正在进行的动作，用 is cooking。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-029",
+  "topic": "动词时态",
+  "point": "一般将来时与时间状语从句",
+  "level": "提升",
+  "prompt": "I ____ you as soon as I arrive at the station tomorrow.",
+  "options": [
+   "call",
+   "called",
+   "will call",
+   "have called"
+  ],
+  "answer": 2,
+  "explanation": "主句表示将来动作，用 will call；as soon as 引导的时间状语从句用一般现在时表将来。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-030",
+  "topic": "动词时态",
+  "point": "过去进行时",
+  "level": "基础",
+  "prompt": "When I entered the classroom, my classmates ____ about the school trip.",
+  "options": [
+   "talk",
+   "are talking",
+   "were talking",
+   "have talked"
+  ],
+  "answer": 2,
+  "explanation": "entered 是过去某个时间点，表示当时正在讨论，用 were talking。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-031",
+  "topic": "动词时态",
+  "point": "现在完成时",
+  "level": "提升",
+  "prompt": "I ____ this book twice, so I know the story quite well.",
+  "options": [
+   "read",
+   "am reading",
+   "have read",
+   "will read"
+  ],
+  "answer": 2,
+  "explanation": "twice 表示截至目前已有两次阅读经历，并对现在产生影响，使用 have read。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-032",
+  "topic": "动词时态",
+  "point": "现在完成时与 since",
+  "level": "基础",
+  "prompt": "My parents ____ in Beijing since 2012.",
+  "options": [
+   "live",
+   "lived",
+   "have lived",
+   "will live"
+  ],
+  "answer": 2,
+  "explanation": "since 2012 表示从过去持续至今，谓语用 have lived。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-033",
+  "topic": "动词时态",
+  "point": "be going to 表预测",
+  "level": "提升",
+  "prompt": "Look at those dark clouds! It ____ soon.",
+  "options": [
+   "rains",
+   "rained",
+   "is going to rain",
+   "has rained"
+  ],
+  "answer": 2,
+  "explanation": "根据乌云这一现有迹象推测即将下雨，使用 is going to rain。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-034",
+  "topic": "动词时态",
+  "point": "过去完成时",
+  "level": "易错",
+  "prompt": "By the time the movie started, we ____ our seats.",
+  "options": [
+   "find",
+   "found",
+   "had found",
+   "will find"
+  ],
+  "answer": 2,
+  "explanation": "找座位发生在电影开始之前，两个过去动作有先后，较早动作用 had found。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-035",
+  "topic": "动词时态",
+  "point": "一般过去时与时间状语",
+  "level": "易错",
+  "prompt": "—Have you seen Alice? —Yes. She ____ to the reading room a few minutes ago.",
+  "options": [
+   "goes",
+   "went",
+   "has gone",
+   "was going"
+  ],
+  "answer": 1,
+  "explanation": "a few minutes ago 指明确过去时间，需用 went，不能用现在完成时。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-036",
+  "topic": "被动语态",
+  "point": "一般现在时被动语态",
+  "level": "基础",
+  "prompt": "More trees ____ in our neighbourhood every spring.",
+  "options": [
+   "plant",
+   "planted",
+   "are planted",
+   "were planted"
+  ],
+  "answer": 2,
+  "explanation": "trees 与 plant 构成被动关系，every spring 指经常性动作，用 are planted。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-037",
+  "topic": "被动语态",
+  "point": "一般过去时被动语态",
+  "level": "基础",
+  "prompt": "The new sports centre ____ last year.",
+  "options": [
+   "builds",
+   "built",
+   "is built",
+   "was built"
+  ],
+  "answer": 3,
+  "explanation": "主语 centre 是被建造的对象，last year 指过去，故用 was built。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-038",
+  "topic": "被动语态",
+  "point": "一般将来时被动语态",
+  "level": "提升",
+  "prompt": "The classroom ____ after school tomorrow.",
+  "options": [
+   "cleans",
+   "cleaned",
+   "will be cleaned",
+   "has cleaned"
+  ],
+  "answer": 2,
+  "explanation": "tomorrow 表将来，classroom 承受 clean 动作，用 will be cleaned。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-039",
+  "topic": "被动语态",
+  "point": "一般现在时被动语态",
+  "level": "基础",
+  "prompt": "English ____ in many countries around the world.",
+  "options": [
+   "speaks",
+   "is spoken",
+   "spoke",
+   "was speaking"
+  ],
+  "answer": 1,
+  "explanation": "语言被人使用，描述客观事实，用 is spoken。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-040",
+  "topic": "被动语态",
+  "point": "现在进行时被动语态",
+  "level": "易错",
+  "prompt": "—Why is the door locked? —The room ____ for an important meeting now.",
+  "options": [
+   "uses",
+   "used",
+   "is being used",
+   "has used"
+  ],
+  "answer": 2,
+  "explanation": "now 表示此时正在使用，且 room 与 use 为被动关系，用 is being used。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-041",
+  "topic": "非谓语动词",
+  "point": "动词不定式作宾补",
+  "level": "基础",
+  "prompt": "My teacher encourages us ____ questions in class.",
+  "options": [
+   "ask",
+   "asking",
+   "to ask",
+   "asked"
+  ],
+  "answer": 2,
+  "explanation": "encourage sb. to do sth. 表示“鼓励某人做某事”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-042",
+  "topic": "非谓语动词",
+  "point": "动名词作宾语",
+  "level": "基础",
+  "prompt": "Jane enjoys ____ stories in English before bedtime.",
+  "options": [
+   "read",
+   "reading",
+   "to read",
+   "reads"
+  ],
+  "answer": 1,
+  "explanation": "enjoy doing sth. 为固定搭配，意为“喜欢做某事”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-043",
+  "topic": "非谓语动词",
+  "point": "stop to do 与 stop doing",
+  "level": "易错",
+  "prompt": "We should stop ____ a rest after working for two hours.",
+  "options": [
+   "have",
+   "to have",
+   "having",
+   "had"
+  ],
+  "answer": 1,
+  "explanation": "stop to do sth. 指停下当前事情去做另一件事；语境为停下来休息。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-044",
+  "topic": "非谓语动词",
+  "point": "too...to... 结构",
+  "level": "提升",
+  "prompt": "The box is too heavy for the little boy ____.",
+  "options": [
+   "carry",
+   "carrying",
+   "to carry",
+   "carried"
+  ],
+  "answer": 2,
+  "explanation": "too + 形容词 + for sb. + to do 表示“对某人来说太……而不能做”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-045",
+  "topic": "非谓语动词",
+  "point": "不定式作目的状语",
+  "level": "基础",
+  "prompt": "____ healthy, we should exercise regularly and eat well.",
+  "options": [
+   "Keep",
+   "Keeping",
+   "To keep",
+   "Kept"
+  ],
+  "answer": 2,
+  "explanation": "句首 To keep healthy 表示“为了保持健康”，作目的状语。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-046",
+  "topic": "连词与状语从句",
+  "point": "并列连词表转折",
+  "level": "基础",
+  "prompt": "I wanted to join the basketball team, ____ I needed more practice first.",
+  "options": [
+   "and",
+   "but",
+   "or",
+   "so"
+  ],
+  "answer": 1,
+  "explanation": "想加入球队与首先需要更多训练形成转折，用 but。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-047",
+  "topic": "连词与状语从句",
+  "point": "并列连词表结果",
+  "level": "基础",
+  "prompt": "It was raining heavily, ____ we stayed at home.",
+  "options": [
+   "because",
+   "so",
+   "although",
+   "unless"
+  ],
+  "answer": 1,
+  "explanation": "前半句是原因，后半句为结果，用 so；because 不能和 so 按这一结构同时连用。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-048",
+  "topic": "连词与状语从句",
+  "point": "if 引导条件状语从句",
+  "level": "基础",
+  "prompt": "You will improve your English ____ you practise a little every day.",
+  "options": [
+   "if",
+   "unless",
+   "though",
+   "before"
+  ],
+  "answer": 0,
+  "explanation": "每天练习是提高英语水平的条件，用 if，意为“如果”。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-049",
+  "topic": "连词与状语从句",
+  "point": "让步状语从句",
+  "level": "提升",
+  "prompt": "____ the task was difficult, the students finished it on time.",
+  "options": [
+   "Because",
+   "Although",
+   "If",
+   "Until"
+  ],
+  "answer": 1,
+  "explanation": "“任务难”与“按时完成”构成让步关系，用 Although。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-050",
+  "topic": "连词与状语从句",
+  "point": "时间状语从句主将从现",
+  "level": "易错",
+  "prompt": "I’ll send you a message when I ____ home.",
+  "options": [
+   "get",
+   "got",
+   "will get",
+   "have got"
+  ],
+  "answer": 0,
+  "explanation": "主句 I’ll send 为一般将来时，when 引导的时间状语从句用一般现在时 get。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-051",
+  "topic": "宾语从句",
+  "point": "宾语从句语序及疑问词",
+  "level": "提升",
+  "prompt": "—Could you tell me ____? —Sure. It’s on the second floor.",
+  "options": [
+   "where is the art room",
+   "where the art room is",
+   "when does the art room open",
+   "when the art room opens"
+  ],
+  "answer": 1,
+  "explanation": "宾语从句用陈述句语序，排除 A、C；答句回答地点，故选 B。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-052",
+  "topic": "宾语从句",
+  "point": "if 引导宾语从句",
+  "level": "提升",
+  "prompt": "I wonder ____ the school trip will be held next week.",
+  "options": [
+   "that",
+   "if",
+   "what",
+   "wherever"
+  ],
+  "answer": 1,
+  "explanation": "wonder 后可接 if 表示“是否”，语境询问下周能否举行研学活动。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-053",
+  "topic": "宾语从句",
+  "point": "宾语从句陈述语序与时态",
+  "level": "基础",
+  "prompt": "—Do you know ____? —Yes, she bought it yesterday.",
+  "options": [
+   "when did Lily buy the bike",
+   "when Lily bought the bike",
+   "where does Lily buy the bike",
+   "where Lily buys the bike"
+  ],
+  "answer": 1,
+  "explanation": "宾语从句要用陈述语序；回答 yesterday 表示购买时间在过去，故选 B。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-054",
+  "topic": "定语从句",
+  "point": "关系代词 who",
+  "level": "提升",
+  "prompt": "The girl ____ won the speech competition is in Class Three.",
+  "options": [
+   "which",
+   "who",
+   "where",
+   "when"
+  ],
+  "answer": 1,
+  "explanation": "先行词 The girl 指人，关系代词在从句中作主语，用 who。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-055",
+  "topic": "定语从句",
+  "point": "关系代词 that",
+  "level": "提升",
+  "prompt": "This is the book ____ helped me learn more about Chinese history.",
+  "options": [
+   "who",
+   "where",
+   "that",
+   "when"
+  ],
+  "answer": 2,
+  "explanation": "先行词 book 指物，关系代词在定语从句中作主语，可用 that。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-056",
+  "topic": "主谓一致与特殊句式",
+  "point": "there be 的一般将来时",
+  "level": "基础",
+  "prompt": "There ____ a science exhibition in our school next month.",
+  "options": [
+   "is",
+   "was",
+   "will be",
+   "has been"
+  ],
+  "answer": 2,
+  "explanation": "next month 表将来，there be 句型的将来形式为 there will be。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-057",
+  "topic": "主谓一致与特殊句式",
+  "point": "就近一致原则",
+  "level": "易错",
+  "prompt": "Neither Tom nor his parents ____ at home now.",
+  "options": [
+   "is",
+   "are",
+   "was",
+   "be"
+  ],
+  "answer": 1,
+  "explanation": "neither...nor... 连接主语时谓语与较近的主语 his parents 保持一致，用 are。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-058",
+  "topic": "主谓一致与特殊句式",
+  "point": "动名词短语作主语",
+  "level": "提升",
+  "prompt": "Reading books ____ a good way to relax after school.",
+  "options": [
+   "am",
+   "is",
+   "are",
+   "be"
+  ],
+  "answer": 1,
+  "explanation": "Reading books 作主语表示一件活动，谓语动词用单数 is。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-059",
+  "topic": "主谓一致与特殊句式",
+  "point": "感叹句",
+  "level": "易错",
+  "prompt": "____ useful advice our teacher gave us yesterday!",
+  "options": [
+   "What",
+   "What a",
+   "How",
+   "How a"
+  ],
+  "answer": 0,
+  "explanation": "advice 是不可数名词，结构为 What + 形容词 + 不可数名词 + 主语 + 谓语。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ },
+ {
+  "id": "g60-060",
+  "topic": "主谓一致与特殊句式",
+  "point": "不定代词与结果状语从句",
+  "level": "基础",
+  "prompt": "The question is so easy that ____ can answer it.",
+  "options": [
+   "nobody",
+   "anybody",
+   "nothing",
+   "anywhere"
+  ],
+  "answer": 1,
+  "explanation": "so...that... 表示“如此……以至于……”，题目很容易，任何人都能答，用 anybody。",
+  "source": "北京中考语法选择题60题",
+  "enabled": true
+ }
+]

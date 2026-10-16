@@ -1,0 +1,59 @@
+.grammar-progress{display:block;width:100%;height:8px;margin:12px 0 4px;border:0;border-radius:99px;overflow:hidden;background:var(--muted);appearance:none;-webkit-appearance:none}.grammar-progress::-webkit-progress-bar{background:var(--muted);border-radius:99px}.grammar-progress::-webkit-progress-value{background:var(--primary);border-radius:99px}.grammar-progress::-moz-progress-bar{background:var(--primary);border-radius:99px}
+.grammar-prompt{font:22px/1.8 Georgia,serif;white-space:pre-line;padding:26px 28px;background:var(--muted);border-radius:16px;margin:16px 0 8px;overflow-wrap:anywhere;color:var(--ink)}
+.grammar-prompt.small{font-size:17px;padding:16px 18px}
+.grammar-blank{display:inline-block;min-width:72px;border-bottom:2px solid var(--primary);margin:0 4px;vertical-align:-2px}
+.grammar-options label{position:relative;font:17px/1.5 Georgia,serif}
+.grammar-options label>span:nth-of-type(2){flex:1;color:var(--ink)}
+.grammar-options label.wrong{border-color:#c46a5a;background:#fbecea}
+.grammar-options label svg{flex:none}
+.grammar-options label.correct svg{color:#2f8a5f}.grammar-options label.wrong svg{color:#b5473a}
+.grammar-feedback.again{border-left-color:#c46a5a}.grammar-feedback.remembered{border-left-color:#4b9973}
+.grammar-point{color:var(--muted-foreground);font-size:14px}.grammar-point b{color:var(--primary)}
+.grammar-explanation{line-height:1.9}
+.grammar-explanation code,.grammar-prompt code,.grammar-review-item summary code{font:inherit;font-family:Georgia,serif;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:0 5px}
+.vocab-metrics.grammar-metrics{grid-template-columns:repeat(4,1fr)}
+.grammar-section-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.grammar-section-head .knowledge-filters{margin:0}
+.grammar-topics,.grammar-mistakes,.grammar-settings,.grammar-bank,.grammar-import{margin:24px 0}
+.grammar-topic-list{display:grid;gap:4px;margin-top:16px}
+.grammar-topic{display:grid;grid-template-columns:minmax(150px,1.2fr) 2fr 90px;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.grammar-topic:last-child{border:0}
+.grammar-topic small{display:block;color:var(--muted-foreground);font-size:12px;margin-top:3px}
+.grammar-topic small.grammar-weak-tag{display:inline;color:#b5473a}
+.grammar-meter{height:10px;border-radius:99px;background:var(--muted);overflow:hidden}
+.grammar-meter span{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.grammar-topic.weak .grammar-meter span{background:#d07a4f}
+.grammar-rate{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.grammar-rate small{font-weight:400}
+.grammar-review-item{border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin:12px 0;background:var(--surface)}
+.grammar-review-item summary{cursor:pointer;font:16px/1.6 Georgia,serif}
+.grammar-review-item summary small{display:block;font:12px/1.5 Inter,"PingFang SC",sans-serif;color:var(--muted-foreground);margin-top:4px}
+.grammar-review-item .vocab-options{margin:12px 0}
+.grammar-empty{color:var(--muted-foreground);padding:16px 0}
+.grammar-daily{max-width:200px;margin:16px 0}
+.grammar-topic-picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;border:0;padding:0;margin:16px 0}
+.grammar-topic-picks legend{font-weight:600;font-size:14px;margin-bottom:10px}
+.grammar-topic-picks label{display:flex;flex-direction:row;align-items:center;gap:8px;font-weight:400;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.grammar-topic-picks input{width:auto}
+.grammar-topic-picks small{margin-left:auto;color:var(--muted-foreground)}
+.grammar-week{display:flex;gap:10px;align-items:flex-end;margin-top:20px}
+.grammar-week>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--muted-foreground)}
+.grammar-week span{display:flex;flex-direction:column-reverse;width:100%;max-width:36px;min-height:2px;background:#d9a08a;border-radius:6px 6px 0 0;overflow:hidden}
+.grammar-week i{display:block;background:var(--primary)}
+.grammar-bank-filters{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}
+.grammar-bank-filters label{flex:1;min-width:160px}
+.grammar-bank-row>span:first-child{font:16px/1.6 Georgia,serif}
+.grammar-bank-row small{font-family:Inter,"PingFang SC",sans-serif}
+.grammar-row-actions{display:flex;gap:14px;flex:none}
+.grammar-editor{padding:20px 24px;background:var(--paper);border-bottom:1px solid var(--border)}
+.grammar-editor label{margin:12px 0}
+.grammar-editor-options{display:grid;gap:10px;border:0;padding:0;margin:12px 0}
+.grammar-editor-options legend{font-weight:600;font-size:14px;margin-bottom:6px}
+.grammar-editor-options label{display:flex;flex-direction:row;align-items:center;gap:10px;margin:0}
+.grammar-editor-options input[type=radio]{width:18px;height:18px;flex:none}
+.grammar-import textarea{font:14px/1.6 ui-monospace,Menlo,monospace}
+.grammar-import ul{padding-left:20px}
+.dark .grammar-options label.wrong{background:#40242a;border-color:#b5604f}
+.dark .grammar-options label.correct svg{color:#6fd3a0}.dark .grammar-options label.wrong svg{color:#ff9a8a}
+.dark .grammar-topic small.grammar-weak-tag{color:#ff9a8a}
+@media(max-width:700px){.grammar-prompt{font-size:18px;padding:18px}.vocab-metrics.grammar-metrics{grid-template-columns:repeat(2,1fr)}.grammar-topic{grid-template-columns:1fr 64px;gap:8px 12px}.grammar-meter{grid-column:1/-1;grid-row:2}.grammar-week{gap:4px}.grammar-bank-row{flex-direction:column;align-items:flex-start}.grammar-editor{padding:16px}}
