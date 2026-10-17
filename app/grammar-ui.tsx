@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useMemo,useState} from 'react';
+import {useEffect,useMemo,useRef,useState} from 'react';
 import {toast} from 'sonner';
 import {ArrowRight,Check,ListChecks,RotateCcw,X} from 'lucide-react';
 import {grammarTopics,type GrammarFeedback,type GrammarItem,type GrammarMistake,type GrammarQuestion,type GrammarState,type GrammarTopic,type GrammarTopicStat,type PlanKind} from '@/lib/grammar-bank';
@@ -32,14 +32,15 @@ function Explanation({topic,point,explanation}:{topic:string;point:string;explan
 }
 
 export function GrammarPage(){
- const [data,setData]=useState<GrammarState|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[choice,setChoice]=useState<number|null>(null),[unsure,setUnsure]=useState(false),[feedback,setFeedback]=useState<GrammarFeedback|null>(null),[currentId,setCurrentId]=useState<string|null>(null);
+ const [data,setData]=useState<GrammarState|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[choice,setChoice]=useState<number|null>(null),[unsure,setUnsure]=useState(false),[feedback,setFeedback]=useState<GrammarFeedback|null>(null),[currentId,setCurrentId]=useState<string|null>(null),nextButton=useRef<HTMLButtonElement>(null);
  useEffect(()=>{request().then(setData).catch(e=>setError(e.message))},[]);
  async function run(work:()=>Promise<void>){setBusy(true);setError('');try{await work()}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
  const items=data?.items||[],current=currentId?items.find(i=>i.id===currentId):items.find(i=>!i.result),index=current?items.indexOf(current):items.length;
  const start=(op:'start'|'more')=>run(async()=>{setData(await request({op}));setFeedback(null);setCurrentId(null);setChoice(null);setUnsure(false)});
- const answer=()=>run(async()=>{if(!current||choice===null)return;const f=(await request({op:'answer',id:current.id,choice,unsure})).feedback as GrammarFeedback;setFeedback(f);setCurrentId(current.id);setData(d=>d&&{...d,done:d.done+1,correct:d.correct+(f.correct?1:0),items:d.items.map(i=>i.id===current.id?{...i,topic:f.topic,result:f}:i)})});
+ const answer=()=>run(async()=>{if(!current||choice===null)return;const f=(await request({op:'answer',id:current.id,choice,unsure})).feedback as GrammarFeedback;setFeedback(f);setCurrentId(current.id);requestAnimationFrame(()=>{nextButton.current?.focus({preventScroll:true});document.querySelector('.grammar-feedback')?.scrollIntoView({block:'nearest',behavior:'smooth'})});setData(d=>d&&{...d,done:d.done+1,correct:d.correct+(f.correct?1:0),items:d.items.map(i=>i.id===current.id?{...i,topic:f.topic,result:f}:i)})});
  function next(){setFeedback(null);setCurrentId(null);setChoice(null);setUnsure(false);window.scrollTo({top:0,behavior:'smooth'})}
  const wrong=items.filter(i=>i.result&&!i.result.correct);
+ useEffect(()=>{if(!current)return;const key=(e:KeyboardEvent)=>{if(e.target instanceof HTMLInputElement&&e.target.type!=='radio'||e.target instanceof HTMLTextAreaElement||e.metaKey||e.ctrlKey||e.altKey)return;const n=Number(e.key);if(!feedback&&n>=1&&n<=current.options.length){e.preventDefault();setChoice(n-1)}else if(e.key==='Enter'&&document.activeElement===document.body){e.preventDefault();if(feedback)next();else if(choice!==null)answer()}};window.addEventListener('keydown',key);return ()=>window.removeEventListener('keydown',key)});
  return <div className="vocabulary-page grammar-page">
   <header className="knowledge-topbar"><a className="btn secondary" href="/?view=grammar">← 返回语法练习</a><span>GRAMMAR · A LITTLE EVERY DAY</span></header>
   <main className="vocabulary-content">
@@ -53,16 +54,14 @@ export function GrammarPage(){
       <span className="kicker">CHOOSE THE BEST ANSWER</span>
       <p className="grammar-prompt" lang="en"><Rich text={current.prompt}/></p>
       <Options item={current} choice={choice} feedback={feedback} onChoose={setChoice} disabled={busy}/>
-      {!feedback?<>
-       <label className="vocab-unsure"><input type="checkbox" checked={unsure} disabled={busy} onChange={e=>setUnsure(e.target.checked)}/>有点不确定，是猜的（明天再练一次）</label>
-       <div className="vocab-actions"><span className="helper">选好后确认，马上就能看到对错和解析。</span><button className="btn" disabled={busy||choice===null} onClick={answer}>{busy?'正在提交…':'确认答案'}<Check size={17}/></button></div>
-      </>:<section className={'vocab-feedback grammar-feedback '+(feedback.correct?'remembered':'again')} aria-live="polite">
+      {!feedback?<label className="vocab-unsure"><input type="checkbox" checked={unsure} disabled={busy} onChange={e=>setUnsure(e.target.checked)}/>有点不确定，是猜的（明天再练一次）</label>
+      :<section className={'vocab-feedback grammar-feedback '+(feedback.correct?'remembered':'again')} aria-live="polite">
        <h2>{feedback.correct?'回答正确！':`答错了，正确答案是 ${letter(feedback.answer)}`}</h2>
        <Explanation topic={feedback.topic} point={feedback.point} explanation={feedback.explanation}/>
        {reviewNote(feedback)&&<p className="vocab-next-date">{reviewNote(feedback)}</p>}
-       <button className="btn" onClick={next}>{index+1<items.length?'下一题':'查看今日结果'}<ArrowRight size={17}/></button>
       </section>}
      </article>
+     <div className="vocab-sticky-bar">{feedback?<><span className={feedback.correct?'success-text':'error-text'}>{feedback.correct?'✓ 回答正确':`✗ 正确答案 ${letter(feedback.answer)}`}<small>按 Enter 继续</small></span><button ref={nextButton} className="btn" onClick={next}>{index+1<items.length?'下一题':'查看今日结果'}<ArrowRight size={17}/></button></>:<><span>{choice===null?'选择一个答案':`已选 ${letter(choice)}`}<small>键盘 1–4 选择，Enter 确认</small></span><button className="btn" disabled={busy||choice===null} onClick={answer}>{busy?'正在提交…':'确认答案'}<Check size={17}/></button></>}</div>
     </>
    :<>
      <div className="page-heading"><div><span className="kicker">GRAMMAR REVIEW</span><h1>{items.length?'今天的语法题完成了':'每天几道题，把语法练熟'}</h1><p>{items.length?`答对 ${data.correct} / ${items.length} 题。错题会在之后几天自动再出现。`:'系统每天从题库中挑题：先复习到期错题，再练薄弱类别，其余类别轮流覆盖。'}</p></div><ListChecks size={34}/></div>

@@ -5,7 +5,14 @@ const payload=z.discriminatedUnion('op',[
  z.object({op:z.literal('send'),body:z.string().trim().min(1,'请输入留言').max(2000,'留言最多 2000 字')}),
  z.object({op:z.literal('read'),through:z.number().int().positive()})
 ]);
-async function conversation(){const c=await context();const student=c.role==='student'?c.id:c.settings.studentId;if(!student)throw new ApiError('请先在教学设置中设置学生账号。',409);return {...c,student};}
+async function conversation(){const c=await context();const student=c.role==='student'?c.id:c.settings.studentId;if(!student)throw new ApiError('请先在教学设置中设置学生账号。',409);await moveNotice(student);return {...c,student};}
+// 原“老师留言板”已并入聊天：把尚未迁移的通知作为一条老师消息放进聊天记录，只迁移一次。
+async function moveNotice(student:string){
+ const row=await db().prepare('SELECT data FROM settings WHERE id=1').first();if(!row)return;const data=JSON.parse(row.data);
+ if(!data.teacherMessage?.trim()||data.teacherMessageMoved)return;
+ const next=JSON.stringify({...data,teacherMessage:'',teacherMessageMoved:new Date().toISOString()});
+ await db().batch([db().prepare('UPDATE settings SET data=? WHERE id=1 AND data=?').bind(next,row.data),db().prepare("INSERT INTO messages(student,author,body,created) SELECT ?,'teacher',?,? WHERE changes()=1").bind(student,data.teacherMessage.trim().slice(0,2000),data.teacherMessageUpdated||new Date().toISOString())]);
+}
 export async function GET(req:Request){try{
  const c=await conversation(),raw=new URL(req.url).searchParams.get('before');
  const before=raw===null?Number.MAX_SAFE_INTEGER:z.coerce.number().int().positive().safe().parse(raw);
