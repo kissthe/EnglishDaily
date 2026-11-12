@@ -6,6 +6,7 @@ import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@
 import {Switch} from '@/components/ui/switch';
 import {Button,Choice} from './daily-app';
 import {SafeHtml} from './safe-html';
+import {WordbookCollector} from './wordbook-collect';
 import {libraryCategories,prepareLibraryHtml,LIBRARY_FILE_LIMIT,type LibraryItem} from '@/lib/library';
 
 async function call(init?:RequestInit,query=''){const r=await fetch('/api/library'+query,{cache:'no-store',...init});const d=await r.json();if(!r.ok)throw Error(d.error||'请求未完成，请重试');return d}
@@ -26,7 +27,7 @@ export function LibraryHub({teacher}:{teacher:boolean}){
 
  if(reading)return <div className="library-reader"><nav className="library-reader-nav"><Button secondary onClick={()=>setReading(null)}>← 返回资料库</Button>{(teacher||reading.item.allowDownload)&&<a className="btn secondary" href={'/api/library?download=1&id='+encodeURIComponent(reading.item.id)}><Download size={16}/>下载原文件</a>}</nav>
   <header className="library-reader-head"><span className="tag purple">{reading.item.category}</span>{teacher&&!reading.item.published&&<span className="tag neutral">未发布 · 仅老师可见</span>}<h1>{reading.item.title}</h1>{reading.item.description&&<p>{reading.item.description}</p>}<small>{reading.item.fileName} · 更新于 {dateText(reading.item.updated)}{reading.item.foldAnswers?' · 答案已折叠，先做题再点开':''}</small></header>
-  <article className="library-document"><SafeHtml html={prepareLibraryHtml(reading.html,reading.item.foldAnswers)}/></article></div>;
+  <WordbookCollector source={{kind:'library',id:reading.item.id}} enabled={!teacher}><article className="library-document"><SafeHtml html={prepareLibraryHtml(reading.html,reading.item.foldAnswers)}/></article></WordbookCollector></div>;
 
  return <><div className="page-heading"><div><div className="kicker">RESOURCES</div><h1>资料库</h1><p>{teacher?'上传以前的教案和讲义（Word .docx），发布后学生可以在线阅读。':'老师整理的讲义和教案，可以随时打开复习。'}</p></div>{teacher&&<Button onClick={()=>setUploadOpen(true)}><Upload size={18}/>上传 Word 资料</Button>}</div>
   <div className="knowledge-filters"><label>搜索资料<input type="search" placeholder="搜索标题、说明或文件名" value={query} onChange={e=>setQuery(e.target.value)}/></label><nav aria-label="资料分类">{categories.map(c=><button className={c===category?'active':''} aria-pressed={c===category} key={c} onClick={()=>setCategory(c)}>{c}</button>)}</nav></div>

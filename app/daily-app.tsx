@@ -2,13 +2,14 @@
 import {VocabularyHub} from './vocabulary-ui';
 import {GrammarHub} from './grammar-ui';
 import {LibraryHub} from './library-ui';
+import {Wordbook} from './wordbook-ui';
 import {AiSettingsForm} from './ai-settings';
 import {AiWritingAssistant} from './ai-tools';
 import {ReadingPractice} from './reading-practice';
 import {RetellPractice} from './retell-practice';
 import {notesText,readNotes,slotLabels} from '@/lib/retell';
 import {useState,useEffect,useRef,type ReactNode} from 'react';
-import {BookOpen,LayoutDashboard,CalendarDays,ChartNoAxesCombined,NotebookPen,Settings,Plus,ArrowUpRight,ArrowRight,Headphones,Lightbulb,Check,Clock,ChevronLeft,ChevronRight,GraduationCap,BookMarked,Search,Download,ExternalLink,Upload,Send,RotateCcw,Eye,CheckCheck,FileCheck2,LoaderCircle,LogOut,ListChecks,FolderOpen} from 'lucide-react';
+import {BookOpen,LayoutDashboard,CalendarDays,ChartNoAxesCombined,NotebookPen,Settings,Plus,ArrowUpRight,ArrowRight,Headphones,Lightbulb,Check,Clock,ChevronLeft,ChevronRight,GraduationCap,BookMarked,Search,Download,ExternalLink,Upload,Send,RotateCcw,Eye,CheckCheck,FileCheck2,LoaderCircle,LogOut,ListChecks,FolderOpen,NotebookTabs} from 'lucide-react';
 import {SidebarProvider,Sidebar,SidebarHeader,SidebarContent,SidebarFooter,SidebarMenu,SidebarMenuItem,SidebarMenuButton,SidebarTrigger} from '@/components/ui/sidebar';
 import {Tabs,TabsList,TabsTrigger,TabsContent} from '@/components/ui/tabs';
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';
@@ -20,7 +21,7 @@ import {RadioGroup,RadioGroupItem} from '@/components/ui/radio-group';
 import {Skeleton} from '@/components/ui/skeleton';
 import {Empty as EmptyRoot} from '@/components/ui/empty';
 import {Toaster,toast} from 'sonner';
-import {AnnotationProvider,AnnotatedText,Favorites} from './annotations-ui';
+import {AnnotationProvider,AnnotatedText} from './annotations-ui';
 import {StudentWork} from './student-work';
 import {MessageBoard} from './message-board';
 import {MaterialEditor} from './material-editor';
@@ -32,7 +33,7 @@ import {today,offsetDate,correct,type Material,type Task,type Submission,type Co
 const kinds=['阅读','听力','语法','视频','知识拓展','写作'];
 const icons:Record<string,typeof BookOpen>={'阅读':BookOpen,'听力':Headphones,'知识拓展':Lightbulb,'写作':NotebookPen,'语法':BookMarked};
 const colors:Record<string,string>={'阅读':'blue','听力':'orange','知识拓展':'purple','写作':'green','语法':'purple','视频':'blue'};
-const navs=[['home','学习概览',LayoutDashboard],['schedule','每日作业',CalendarDays],['bank','精选题库',BookOpen],['knowledge','知识拓展',Lightbulb],['library','资料库',FolderOpen],['vocabulary','词汇学习',BookMarked],['grammar','语法练习',ListChecks],['review','作业批改',FileCheck2],['favorites','收藏夹',BookMarked],['stats','学习统计',ChartNoAxesCombined],['settings','教学设置',Settings],['ai','AI 配置中心',Settings]] as const;
+const navs=[['home','学习概览',LayoutDashboard],['schedule','每日作业',CalendarDays],['bank','精选题库',BookOpen],['knowledge','知识拓展',Lightbulb],['library','资料库',FolderOpen],['vocabulary','词汇学习',BookMarked],['grammar','语法练习',ListChecks],['review','作业批改',FileCheck2],['favorites','单词本',NotebookTabs],['stats','学习统计',ChartNoAxesCombined],['settings','教学设置',Settings],['ai','AI 配置中心',Settings]] as const;
 async function api(body?:unknown){const r=await fetch('/api/course',body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'});const data:any=await r.json();if(!r.ok)throw new Error(data.error||'请求未完成，请重试');return data}
 export function Button({children,onClick,secondary=false,disabled=false,type='button',className=''}:{children:ReactNode;onClick?:()=>void;secondary?:boolean;disabled?:boolean;type?:'button'|'submit';className?:string}){return <button type={type} className={`${secondary?'btn secondary':'btn'} ${className}`} onClick={onClick} disabled={disabled}>{children}</button>}
 export function Choice({value,onChange,items,label}:{value:string;onChange:(v:string)=>void;items:string[];label:string}){return <Select value={value} onValueChange={onChange}><SelectTrigger aria-label={label} className="field-select"><SelectValue/></SelectTrigger><SelectContent>{items.map(v=><SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent></Select>}
@@ -42,7 +43,7 @@ function dateLabel(d:string){return new Date(d+'T12:00:00').toLocaleDateString('
 function TaskCard({task,sub,onOpen}:{task:Task;sub?:Submission;onOpen:()=>void}){return <article className="task-card"><Kind kind={task.material.kind}/><div className="task-card-main"><div className="eyebrow"><span className={`tag ${colors[task.material.kind]}`}>{task.material.kind}</span></div><h3>{task.material.title}</h3><div className="task-meta"><span>{task.material.questions.length?`${task.material.questions.length} 道题`:'浏览内容'}</span><span>{sub&&sub.state!=='draft'?'已提交':sub?'已保存草稿':'待完成'}</span></div></div><button className="task-go" onClick={onOpen} aria-label={'打开 '+task.material.title}><ArrowUpRight size={22}/></button></article>}
 export default function DailyApp(){
 const [accountOpen,setAccountOpen]=useState(false);
-useEffect(()=>{const view=new URLSearchParams(window.location.search).get('view');if(view==='knowledge'||view==='vocabulary'||view==='grammar'||view==='library')setNav(view)},[]);
+useEffect(()=>{const view=new URLSearchParams(window.location.search).get('view');if(view==='knowledge'||view==='vocabulary'||view==='grammar'||view==='library')setNav(view);if(view==='wordbook')setNav('favorites')},[]);
 const [data,setData]=useState<CourseData|null>(null),[error,setError]=useState(''),[nav,setNav]=useState('home'),[day,setDay]=useState(today()),[week,setWeek]=useState(today()),[edit,setEdit]=useState<Material|null>(null),[editorOpen,setEditorOpen]=useState(false),[assignOpen,setAssignOpen]=useState(false),[practice,setPractice]=useState<{task:Task;sample:boolean}|null>(null),[grade,setGrade]=useState<Submission|null>(null),[busy,setBusy]=useState(false),[filter,setFilter]=useState('全部'),[search,setSearch]=useState('');
 async function load(){try{const d=await api();setData(d);setError('')}catch(e){setError((e as Error).message)}}
 useEffect(()=>{load()},[]);
@@ -63,7 +64,7 @@ return <SidebarProvider style={{'--sidebar-width':'236px'} as any}><Toaster posi
 {nav==='library'&&<LibraryHub teacher={!!teacherView}/>}{nav==='vocabulary'&&<VocabularyHub/>} {nav==='grammar'&&<GrammarHub/>}
 {nav==='knowledge'&&<KnowledgeLibrary materials={data.materials.filter(m=>m.kind==='知识拓展'&&m.reviewed)} teacher={!!teacherView} onOpen={m=>window.location.assign('/knowledge/'+encodeURIComponent(m.id))} onCreate={()=>{setEdit({id:'',title:'',subtitle:'',kind:'知识拓展',level:'A2',minutes:20,body:'',source:'',sourceUrl:'',rights:'',audio:'',reviewed:false,questions:[],completionOnly:true});setEditorOpen(true)}}/>}
 {nav==='review'&&teacherView&&<><div className="page-heading"><div><div className="kicker">FEEDBACK & REFLECTION</div><h1>作业批改</h1><p>保留首次作答，让每次反馈都能成为下一次进步。</p></div><span className="tag orange">{pending.length} 份待批改</span></div><Tabs defaultValue="pending"><TabsList className="filter-tabs"><TabsTrigger value="pending">待批改 {pending.length}</TabsTrigger><TabsTrigger value="all">全部提交 {subs.length}</TabsTrigger><TabsTrigger value="mistakes">错题与订正</TabsTrigger></TabsList>{['pending','all','mistakes'].map(v=><TabsContent key={v} value={v}><div className="record-list">{subs.filter(s=>v==='pending'?(s.state==='submitted'||s.correction_status==='pending'):v==='mistakes'?s.score<s.total||s.correction_status==='required'||s.correction_status==='pending':true).map(s=>{const t=all.find(t=>t.id===s.task);return <button className="record" key={s.id} onClick={()=>setGrade(s)}><span className="metric-icon blue"><FileCheck2 size={20}/></span><span><b>{t?.material.title||'作业'}</b><small>{s.submitted?new Date(s.submitted).toLocaleString('zh-CN'):''} · {Object.keys(s.corrections).length?'已提交订正':'首次作答'}</small></span><span className="record-state">{t?.material.retellConfig?'AI 评测 '+s.score+'/'+s.total:s.total?'客观题 '+s.score+'/'+s.total:'表达练习'} · {s.state==='reviewed'?'已批改':'待批改'}</span><ChevronRight size={18}/></button>})}{!subs.length&&<div className="panel"><Empty title="等待第一份认真完成的作业" detail="学生提交后，客观题会自动判分，表达题由你评分和留言。"/></div>}</div></TabsContent>)}</Tabs></>}
-{nav==='favorites'&&<Favorites teacher={!!teacher} onOpen={id=>{const t=data.tasks.find(t=>t.id===id);if(t){if(teacher)setPractice({task:t,sample:true});else window.location.assign('/practice/'+encodeURIComponent(t.id))}else toast.error('原作业暂时无法打开')}}/>}
+{nav==='favorites'&&<Wordbook teacher={!!teacher}/>}
 {nav==='stats'&&<Stats data={data}/>}
 {nav==='settings'&&teacherView&&<SettingsForm settings={data.settings} email={data.email} busy={busy} onSave={s=>mutate({op:'settings',settings:s},'教学设置已保存')} onExport={()=>{const a=document.createElement('a');const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.href=url;a.download='english-daily-backup-'+today()+'.json';a.click();URL.revokeObjectURL(url)}}/>}
 {nav==='ai'&&teacherView&&<AiSettingsForm settings={data.settings} busy={busy} onSave={s=>mutate({op:'aiSettings',settings:s},'AI 评测设置已保存')}/>}
