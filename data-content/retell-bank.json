@@ -1,0 +1,57 @@
+[
+ {
+  "id": "retell-bj-music-competition",
+  "title": "Music Competition",
+  "subtitle": "音乐比赛通知 · 据 2025 年第一次考试（3-4 场）回忆要点改编",
+  "voice": "en_US-ljspeech-high",
+  "audioKey": "332f353b-2b4a-44af-838f-5411af98b42d",
+  "body": "Good morning, everyone. This is Li Hua from the Student Union. Our school is going to hold a music competition this term, and we hope you can join us. The competition is open to all junior high students, so it doesn't matter which grade you are in. You can sing a song or play an instrument, on your own or with your friends. If you want to take part, please record a video of your performance and send it to Ms. Wang, our music teacher, before next Friday. Remember, each video should be no longer than five minutes. The final will be held in the school hall on December twentieth. The winners will get tickets to the New Year Concert. It's a great chance to show your talent and enjoy music together. Don't miss it!",
+  "opening": "I've got some information about the music competition.",
+  "slots": "# Who can join\nWho: all junior high students | any junior high student\nHow to perform: sing a song or play an instrument, alone or with friends\n# How to take part\nWhat to send: a video of the performance, no longer than five minutes | 5 minutes\nSend to: Ms. Wang, the music teacher\nDeadline: before next Friday\n# Final and prize\nFinal: in the school hall on December 20th\nPrize: tickets to the New Year Concert",
+  "referenceRetell": "I've got some information about the music competition. The competition is open to all junior high students. We can sing a song or play an instrument, alone or with our friends. If we want to take part, we should record a video of our performance and send it to Ms. Wang, our music teacher, before next Friday. Each video should be no longer than five minutes. The final will be held in the school hall on December 20th. The winners will get tickets to the New Year Concert. It's a great chance for us to show our talent."
+ },
+ {
+  "id": "retell-bj-city-zoo",
+  "title": "A Visit to the City Zoo",
+  "subtitle": "参观城市动物园 · 据 2025 年第二次考试回忆要点改编",
+  "voice": "en_US-norman-medium",
+  "audioKey": "8178d316-4ce6-4d12-a385-55af7099e5b7",
+  "body": "Hello, everyone. I have some good news for you. Next Monday, our class is going to visit the City Zoo. We will meet at the school gate at eight o'clock in the morning and go there by school bus. At the zoo, we will see pandas, elephants and many other animals. A zoo worker will also tell us how to take care of them. Before we go, I'd like to remind you of some rules. First, please don't make loud noises, because that may frighten the animals. Second, never feed the animals with your own food. It may make them sick. It's going to be sunny and hot that day, so remember to bring enough water and a sun hat. We will come back to school at about three in the afternoon. I hope you will have a wonderful time!",
+  "opening": "I've got some information about the visit to the City Zoo.",
+  "slots": "# Time and transport\nWhen: next Monday, 8:00 in the morning | eight o'clock\nMeeting place: the school gate\nTransport: by school bus\n# Activities\nWhat to see: pandas, elephants and many other animals\nTalk: a zoo worker will tell us how to take care of the animals\n# Rules and tips\nRule 1: don't make loud noises | keep quiet\nRule 2: don't feed the animals with our own food\nWhat to bring: enough water and a sun hat",
+  "referenceRetell": "I've got some information about the visit to the City Zoo. Our class is going to visit the City Zoo next Monday. We will meet at the school gate at eight in the morning and go there by school bus. At the zoo, we will see pandas, elephants and many other animals, and a zoo worker will tell us how to take care of them. There are some rules. First, we shouldn't make loud noises because that may frighten the animals. Second, we mustn't feed the animals with our own food. It will be sunny and hot that day, so we should bring enough water and a sun hat."
+ },
+ {
+  "id": "retell-bj-welcoming-party",
+  "title": "Welcoming Party for New Students",
+  "subtitle": "新生欢迎派对 · 根据文档模拟范文配套编写",
+  "voice": "en_US-ljspeech-high",
+  "audioKey": "2dc8a1de-4203-49bf-bd46-d12a188eda4c",
+  "body": "Good afternoon, new students! Welcome to our school. To help you get to know each other, the Student Union is going to hold a welcoming party for you. The party will be held in the school main hall. It will begin at half past six next Monday evening and last about two hours. All the teachers, as well as students from different grades, are going to attend it. During the party, we will sing songs, play games and give speeches. Some older students will also share their stories about school life. To get ready for it, please wear your school uniforms and bring a small gift. We'll exchange the gifts at the end of the party. It will be a great chance to make new friends. We're looking forward to seeing you there!",
+  "opening": "I've got some information about the welcoming party for new students.",
+  "slots": "# Time and place\nPlace: the school main hall\nTime: half past six next Monday evening | 6:30\n# People and activities\nWho will attend: all the teachers and students from different grades\nActivities: sing songs, play games and give speeches\n# Preparation\nWhat to wear: school uniforms\nWhat to bring: a small gift\nWhy join: a great chance to make new friends",
+  "referenceRetell": "I've got some information about the welcoming party for new students. The party will be held in the school main hall. It will begin at half past six next Monday evening. All the teachers as well as students from different grades are going to attend it. During the party, we will sing songs, play games and give speeches. To get ready for it, we should wear our school uniforms and bring a small gift. It will be a great chance to make new friends."
+ },
+ {
+  "id": "retell-bj-field-trip",
+  "title": "A Field Trip to the Farm",
+  "subtitle": "实地考察 · 据 2025 年第一次考试（1-2 场）话题原创",
+  "voice": "en_US-norman-medium",
+  "audioKey": "875224f4-7802-459f-a089-71bcb8e9d062",
+  "body": "Hi, everyone. Next Wednesday, Grade Eight will go on a field trip to Green Valley Farm. We'll take the bus at the school gate at seven thirty in the morning, and it takes about one hour to get there. In the morning, you'll learn how to plant vegetables, and you can also pick fresh strawberries. In the afternoon, a farmer will show us how to make cheese. Please wear comfortable shoes, because we will walk a lot. Lunch will be provided on the farm, but you'd better bring a bottle of water. After the trip, each of you should write a short report about what you have learned and hand it in by next Friday. The best reports will be shown on the school website. I'm sure you'll learn a lot and have fun.",
+  "opening": "I've got some information about the field trip.",
+  "slots": "# Basic information\nDestination: Green Valley Farm\nTime: next Wednesday, 7:30 in the morning | half past seven\nTransport: by bus from the school gate\n# Activities\nMorning: learn to plant vegetables and pick strawberries\nAfternoon: a farmer will show us how to make cheese\n# Tips and task\nWhat to wear and bring: comfortable shoes and a bottle of water\nTask: write a short report and hand it in by next Friday",
+  "referenceRetell": "I've got some information about the field trip. Next Wednesday, Grade Eight will go on a field trip to Green Valley Farm. We will take the bus at the school gate at half past seven in the morning. In the morning, we will learn how to plant vegetables and pick fresh strawberries. In the afternoon, a farmer will show us how to make cheese. We should wear comfortable shoes and bring a bottle of water. After the trip, we need to write a short report and hand it in by next Friday. The best reports will be shown on the school website."
+ },
+ {
+  "id": "retell-bj-family-moment",
+  "title": "A Special Family Moment",
+  "subtitle": "家庭时刻 · 据 2025 年第二次考试话题原创（练习人称转换）",
+  "voice": "en_US-norman-medium",
+  "audioKey": "4050bb20-d6a3-45ce-9ba9-597fe142585f",
+  "body": "Hi, I'm Tom. I'd like to tell you about a special family moment. Last Sunday was my grandma's seventieth birthday. My parents and I decided to prepare a surprise for her. First, I made a birthday card with old photos of our family. Then my dad and I cooked her favourite dishes, noodles and fish. It was my first time to cook, and I almost burnt the fish! In the evening, the whole family sat together and sang Happy Birthday to her. When Grandma read the card, she smiled with tears in her eyes. She said it was the best present she had ever got. From this experience, I learned that love is not about expensive gifts. Spending time with family is the most important thing.",
+  "opening": "I'd like to tell you about Tom's special family moment.",
+  "slots": "# The event\nWhen: last Sunday\nWhat: Grandma's seventieth birthday | 70th birthday\n# What Tom did\nCard: made a birthday card with old family photos\nDishes: cooked her favourite noodles and fish with his dad\nCelebration: the whole family sang Happy Birthday together\n# Result and lesson\nGrandma's feeling: smiled with tears; the best present she had ever got\nLesson: spending time with family is the most important",
+  "referenceRetell": "I'd like to tell you about Tom's special family moment. Last Sunday was his grandma's seventieth birthday, so Tom and his parents prepared a surprise for her. First, Tom made a birthday card with old family photos. Then he and his dad cooked her favourite noodles and fish. In the evening, the whole family sang Happy Birthday together. When Grandma read the card, she smiled with tears in her eyes and said it was the best present she had ever got. Tom learned that spending time with family is the most important thing."
+ }
+]

@@ -5,6 +5,7 @@ import {notesText,readNotes,retellTitles,slotLabels,type RetellNote} from '@/lib
 import {ListeningImages} from './listening-images';
 import {LessonAudio} from './lesson-media';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+import {RetellModePractice} from './retell-modes';
 
 async function request(body?:unknown):Promise<CourseData>{
  const r=await fetch('/api/course',body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{cache:'no-store'});
@@ -21,7 +22,10 @@ function Feedback({assessment,stage}:{assessment:AiAssessment;stage:number}){
  </div>;
 }
 
-export function RetellPractice({task,sample,initial,onClose,onRefresh,page=false,userId=''}:{task:Task;sample:boolean;initial?:Submission;onClose:()=>void;onRefresh:()=>Promise<void>;page?:boolean;userId?:string}){
+type RetellProps={task:Task;sample:boolean;initial?:Submission;onClose:()=>void;onRefresh:()=>Promise<void>;page?:boolean;userId?:string};
+// 新版（思维导图 + 开头句）材料与按训练方式布置的作业使用新流程；旧作业保持原三阶段流程。
+export function RetellPractice(props:RetellProps){const c=props.task.material.retellConfig;return c?.version===2||c?.mode?<RetellModePractice {...props}/>:<LegacyRetellPractice {...props}/>}
+function LegacyRetellPractice({task,sample,initial,onClose,onRefresh,page=false,userId=''}:RetellProps){
  const [material,setMaterial]=useState(task.material),[sub,setSub]=useState(initial);
  const cfg=material.retellConfig!,labels=slotLabels(cfg.slots);
  const [answers,setAnswers]=useState<Record<string,string>>(sample?{}:{...initial?.answers,...initial?.corrections});
