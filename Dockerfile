@@ -14,6 +14,7 @@ COPY --from=build --chown=node:node /app/.next/static ./.next/static
 COPY --from=build --chown=node:node /app/public ./public
 COPY --from=build --chown=node:node /app/drizzle ./drizzle
 COPY --from=build --chown=node:node /app/data-content/retell-audio ./data-content/retell-audio
+COPY --from=build --chown=node:node /app/data-content/retell-images ./data-content/retell-images
 COPY --from=build --chown=node:node /app/lib/runtime.mjs ./lib/runtime.mjs
 COPY --from=build --chown=node:node /app/scripts/init-teacher.mjs ./scripts/init-teacher.mjs
 RUN mkdir -p /app/data && chown node:node /app/data
