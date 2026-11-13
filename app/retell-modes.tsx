@@ -1,10 +1,11 @@
 'use client';
 // 北京中考“听后转述”两种训练方式：转述训练（听记要点 → 核对 → 组织表达）与全真模拟（限时、连放三遍）。
-import {useEffect,useRef,useState} from 'react';
-import type {AiAssessment,CourseData,RetellMode,Submission,Task} from '@/lib/course';
+import {useEffect,useRef,useState,type ReactNode} from 'react';
+import type {AiAssessment,CourseData,Material,RetellMode,Submission,Task} from '@/lib/course';
 import {answerText,parseMindMap,readNotes,retellModeTitles,type RetellNote} from '@/lib/retell';
 import {LessonAudio} from './lesson-media';
-import {ListeningImages} from './listening-images';
+import {TipsButton} from './tips';
+import {Maximize2,Minus,Plus,X,Map as MapIcon} from 'lucide-react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 
 export const EXAM_PREVIEW_SECONDS=60,EXAM_PLAYS=3,EXAM_ANSWER_SECONDS=360;
@@ -124,15 +125,15 @@ export function RetellModePractice({task,sample,initial,onClose,onRefresh,page=f
  else if(mode==='guided'||revision){
   const step=revision?3:notesChecked?3:1;
   content=<>{!revision&&<ol className="retell-progress"><li className={step===1?'active':'done'}>听音记要点</li><li className={notesChecked?'done':''}>AI 核对要点</li><li className={step===3?'active':''}>组织转述</li><li>AI 点评</li></ol>}
-   {!notesChecked&&!revision&&<><section className="retell-card"><h2>第一步 · 听音频，把要点记进导图</h2><p>可以反复听、调语速。优先记<b>动词 + 关键名词 + 时间地点数字</b>，用缩写和符号；听不清的标“不确定”，完全没听到的标“没听到”。</p><LessonAudio task={{...task,material}} sample={sample}/></section>
-    <section className="retell-card" id="retell-notes"><h2>思维导图笔记</h2><p className="retell-opening">转述开头：<b>{opening}</b></p><MindMap slots={cfg.slots} notes={notes} editable={!busy} revealed={false} onChange={changeNote}/></section></>}
+   {!notesChecked&&!revision&&<><section className="retell-card"><h2>第一步 · 听音频，把要点记进导图</h2><p>可以反复听、调语速。优先记<b>动词 + 关键名词 + 时间地点数字</b>，用缩写和符号；听不清的标“不确定”，完全没听到的标“没听到”。录音播放器在导图下方。</p></section>
+    <section className="retell-card" id="retell-notes"><h2>思维导图笔记</h2><MindMap slots={cfg.slots} notes={notes} editable={!busy} revealed={false} onChange={changeNote}/></section></>}
    {notesChecked&&!revision&&<section className="retell-card" id="retell-notes"><h2>第二步 · 对照标准要点</h2>{sample&&<p className="helper">老师试做：此处直接显示标准要点，不调用 AI。</p>}
     {!sample&&sub?.notesAssessmentState==='complete'&&sub.notesAssessment&&<p>{sub.notesAssessment.summary}</p>}
     {!sample&&sub?.notesAssessmentState==='failed'&&<p className="helper">AI 核对暂时没有成功，下面先给出标准要点，你可以自己对照。</p>}
     {!sample&&sub?.notesAssessmentState==='paused'&&<p className="helper">老师暂停了 AI 核对，请自行对照标准要点。</p>}
     <MindMap slots={cfg.slots} notes={notes} editable={false} revealed points={sub?.notesAssessment?.points}/>
     {!sample&&sub?.notesAssessment?.improvements.length?<><h4>听的时候注意</h4><ul>{sub.notesAssessment.improvements.map((x,i)=><li key={i}>{x}</li>)}</ul></>:null}
-    <p className="helper">记错或漏掉的要点，组织转述时用标准要点；可以再听一遍原音频找到它。</p><LessonAudio task={{...task,material}} sample={sample}/></section>}
+    <p className="helper">记错或漏掉的要点，组织转述时用标准要点；可以再听一遍原音频找到它。</p></section>}
    {(notesChecked||revision)&&<>{writing}{checklist}</>}</>;
  }else{
   const phase=clockState.phase;
@@ -141,21 +142,23 @@ export function RetellModePractice({task,sample,initial,onClose,onRefresh,page=f
    {phase==='intro'&&<section className="retell-card"><h2>全真模拟 · 听后转述</h2><ul><li>先用 1 分钟看思维导图和开头句。</li><li>原文<b>连续播放 3 遍</b>，不能暂停或拖动；边听边在导图里记笔记。</li><li>听完后有 {EXAM_ANSWER_SECONDS/60} 分钟整理并写出转述，<b>时间到自动提交</b>。真实考试是准备 2 分钟 + 口头转述约 2 分钟；打字比说话慢，所以这里多给一些时间。</li><li>开始后请不要离开页面。刷新后计时会继续。</li></ul><button className="btn" onClick={()=>setClock({phase:'preview',previewEnd:Date.now()+EXAM_PREVIEW_SECONDS*1000})}>开始模拟</button></section>}
    {phase==='preview'&&<div className="exam-timer" role="timer">看导图 · 剩余 {clock(previewLeft)}</div>}
    {phase==='answer'&&<div className={'exam-timer'+(answerLeft<60?' urgent':'')} role="timer">整理作答 · 剩余 {clock(answerLeft)}</div>}
-   {phase==='listen'&&<ExamAudio task={{...task,material}} sample={sample} onDone={startAnswer}/>}
    {phase==='answer'&&writing}
-   {phase!=='intro'&&<section className="retell-card" id="retell-notes"><h2>{phase==='answer'?'我的导图笔记':'思维导图（可记笔记）'}</h2><p className="retell-opening">给定开头：<b>{opening}</b></p><MindMap slots={cfg.slots} notes={notes} editable={!busy} revealed={false} onChange={changeNote}/></section>}
+   {phase!=='intro'&&<section className="retell-card" id="retell-notes"><h2>{phase==='answer'?'我的导图笔记':'思维导图（可记笔记）'}</h2><MindMap slots={cfg.slots} notes={notes} editable={!busy} revealed={false} onChange={changeNote}/></section>}
   </>;
  }
 
- const body=<div className="retell-practice retell-v2">
+ const phaseNow=clockState.phase,examLive=mode==='exam'&&!revision&&!done;
+ const split=!done&&!(examLive&&phaseNow==='intro');
+ const tipsAllowed=!examLive;// 全真模拟进行中不看技巧，和考场一致
+ const audio=examLive?(phaseNow==='listen'?<ExamAudio task={{...task,material}} sample={sample} onDone={startAnswer}/>:null):<LessonAudio task={{...task,material}} sample={sample}/>;
+ const body=<div className={'retell-practice retell-v2'+(split?' has-split':'')}>
   <header className="retell-heading"><span className="tag orange">北京中考 · 听后转述</span><h1>{material.title}</h1><h2>{retellModeTitles[mode]}</h2>
    <p>{mode==='guided'?'先听音频把要点记进思维导图，AI 核对后给出标准要点；再用给定开头组织一段完整的英文转述，AI 会点评要点、人称、时态和连贯性。':'按考试流程完成：看导图、连听三遍、限时作答。AI 按北京中考 10 分制（内容 6 + 语言 4）评分。'}</p>
    <p className="helper">当前以文字作答，不评价发音；意思准确、句子完整比复杂句更重要。</p>
    {sample&&!cfg.mode&&<div className="retell-preview-switch">老师试做：{(['guided','exam'] as const).map(m=><button key={m} className={'btn secondary'+(previewMode===m?' active':'')} onClick={()=>{setPreviewMode(m);setSampleChecked(false);setSampleDone(false);setClockState({phase:'intro'})}}>{m==='guided'?'转述训练':'全真模拟'}</button>)}</div>}
    {sample&&<p className="helper">老师试做 · 不调用 AI、不保存学生成绩</p>}
   </header>
-  <ListeningImages material={material}/>
-  {content}
+  {split?<div className="retell-split"><RetellReference material={material} slots={cfg.slots} opening={opening} tips={tipsAllowed} timer={examLive&&phaseNow==='preview'?'看导图 '+clock(previewLeft):examLive&&phaseNow==='answer'?'作答剩余 '+clock(answerLeft):''}>{audio}</RetellReference><div className="retell-work">{content}</div></div>:content}
   {error&&<p className="error-text" role="alert">{error}</p>}
   <footer className="retell-actions"><span role="status" className={error?'error-text':''}>{error||(busy?'正在保存或评测，请稍候…':done?'先看反馈，再决定如何修改':saved)}</span><div>
    {done?<>{!sample&&['failed','paused','running'].includes(assessmentState||'')&&<button className="btn secondary" disabled={busy} onClick={async()=>{setBusy(true);try{await request({op:'retryRetell',task:task.id});await refresh()}catch(e){setError((e as Error).message)}finally{setBusy(false)}}}>重新评测</button>}<button className="btn" disabled={busy} onClick={()=>sample?(setSampleDone(false),setSampleChecked(false),setClockState({phase:'intro'})):revise()}>{sample?'重新试做':'根据反馈再练一次'}</button></>
@@ -184,4 +187,28 @@ function ExamAudio({task,sample,onDone}:{task:Task;sample:boolean;onDone:(plays:
   <audio ref={ref} onEnded={ended} onTimeUpdate={()=>{const a=ref.current;if(a&&a.duration)setProgress(a.currentTime/a.duration)}}/>
   {!playing&&ready&&played<EXAM_PLAYS&&<button className="btn audio-play-primary" disabled={busy} onClick={play}>{busy?'正在加载…':played?'继续播放第 '+(played+1)+' 遍':'开始播放'}</button>}</div>
   <progress className="audio-timeline" value={progress} max={1}/>{error&&<p className="error-text" role="alert">{error}</p>}</section>;
+}
+
+// 导图与录音参考区：电脑端固定在左侧；手机端在顶部，滑走后可用悬浮按钮把它固定在屏幕上方。
+function RetellReference({material,slots,opening,tips,timer,children}:{material:Material;slots:string;opening:string;tips:boolean;timer:string;children:ReactNode}){
+ const box=useRef<HTMLElement>(null),slot=useRef<HTMLDivElement>(null),[pinned,setPinned]=useState(false),[away,setAway]=useState(false),[height,setHeight]=useState(0),[zoom,setZoom]=useState<{url:string;scale:number}|null>(null);
+ useEffect(()=>{const el=slot.current;if(!el||typeof IntersectionObserver==='undefined')return;const o=new IntersectionObserver(([e])=>setAway(!e.isIntersecting&&e.boundingClientRect.top<0),{threshold:0});o.observe(el);return()=>o.disconnect()},[]);
+ useEffect(()=>{if(!zoom)return;const key=(e:KeyboardEvent)=>{if(e.key==='Escape')setZoom(null)};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key)},[zoom]);
+ const images=material.images||[],groups=parseMindMap(slots);
+ function pin(){setHeight(box.current?.offsetHeight||0);setPinned(true)}
+ return <div className="retell-ref-slot" ref={slot} style={pinned&&height?{minHeight:height}:undefined}>
+  <aside ref={box} className={'retell-ref'+(pinned?' pinned':'')} aria-label="思维导图与录音">
+   {pinned&&<div className="retell-ref-bar"><b>{timer||'导图已固定在顶部'}</b><button className="btn secondary" onClick={()=>setPinned(false)}><X size={16}/>收起</button></div>}
+   {images.length?images.map((im,i)=><figure className="retell-ref-image" key={im.url}><button type="button" onClick={()=>setZoom({url:im.url,scale:1})} aria-label={`放大查看思维导图 ${i+1}`}><img src={im.url} alt={im.caption||'思维导图'}/><span className="retell-ref-zoom"><Maximize2 size={14}/>放大</span></button></figure>)
+    :<div className="retell-ref-outline"><b>导图结构</b>{groups.map((g,i)=><div key={i}>{g.title&&<p className="retell-ref-branch">{g.title}</p>}<ul>{g.items.map(it=><li key={it.index}>{it.label}</li>)}</ul></div>)}</div>}
+   <p className="retell-opening">给定开头：<b>{opening}</b></p>
+   {children}
+   {tips&&<TipsButton section="retell" label="缩写清单与转述技巧"/>}
+  </aside>
+  {away&&!pinned&&<button className="retell-ref-fab" onClick={pin} aria-label="把导图固定在屏幕上方"><MapIcon size={18}/>导图</button>}
+  {zoom&&<div className="retell-lightbox" role="dialog" aria-modal="true" aria-label="思维导图大图" onClick={e=>{if(e.target===e.currentTarget)setZoom(null)}}>
+   <div className="retell-lightbox-tools"><button onClick={()=>setZoom({...zoom,scale:Math.max(1,zoom.scale-0.5)})} aria-label="缩小"><Minus size={18}/></button><span>{Math.round(zoom.scale*100)}%</span><button onClick={()=>setZoom({...zoom,scale:Math.min(3,zoom.scale+0.5)})} aria-label="放大"><Plus size={18}/></button><button onClick={()=>setZoom(null)} aria-label="关闭"><X size={18}/></button></div>
+   <div className="retell-lightbox-scroll"><img src={zoom.url} alt="思维导图大图" style={{width:zoom.scale*100+'%'}}/></div>
+  </div>}
+ </div>;
 }

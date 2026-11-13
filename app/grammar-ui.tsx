@@ -1,4 +1,5 @@
 'use client';
+import {TipsButton} from './tips';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {toast} from 'sonner';
 import {ArrowRight,Check,ListChecks,RotateCcw,X} from 'lucide-react';
@@ -103,7 +104,7 @@ export function GrammarHub(){
  if(!data)return <p role="status">正在读取语法练习…</p>;
  const pending=data.mistakes.filter(m=>!m.mastered).length,mastered=data.mistakes.length-pending,started=data.items.length>0,finished=started&&data.done===data.items.length;
  return <>
-  <div className="page-heading"><div><div className="kicker">GRAMMAR · A LITTLE EVERY DAY</div><h1>语法练习</h1><p>每天几道北京中考语法选择题，做完一题马上看解析，错题按间隔自动复习。</p></div>{data.role==='student'&&<a className="btn" href="/grammar">{!started?'开始今日练习':finished?'查看今日结果':'继续练习'} →</a>}</div>
+  <div className="page-heading"><div><div className="kicker">GRAMMAR · A LITTLE EVERY DAY</div><h1>语法练习</h1><p>每天几道北京中考语法选择题，做完一题马上看解析，错题按间隔自动复习。</p><TipsButton section="grammar" label="语法解题技巧"/></div>{data.role==='student'&&<a className="btn" href="/grammar">{!started?'开始今日练习':finished?'查看今日结果':'继续练习'} →</a>}</div>
   <div className="vocab-metrics grammar-metrics">
    <article><strong>{started?`${data.done}/${data.items.length}`:Math.min(data.dailyCount,data.available)}</strong><span>{started?'今日完成':'今日题量'}</span></article>
    <article><strong>{data.streakDays}</strong><span>连续练习天数</span></article>
