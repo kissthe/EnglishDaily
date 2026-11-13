@@ -33,13 +33,13 @@ const checkRules=`,"checks":[{"item":"检查项","ok":true或false,"note":"一�
 function payload(material:Material,cfg:RetellConfig,answer:string,notes:string){
  const v2=cfg.version===2;
  if(cfg.mode&&notes.trim().startsWith('['))notes=notesText(slotLabels(cfg.slots),readNotes(notes));
- return {title:material.title,mode:cfg.mode,stage:v2?undefined:cfg.stage,mindMap:v2?parseMindMap(cfg.slots).map(g=>({branch:g.title,points:g.items.map(i=>`${i.label}: ${i.answer}`)})):undefined,slots:v2?undefined:cfg.slots,opening:cfg.opening,guidedKeywords:!v2&&cfg.stage===2?cfg.guidedKeywords:undefined,transcript:material.body,reference:cfg.referenceRetell,answer,notes};
+ return {title:material.title,mode:cfg.mode,stage:v2?undefined:cfg.stage,mindMap:v2?parseMindMap(cfg.slots).map(g=>({branch:g.title,items:g.items.map(i=>({label:i.label,standard:i.answer}))})):undefined,pointLabels:v2?slotLabels(cfg.slots):undefined,slots:v2?undefined:cfg.slots,opening:cfg.opening,guidedKeywords:!v2&&cfg.stage===2?cfg.guidedKeywords:undefined,transcript:material.body,reference:cfg.referenceRetell,answer,notes};
 }
 
 export async function assessRetell(settings:Settings,material:Material,answer:string,notes=''):Promise<AiAssessment>{
  const cfg=material.retellConfig;if(!cfg)throw Error('缺少转述训练配置');
  const exam=cfg.mode==='exam',v2=cfg.version===2||!!cfg.mode;
- const rules=baseRules+(exam?`,"exam":{"content":0到6的数（可含 .5）,"language":0到4的数（可含 .5）}`:'')+(v2?checkRules:'}。')+'points 必须逐一对应信息项，不能编造证据。'+(exam?'score 由服务器按 exam 换算，可填 0。':'')+(!v2&&cfg.stage===1?'阶段一 score 等于 information，不以语言与连贯性扣分；':'')+'不能用笔记内容代替正式转述。';
+ const rules=baseRules+(exam?`,"exam":{"content":0到6的数（可含 .5）,"language":0到4的数（可含 .5）}`:'')+(v2?checkRules:'}。')+'points 必须逐一对应要点：如果有 pointLabels，points 的条数必须等于 pointLabels 的条数，按相同顺序，label 依次原样取 pointLabels 中的名称（不要用一级提纲 branch，也不要附加答案）；不能编造证据。'+(exam?'score 由服务器按 exam 换算，可填 0。':'')+(!v2&&cfg.stage===1?'阶段一 score 等于 information，不以语言与连贯性扣分；':'')+'不能用笔记内容代替正式转述。';
  const result=assessment.parse(await aiJson(settings,retellScenario(cfg),payload(material,cfg,answer,notes),rules));
  if(!v2&&cfg.stage===1)result.score=result.dimensions.information;
  if(exam){if(!result.exam)throw Error('AI 未返回考试评分');result.score=Math.round((result.exam.content+result.exam.language)*10)}
@@ -49,7 +49,7 @@ export async function assessRetell(settings:Settings,material:Material,answer:st
 // 转述训练第一步：只核对思维导图笔记。
 export async function assessNotes(settings:Settings,material:Material,notes:string):Promise<AiAssessment>{
  const cfg=material.retellConfig;if(!cfg)throw Error('缺少转述训练配置');
- const rules=baseRules+'}。这是听力笔记核对：score 等于 information，不以语言与连贯性扣分；organization、language、coherence 填 0。points 必须逐一对应信息项，不能编造证据；advice 说明再听时应注意什么。';
+ const rules=baseRules+'}。这是听力笔记核对：score 等于 information，不以语言与连贯性扣分；organization、language、coherence 填 0。points 必须逐一对应要点：条数等于 pointLabels 的条数，按相同顺序，label 依次原样取 pointLabels 中的名称；不能编造证据；advice 说明再听时应注意什么。';
  const result=assessment.parse(await aiJson(settings,'retell1',{...payload(material,cfg,'',notes),reference:undefined},rules));
  result.score=result.dimensions.information;result.checks=undefined;result.exam=undefined;
  result.improvements=result.improvements.slice(0,resolveAiConfig(settings.aiConfig).maxSuggestions);return result;

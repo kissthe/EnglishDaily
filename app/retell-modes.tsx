@@ -19,8 +19,12 @@ async function listen(task:string,body?:unknown){const r=await fetch('/api/liste
 const clock=(s:number)=>{const t=Math.max(0,Math.ceil(s-0.05));return `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`};
 function useNow(active:boolean){const [now,setNow]=useState(()=>Date.now());useEffect(()=>{if(!active)return;const t=setInterval(()=>setNow(Date.now()),250);return()=>clearInterval(t)},[active]);return now}
 
+// AI 返回的要点数量或顺序可能和导图不一致：先按要点名称匹配，数量一致时才按顺序对应。
+const normLabel=(s:string)=>s.split(/[:：]/)[0].toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]/g,'');
+function matchPoint(points:AiAssessment['points'],label:string,index:number,total:number){if(!points?.length)return undefined;const key=normLabel(label);return points.find(p=>normLabel(p.label)===key)||points.find(p=>{const l=normLabel(p.label);return !!l&&(l.includes(key)||key.includes(l))})||(points.length===total?points[index]:undefined)}
 function MindMap({slots,notes,editable,revealed,points,onChange}:{slots:string;notes:RetellNote[];editable:boolean;revealed:boolean;points?:AiAssessment['points'];onChange?:(i:number,p:Partial<RetellNote>)=>void}){
- return <div className="mind-map">{parseMindMap(slots).map((g,gi)=><section className="mind-branch" key={gi}>{g.title&&<h3>{g.title}</h3>}{g.items.map(item=>{const note=notes[item.index],point=points?.[item.index];return <div className={'mind-leaf'+(point?' '+point.status:'')} key={item.index}>
+ const groups=parseMindMap(slots),total=groups.reduce((n,g)=>n+g.items.length,0);
+ return <div className="mind-map">{groups.map((g,gi)=><section className="mind-branch" key={gi}>{g.title&&<h3>{g.title}</h3>}{g.items.map(item=>{const note=notes[item.index],point=matchPoint(points,item.label,item.index,total);return <div className={'mind-leaf'+(point?' '+point.status:'')} key={item.index}>
   <label>{item.label}{editable?<input value={note?.text||''} maxLength={300} placeholder="关键词 / 缩写…" onChange={e=>onChange?.(item.index,{text:e.target.value})}/>:<span className="mind-note">{note?.text||(note?.status==='missed'?'（没听到）':'—')}</span>}</label>
   {editable&&<select aria-label={`${item.label}记录情况`} value={note?.status||'noted'} onChange={e=>onChange?.(item.index,{status:e.target.value as RetellNote['status']})}><option value="noted">{note?.text.trim()?'已记录':'待记录'}</option><option value="unsure">不确定</option><option value="missed">没听到</option></select>}
   {revealed&&item.answer&&<p className="mind-answer">标准要点：<b>{answerText(item.answer)}</b>{point&&<span> · {point.status==='correct'?'✓ 记对了':point.status==='missing'?'○ 漏记':'△ 有偏差'}</span>}</p>}
