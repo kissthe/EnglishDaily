@@ -1,0 +1,1974 @@
+[
+ {
+  "id": "g20-001",
+  "topic": "代词",
+  "point": "不定代词 + 形容词",
+  "level": "易错",
+  "prompt": "I looked through the newspaper, but I didn't find ____.",
+  "options": [
+   "interesting something",
+   "something interesting",
+   "anything interesting",
+   "interesting anything"
+  ],
+  "answer": 2,
+  "explanation": "形容词修饰不定代词时要放在不定代词之后；否定句中用 anything，故选 anything interesting。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-002",
+  "topic": "代词",
+  "point": "none 回答 how many",
+  "level": "提升",
+  "prompt": "— How many apples are left in the basket?\n— ____. We ate them all yesterday.",
+  "options": [
+   "No one",
+   "None",
+   "Nobody",
+   "Nothing"
+  ],
+  "answer": 1,
+  "explanation": "how many 提问可数名词的数量，“一个也没有”用 none；no one / nobody 指人，nothing 指物但不回答数量。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-003",
+  "topic": "代词",
+  "point": "another 与 other",
+  "level": "基础",
+  "prompt": "This T-shirt is too small for me. Could you show me ____ one?",
+  "options": [
+   "other",
+   "the other",
+   "another",
+   "others"
+  ],
+  "answer": 2,
+  "explanation": "another 意为“（多个中的）另一个”，后接单数名词；商店里衣服不止两件，不用 the other。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-004",
+  "topic": "代词",
+  "point": "反身代词",
+  "level": "基础",
+  "prompt": "Welcome to our school party, boys and girls! Please help ____ to some fruit.",
+  "options": [
+   "your",
+   "you",
+   "yourself",
+   "yourselves"
+  ],
+  "answer": 3,
+  "explanation": "help oneself to sth. 意为“随便吃……”；对象是 boys and girls（复数），用 yourselves。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-005",
+  "topic": "代词",
+  "point": "its 与 it's",
+  "level": "易错",
+  "prompt": "The cat is lying in the sun and licking ____ paw.",
+  "options": [
+   "it",
+   "itself",
+   "it's",
+   "its"
+  ],
+  "answer": 3,
+  "explanation": "空格后是名词 paw，需要形容词性物主代词 its（它的）；it's 是 it is 的缩写。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-006",
+  "topic": "代词",
+  "point": "neither 表两者都不",
+  "level": "提升",
+  "prompt": "— Which do you prefer, tea or coffee?\n— ____. I'd like a glass of water.",
+  "options": [
+   "None",
+   "Both",
+   "Neither",
+   "Either"
+  ],
+  "answer": 2,
+  "explanation": "在两者中都不选，用 neither；none 用于三者及以上。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-007",
+  "topic": "代词",
+  "point": "it 作形式宾语",
+  "level": "提升",
+  "prompt": "I find ____ difficult to remember all the new words in one day.",
+  "options": [
+   "that",
+   "this",
+   "it",
+   "one"
+  ],
+  "answer": 2,
+  "explanation": "find it + adj. + to do sth. 结构中，it 作形式宾语，真正的宾语是后面的不定式。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-008",
+  "topic": "介词",
+  "point": "with 表伴随",
+  "level": "基础",
+  "prompt": "The little girl opened the gift box ____ a big smile on her face.",
+  "options": [
+   "on",
+   "with",
+   "in",
+   "by"
+  ],
+  "answer": 1,
+  "explanation": "with 表示伴随，“带着笑容”用 with a smile。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-009",
+  "topic": "介词",
+  "point": "through 与 across",
+  "level": "易错",
+  "prompt": "The train is going ____ the tunnel. It's dark inside.",
+  "options": [
+   "through",
+   "over",
+   "across",
+   "along"
+  ],
+  "answer": 0,
+  "explanation": "through 表示从内部穿过（隧道、森林）；across 表示从表面横穿（马路、河）。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-010",
+  "topic": "介词",
+  "point": "具体某天上午用 on",
+  "level": "易错",
+  "prompt": "Ken was born ____ the morning of June 6th, 2011.",
+  "options": [
+   "in",
+   "for",
+   "on",
+   "at"
+  ],
+  "answer": 2,
+  "explanation": "in the morning 表示泛指“在上午”，但具体某一天的上午要用 on。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-011",
+  "topic": "介词",
+  "point": "since 与现在完成时",
+  "level": "提升",
+  "prompt": "My uncle has worked in this hospital ____ 2015.",
+  "options": [
+   "during",
+   "in",
+   "for",
+   "since"
+  ],
+  "answer": 3,
+  "explanation": "since + 过去时间点，与现在完成时连用；for 后接一段时间。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-012",
+  "topic": "介词",
+  "point": "thank sb for",
+  "level": "基础",
+  "prompt": "Thank you ____ inviting me to your birthday party.",
+  "options": [
+   "for",
+   "with",
+   "to",
+   "about"
+  ],
+  "answer": 0,
+  "explanation": "thank sb. for (doing) sth. 表示“因……感谢某人”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-013",
+  "topic": "介词",
+  "point": "between...and...",
+  "level": "基础",
+  "prompt": "The bookstore is ____ the bank and the post office.",
+  "options": [
+   "among",
+   "between",
+   "in",
+   "across"
+  ],
+  "answer": 1,
+  "explanation": "between...and... 表示“在两者之间”；among 用于三者及以上。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-014",
+  "topic": "介词",
+  "point": "be good at",
+  "level": "基础",
+  "prompt": "Lucy is good ____ drawing. She won first prize in the art contest.",
+  "options": [
+   "at",
+   "in",
+   "for",
+   "with"
+  ],
+  "answer": 0,
+  "explanation": "be good at (doing) sth. 表示“擅长……”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-015",
+  "topic": "情态动词与祈使句",
+  "point": "否定祈使句",
+  "level": "基础",
+  "prompt": "____ late for school again, Tom!",
+  "options": [
+   "Don't be",
+   "Not be",
+   "Be not",
+   "Don't"
+  ],
+  "answer": 0,
+  "explanation": "含 be 动词的否定祈使句用 Don't be + 形容词。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-016",
+  "topic": "情态动词与祈使句",
+  "point": "Let's do sth.",
+  "level": "基础",
+  "prompt": "Let's ____ to the park this afternoon, shall we?",
+  "options": [
+   "goes",
+   "going",
+   "to go",
+   "go"
+  ],
+  "answer": 3,
+  "explanation": "let's 后接动词原形。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-017",
+  "topic": "情态动词与祈使句",
+  "point": "should 表建议",
+  "level": "基础",
+  "prompt": "— I have a bad cold.\n— You ____ drink more water and have a good rest.",
+  "options": [
+   "mustn't",
+   "can't",
+   "needn't",
+   "should"
+  ],
+  "answer": 3,
+  "explanation": "给别人提建议用 should，意为“应该”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-018",
+  "topic": "情态动词与祈使句",
+  "point": "have to 表客观需要",
+  "level": "提升",
+  "prompt": "It's raining heavily. We ____ stay at home, so we can't go hiking.",
+  "options": [
+   "could",
+   "have to",
+   "mustn't",
+   "needn't"
+  ],
+  "answer": 1,
+  "explanation": "have to 表示由于客观原因“不得不”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-019",
+  "topic": "情态动词与祈使句",
+  "point": "can 表能力",
+  "level": "基础",
+  "prompt": "My little brother ____ ride a bike now, though he is only five.",
+  "options": [
+   "need",
+   "should",
+   "must",
+   "can"
+  ],
+  "answer": 3,
+  "explanation": "can 表示能力，“会、能够”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-020",
+  "topic": "情态动词与祈使句",
+  "point": "might 表不确定推测",
+  "level": "提升",
+  "prompt": "— Where is Jenny?\n— I'm not sure. She ____ be in the library.",
+  "options": [
+   "should",
+   "might",
+   "can't",
+   "must"
+  ],
+  "answer": 1,
+  "explanation": "“不确定”说明是可能性较小的推测，用 might；must 表示有把握的肯定推测。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-021",
+  "topic": "情态动词与祈使句",
+  "point": "Would you like to...? 的应答",
+  "level": "基础",
+  "prompt": "— Would you like to join us for dinner this evening?\n— ____ Thank you for asking.",
+  "options": [
+   "Yes, I would like.",
+   "Yes, I'd love to.",
+   "No, I don't.",
+   "No, I wouldn't."
+  ],
+  "answer": 1,
+  "explanation": "Would you like to do sth.? 的肯定回答常用 Yes, I'd love/like to.（不能省略 to）。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-022",
+  "topic": "特殊疑问词",
+  "point": "what time",
+  "level": "基础",
+  "prompt": "— ____ does the museum open on weekends?\n— At 9:30 a.m.",
+  "options": [
+   "What time",
+   "How often",
+   "How soon",
+   "How long"
+  ],
+  "answer": 0,
+  "explanation": "答语是具体钟点，用 what time 提问。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-023",
+  "topic": "特殊疑问词",
+  "point": "how many",
+  "level": "基础",
+  "prompt": "— ____ students are there in your class?\n— Forty-two.",
+  "options": [
+   "How much",
+   "How long",
+   "How old",
+   "How many"
+  ],
+  "answer": 3,
+  "explanation": "对可数名词的数量提问用 how many。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-024",
+  "topic": "特殊疑问词",
+  "point": "which 表选择",
+  "level": "基础",
+  "prompt": "— ____ book is yours, the red one or the blue one?\n— The blue one.",
+  "options": [
+   "Who",
+   "Which",
+   "Whose",
+   "What"
+  ],
+  "answer": 1,
+  "explanation": "在给定的范围中选择用 which。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-025",
+  "topic": "特殊疑问词",
+  "point": "who 作宾语",
+  "level": "基础",
+  "prompt": "— ____ did you go to the concert with?\n— My cousin Mary.",
+  "options": [
+   "Whose",
+   "Who",
+   "Which",
+   "What"
+  ],
+  "answer": 1,
+  "explanation": "答语是人，问“和谁一起去”用 who。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-026",
+  "topic": "特殊疑问词",
+  "point": "how 询问感受",
+  "level": "基础",
+  "prompt": "— ____ was your trip to Hainan?\n— Wonderful! We swam in the sea every day.",
+  "options": [
+   "Where",
+   "Why",
+   "How",
+   "What"
+  ],
+  "answer": 2,
+  "explanation": "询问某事怎么样用 how。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-027",
+  "topic": "特殊疑问词",
+  "point": "What...like?",
+  "level": "易错",
+  "prompt": "— ____ is the weather like in Beijing today?\n— It's sunny and windy.",
+  "options": [
+   "Which",
+   "What",
+   "Why",
+   "How"
+  ],
+  "answer": 1,
+  "explanation": "What is the weather like? = How is the weather? 句中已有 like，用 what。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-028",
+  "topic": "特殊疑问词",
+  "point": "how old",
+  "level": "基础",
+  "prompt": "— ____ is your grandfather?\n— He's seventy-five, but he still runs every morning.",
+  "options": [
+   "How old",
+   "How much",
+   "How many",
+   "How long"
+  ],
+  "answer": 0,
+  "explanation": "询问年龄用 how old。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-029",
+  "topic": "特殊疑问词",
+  "point": "what day 与 what date",
+  "level": "易错",
+  "prompt": "— ____ is it today?\n— It's Wednesday.",
+  "options": [
+   "How often",
+   "What date",
+   "What time",
+   "What day"
+  ],
+  "answer": 3,
+  "explanation": "问星期几用 what day；问日期用 what date。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-030",
+  "topic": "特殊疑问词",
+  "point": "how many times",
+  "level": "易错",
+  "prompt": "— ____ have you been to the Great Wall?\n— Three times.",
+  "options": [
+   "How often",
+   "How soon",
+   "How long",
+   "How many times"
+  ],
+  "answer": 3,
+  "explanation": "答语是“去过三次”，问次数用 how many times；how often 问频率，答语常是 once a week 等。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-031",
+  "topic": "特殊疑问词",
+  "point": "whose",
+  "level": "基础",
+  "prompt": "— ____ are these sports shoes under the bed?\n— They're my brother's.",
+  "options": [
+   "Whose",
+   "Which",
+   "Who",
+   "What"
+  ],
+  "answer": 0,
+  "explanation": "答语是名词所有格，问“谁的”用 whose。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-032",
+  "topic": "特殊疑问词",
+  "point": "What do you think of...?",
+  "level": "易错",
+  "prompt": "— ____ do you think of the movie Ne Zha 2?\n— It's fantastic!",
+  "options": [
+   "Why",
+   "How",
+   "Which",
+   "What"
+  ],
+  "answer": 3,
+  "explanation": "What do you think of...? = How do you like...? 不能说 How do you think of...",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-033",
+  "topic": "特殊疑问词",
+  "point": "where",
+  "level": "基础",
+  "prompt": "— ____ were you born?\n— In Shanghai.",
+  "options": [
+   "How",
+   "Why",
+   "When",
+   "Where"
+  ],
+  "answer": 3,
+  "explanation": "答语是地点，用 where 提问。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-034",
+  "topic": "形容词与副词",
+  "point": "系动词 + 形容词",
+  "level": "易错",
+  "prompt": "The soup tastes ____. Can I have some more?",
+  "options": [
+   "badly",
+   "well",
+   "delicious",
+   "deliciously"
+  ],
+  "answer": 2,
+  "explanation": "taste 是系动词，后接形容词作表语；后句想再要一些，说明味道好。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-035",
+  "topic": "形容词与副词",
+  "point": "much 修饰比较级",
+  "level": "提升",
+  "prompt": "My new schoolbag is ____ than the old one.",
+  "options": [
+   "much light",
+   "more light",
+   "much lighter",
+   "very lighter"
+  ],
+  "answer": 2,
+  "explanation": "than 表明用比较级；修饰比较级用 much / far / even 等，不用 very。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-036",
+  "topic": "形容词与副词",
+  "point": "副词修饰动词",
+  "level": "基础",
+  "prompt": "Please listen ____ in class, or you will miss important points.",
+  "options": [
+   "more careful",
+   "care",
+   "careful",
+   "carefully"
+  ],
+  "answer": 3,
+  "explanation": "修饰动词 listen 用副词 carefully。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-037",
+  "topic": "形容词与副词",
+  "point": "the + 比较级 of the two",
+  "level": "易错",
+  "prompt": "Of the two sisters, Mary is ____ one.",
+  "options": [
+   "the taller",
+   "tallest",
+   "the tallest",
+   "taller"
+  ],
+  "answer": 0,
+  "explanation": "两者之中“较……的那个”用 the + 比较级。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-038",
+  "topic": "形容词与副词",
+  "point": "形容词作宾补",
+  "level": "提升",
+  "prompt": "We should keep our classroom ____ every day.",
+  "options": [
+   "clean",
+   "to cleaning",
+   "cleaning",
+   "cleanly"
+  ],
+  "answer": 0,
+  "explanation": "keep + 宾语 + 形容词，表示“使……保持某种状态”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-039",
+  "topic": "连词与状语从句",
+  "point": "because 表原因",
+  "level": "基础",
+  "prompt": "Ann didn't go to school yesterday ____ she had a high fever.",
+  "options": [
+   "but",
+   "though",
+   "so",
+   "because"
+  ],
+  "answer": 3,
+  "explanation": "后句是前句的原因，用 because。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-040",
+  "topic": "连词与状语从句",
+  "point": "while 引导时间状语从句",
+  "level": "提升",
+  "prompt": "____ I was doing my homework, my mother was cooking in the kitchen.",
+  "options": [
+   "Unless",
+   "Because",
+   "Until",
+   "While"
+  ],
+  "answer": 3,
+  "explanation": "while 表示“在……期间”，常与进行时连用，强调两个动作同时进行。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-041",
+  "topic": "连词与状语从句",
+  "point": "since 引导时间状语从句",
+  "level": "提升",
+  "prompt": "Great changes have taken place in my hometown ____ I left it ten years ago.",
+  "options": [
+   "since",
+   "until",
+   "unless",
+   "before"
+  ],
+  "answer": 0,
+  "explanation": "主句用现在完成时，since 引导的从句用一般过去时，表示“自从……以来”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-042",
+  "topic": "连词与状语从句",
+  "point": "not only...but also...",
+  "level": "提升",
+  "prompt": "____ the students but also the teacher enjoys the music.",
+  "options": [
+   "Either",
+   "Not only",
+   "Both",
+   "Neither"
+  ],
+  "answer": 1,
+  "explanation": "与 but also 搭配的是 not only；谓语按就近原则与 the teacher 一致。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-043",
+  "topic": "连词与状语从句",
+  "point": "so...that...",
+  "level": "基础",
+  "prompt": "The film was ____ interesting that we watched it twice.",
+  "options": [
+   "so",
+   "very",
+   "too",
+   "such"
+  ],
+  "answer": 0,
+  "explanation": "so + 形容词 + that...，表示“如此……以至于……”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-044",
+  "topic": "宾语从句",
+  "point": "if 表“是否”",
+  "level": "基础",
+  "prompt": "I'm not sure ____ it will rain tomorrow. Let's check the weather report.",
+  "options": [
+   "which",
+   "that",
+   "what",
+   "if"
+  ],
+  "answer": 3,
+  "explanation": "表示“是否”用 if / whether；从句不缺成分，不用 what / which。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-045",
+  "topic": "宾语从句",
+  "point": "that 引导宾语从句",
+  "level": "基础",
+  "prompt": "Our teacher told us ____ we should protect the environment.",
+  "options": [
+   "if",
+   "that",
+   "what",
+   "whether"
+  ],
+  "answer": 1,
+  "explanation": "从句是陈述句，意思完整，用 that 引导。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-046",
+  "topic": "宾语从句",
+  "point": "客观真理用一般现在时",
+  "level": "易错",
+  "prompt": "The teacher said that light ____ faster than sound.",
+  "options": [
+   "is traveling",
+   "travels",
+   "will travel",
+   "traveled"
+  ],
+  "answer": 1,
+  "explanation": "宾语从句表示客观真理时，即使主句是过去时，从句仍用一般现在时。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-047",
+  "topic": "宾语从句",
+  "point": "主句过去时，从句过去时",
+  "level": "提升",
+  "prompt": "He asked me ____.",
+  "options": [
+   "what am I doing now",
+   "what was I doing then",
+   "what I am doing now",
+   "what I was doing then"
+  ],
+  "answer": 3,
+  "explanation": "宾语从句用陈述语序；主句 asked 为过去时，从句用相应的过去时态。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-048",
+  "topic": "宾语从句",
+  "point": "宾语从句陈述语序",
+  "level": "易错",
+  "prompt": "— Can you tell me ____?\n— It's 120 yuan.",
+  "options": [
+   "how much did the ticket cost",
+   "how much the ticket costs",
+   "how much does the ticket cost",
+   "how much cost the ticket"
+  ],
+  "answer": 1,
+  "explanation": "宾语从句用陈述语序，不用助动词 does / did 构成疑问。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-049",
+  "topic": "被动语态",
+  "point": "含情态动词的被动语态",
+  "level": "提升",
+  "prompt": "Rubbish ____ into different bins in our community.",
+  "options": [
+   "is putting",
+   "should be put",
+   "should be putting",
+   "should put"
+  ],
+  "answer": 1,
+  "explanation": "rubbish 与 put 是被动关系；含情态动词的被动语态：情态动词 + be + 过去分词。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-050",
+  "topic": "被动语态",
+  "point": "现在完成时的被动语态",
+  "level": "提升",
+  "prompt": "So far, more than 500 trees ____ on the hill by the volunteers.",
+  "options": [
+   "have been planted",
+   "have planted",
+   "were planting",
+   "are planting"
+  ],
+  "answer": 0,
+  "explanation": "so far 提示现在完成时；trees 与 plant 是被动关系，用 have been + 过去分词。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-051",
+  "topic": "被动语态",
+  "point": "make sb. do 的被动",
+  "level": "易错",
+  "prompt": "In the past, the workers were made ____ for ten hours a day.",
+  "options": [
+   "working",
+   "worked",
+   "work",
+   "to work"
+  ],
+  "answer": 3,
+  "explanation": "make sb. do sth. 变为被动语态时要还原 to：be made to do sth.",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-052",
+  "topic": "名词、冠词与数词",
+  "point": "an + 元音音素",
+  "level": "基础",
+  "prompt": "It took us ____ hour to get to the Summer Palace.",
+  "options": [
+   "a",
+   "/",
+   "the",
+   "an"
+  ],
+  "answer": 3,
+  "explanation": "hour 的 h 不发音，以元音音素开头，用 an。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-053",
+  "topic": "名词、冠词与数词",
+  "point": "球类前不用冠词",
+  "level": "基础",
+  "prompt": "My father often plays ____ basketball with me after work.",
+  "options": [
+   "the",
+   "a",
+   "/",
+   "an"
+  ],
+  "answer": 2,
+  "explanation": "play + 球类运动，中间不用冠词（“/”表示不填）。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-054",
+  "topic": "名词、冠词与数词",
+  "point": "西洋乐器前加 the",
+  "level": "基础",
+  "prompt": "Lily practises playing ____ piano for an hour every day.",
+  "options": [
+   "an",
+   "/",
+   "a",
+   "the"
+  ],
+  "answer": 3,
+  "explanation": "play + the + 西洋乐器。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-055",
+  "topic": "名词、冠词与数词",
+  "point": "不可数名词 advice",
+  "level": "易错",
+  "prompt": "Could you give me some ____ about learning English well?",
+  "options": [
+   "advices",
+   "advice",
+   "suggestion",
+   "an advice"
+  ],
+  "answer": 1,
+  "explanation": "advice 是不可数名词，不能加 -s 或 an；some 后若用 suggestion 需用复数 suggestions。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-056",
+  "topic": "名词、冠词与数词",
+  "point": "woman 作定语的复数",
+  "level": "易错",
+  "prompt": "There are three ____ teachers in our school.",
+  "options": [
+   "woman",
+   "womans",
+   "womens",
+   "women"
+  ],
+  "answer": 3,
+  "explanation": "man / woman 作定语修饰复数名词时也要变复数：women teachers。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-057",
+  "topic": "名词、冠词与数词",
+  "point": "单复数同形",
+  "level": "基础",
+  "prompt": "The farmer keeps many ____ on his farm.",
+  "options": [
+   "sheepes",
+   "sheeps",
+   "a sheep",
+   "sheep"
+  ],
+  "answer": 3,
+  "explanation": "sheep 单复数同形。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-058",
+  "topic": "名词、冠词与数词",
+  "point": "复数名词所有格",
+  "level": "易错",
+  "prompt": "It's about ten ____ walk from my home to school.",
+  "options": [
+   "minute's",
+   "minute",
+   "minutes'",
+   "minutes"
+  ],
+  "answer": 2,
+  "explanation": "“十分钟的路程”用 ten minutes' walk；以 -s 结尾的复数名词所有格只加 '。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-059",
+  "topic": "名词、冠词与数词",
+  "point": "thousands of",
+  "level": "提升",
+  "prompt": "____ visitors come to the Palace Museum every day.",
+  "options": [
+   "Three thousands of",
+   "Thousands of",
+   "Thousands",
+   "Thousand of"
+  ],
+  "answer": 1,
+  "explanation": "表示“成千上万的”用 thousands of；具体数字前 thousand 不加 -s 也不加 of。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-060",
+  "topic": "名词、冠词与数词",
+  "point": "序数词前加 the",
+  "level": "基础",
+  "prompt": "January is ____ month of the year.",
+  "options": [
+   "the first",
+   "first",
+   "the one",
+   "one"
+  ],
+  "answer": 0,
+  "explanation": "“第一个”用序数词，序数词前一般加 the。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-061",
+  "topic": "名词、冠词与数词",
+  "point": "分数表达",
+  "level": "提升",
+  "prompt": "About ____ of the students in our class walk to school.",
+  "options": [
+   "two thirds",
+   "second three",
+   "two threes",
+   "two third"
+  ],
+  "answer": 0,
+  "explanation": "分数：分子用基数词，分母用序数词；分子大于一时分母加 -s。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-062",
+  "topic": "名词、冠词与数词",
+  "point": "复合形容词",
+  "level": "易错",
+  "prompt": "Tom is ____ boy, but he can speak three languages.",
+  "options": [
+   "a ten years old",
+   "a ten-years-old",
+   "a ten-year-old",
+   "ten-year-old"
+  ],
+  "answer": 2,
+  "explanation": "连字符构成的复合形容词中名词用单数：a ten-year-old boy。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-063",
+  "topic": "名词、冠词与数词",
+  "point": "a piece of",
+  "level": "基础",
+  "prompt": "Please pass me ____ of paper. I want to write a note.",
+  "options": [
+   "a piece",
+   "pieces",
+   "piece",
+   "a pieces"
+  ],
+  "answer": 0,
+  "explanation": "paper（纸）不可数，“一张纸”用 a piece of paper。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-064",
+  "topic": "名词、冠词与数词",
+  "point": "不可数名词与 much",
+  "level": "基础",
+  "prompt": "There isn't much ____ in the bottle. Let's buy some more.",
+  "options": [
+   "apples",
+   "water",
+   "waters",
+   "bottles"
+  ],
+  "answer": 1,
+  "explanation": "much 修饰不可数名词，water 不可数。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-065",
+  "topic": "名词、冠词与数词",
+  "point": "the + 形容词表一类人",
+  "level": "提升",
+  "prompt": "The rich should help ____ poor.",
+  "options": [
+   "an",
+   "the",
+   "/",
+   "a"
+  ],
+  "answer": 1,
+  "explanation": "the + 形容词表示一类人：the poor 穷人。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-066",
+  "topic": "名词、冠词与数词",
+  "point": "字母前的冠词",
+  "level": "易错",
+  "prompt": "There is ____ 'h' in the word 'hour', but it is silent.",
+  "options": [
+   "a",
+   "/",
+   "the",
+   "an"
+  ],
+  "answer": 3,
+  "explanation": "字母 h 读作 /eɪtʃ/，以元音音素开头，用 an。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-067",
+  "topic": "非谓语动词",
+  "point": "finish doing",
+  "level": "基础",
+  "prompt": "Have you finished ____ the novel yet?",
+  "options": [
+   "to read",
+   "read",
+   "reads",
+   "reading"
+  ],
+  "answer": 3,
+  "explanation": "finish doing sth. 完成做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-068",
+  "topic": "非谓语动词",
+  "point": "decide to do",
+  "level": "基础",
+  "prompt": "Lily decided ____ a volunteer at the museum this summer.",
+  "options": [
+   "be",
+   "being",
+   "is",
+   "to be"
+  ],
+  "answer": 3,
+  "explanation": "decide to do sth. 决定做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-069",
+  "topic": "非谓语动词",
+  "point": "make sb. do",
+  "level": "基础",
+  "prompt": "The funny story made all of us ____.",
+  "options": [
+   "to laugh",
+   "laugh",
+   "laughed",
+   "laughing"
+  ],
+  "answer": 1,
+  "explanation": "make sb. do sth. 使某人做某事，省略 to。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-070",
+  "topic": "非谓语动词",
+  "point": "let sb. do",
+  "level": "基础",
+  "prompt": "Let me ____ you with the heavy box.",
+  "options": [
+   "to help",
+   "helps",
+   "help",
+   "helping"
+  ],
+  "answer": 2,
+  "explanation": "let sb. do sth. 让某人做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-071",
+  "topic": "非谓语动词",
+  "point": "疑问词 + 不定式",
+  "level": "提升",
+  "prompt": "I don't know ____ next. Could you give me some advice?",
+  "options": [
+   "what to do",
+   "what to do it",
+   "what doing",
+   "how to do"
+  ],
+  "answer": 0,
+  "explanation": "疑问词 + 不定式作宾语；do 后缺宾语，用 what to do。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-072",
+  "topic": "非谓语动词",
+  "point": "remember to do",
+  "level": "易错",
+  "prompt": "Remember ____ off the lights when you leave the classroom.",
+  "options": [
+   "to turn",
+   "turned",
+   "turn",
+   "turning"
+  ],
+  "answer": 0,
+  "explanation": "remember to do 记得去做（还没做）；remember doing 记得做过。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-073",
+  "topic": "非谓语动词",
+  "point": "remember doing",
+  "level": "易错",
+  "prompt": "I still remember ____ the Great Wall for the first time with my parents.",
+  "options": [
+   "climb",
+   "climbing",
+   "to climb",
+   "climbed"
+  ],
+  "answer": 1,
+  "explanation": "still remember 表示记得过去做过的事，用 remember doing。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-074",
+  "topic": "非谓语动词",
+  "point": "would like to do",
+  "level": "基础",
+  "prompt": "Would you like ____ a walk with me after supper?",
+  "options": [
+   "take",
+   "took",
+   "taking",
+   "to take"
+  ],
+  "answer": 3,
+  "explanation": "would like to do sth. 想要做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-075",
+  "topic": "非谓语动词",
+  "point": "be busy doing",
+  "level": "基础",
+  "prompt": "Mom is busy ____ dinner in the kitchen.",
+  "options": [
+   "to cook",
+   "cooking",
+   "cooks",
+   "cook"
+  ],
+  "answer": 1,
+  "explanation": "be busy doing sth. 忙于做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-076",
+  "topic": "非谓语动词",
+  "point": "It takes sb. time to do",
+  "level": "提升",
+  "prompt": "It took me two hours ____ my science project.",
+  "options": [
+   "finishing",
+   "finished",
+   "to finish",
+   "finish"
+  ],
+  "answer": 2,
+  "explanation": "It takes / took sb. time to do sth. 做某事花费某人多少时间。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-077",
+  "topic": "非谓语动词",
+  "point": "不定式作定语",
+  "level": "提升",
+  "prompt": "I have a lot of homework ____ tonight.",
+  "options": [
+   "doing",
+   "do",
+   "done",
+   "to do"
+  ],
+  "answer": 3,
+  "explanation": "不定式作后置定语，表示将要做的事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-078",
+  "topic": "非谓语动词",
+  "point": "see sb. doing",
+  "level": "提升",
+  "prompt": "When I passed by, I saw some students ____ basketball on the playground.",
+  "options": [
+   "played",
+   "to play",
+   "plays",
+   "playing"
+  ],
+  "answer": 3,
+  "explanation": "see sb. doing 表示看到某人正在做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-079",
+  "topic": "非谓语动词",
+  "point": "mind doing",
+  "level": "基础",
+  "prompt": "Would you mind ____ the window? It's a bit cold.",
+  "options": [
+   "close",
+   "closing",
+   "to close",
+   "closed"
+  ],
+  "answer": 1,
+  "explanation": "mind doing sth. 介意做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-080",
+  "topic": "非谓语动词",
+  "point": "practise doing",
+  "level": "基础",
+  "prompt": "We should practise ____ English every day.",
+  "options": [
+   "speak",
+   "speaking",
+   "spoke",
+   "to speak"
+  ],
+  "answer": 1,
+  "explanation": "practise doing sth. 练习做某事。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-081",
+  "topic": "非谓语动词",
+  "point": "动名词作主语",
+  "level": "提升",
+  "prompt": "____ enough sleep is important for teenagers.",
+  "options": [
+   "Gets",
+   "Got",
+   "Get",
+   "Getting"
+  ],
+  "answer": 3,
+  "explanation": "动名词短语可以作主语，谓语用单数。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-082",
+  "topic": "定语从句",
+  "point": "who 指人作主语",
+  "level": "基础",
+  "prompt": "The doctor ____ looked after my grandma is very kind.",
+  "options": [
+   "which",
+   "who",
+   "what",
+   "whose"
+  ],
+  "answer": 1,
+  "explanation": "先行词是人（the doctor），在从句中作主语，用 who / that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-083",
+  "topic": "定语从句",
+  "point": "which 指物作宾语",
+  "level": "基础",
+  "prompt": "The bike ____ my father bought me last year is still new.",
+  "options": [
+   "who",
+   "whom",
+   "what",
+   "which"
+  ],
+  "answer": 3,
+  "explanation": "先行词是物（the bike），在从句中作宾语，用 which / that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-084",
+  "topic": "定语从句",
+  "point": "all 后用 that",
+  "level": "易错",
+  "prompt": "This is all ____ I know about the accident.",
+  "options": [
+   "which",
+   "that",
+   "who",
+   "what"
+  ],
+  "answer": 1,
+  "explanation": "先行词是不定代词 all 时，关系代词用 that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-085",
+  "topic": "定语从句",
+  "point": "whose",
+  "level": "提升",
+  "prompt": "I have a friend ____ father is a pilot.",
+  "options": [
+   "who",
+   "which",
+   "whose",
+   "that"
+  ],
+  "answer": 2,
+  "explanation": "“他的父亲”表示所属关系，用 whose。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-086",
+  "topic": "定语从句",
+  "point": "最高级后用 that",
+  "level": "易错",
+  "prompt": "This is the most interesting film ____ I have ever seen.",
+  "options": [
+   "that",
+   "which",
+   "who",
+   "what"
+  ],
+  "answer": 0,
+  "explanation": "先行词被形容词最高级修饰时，关系代词用 that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-087",
+  "topic": "定语从句",
+  "point": "人和物并列用 that",
+  "level": "易错",
+  "prompt": "They talked about the people and places ____ they had visited.",
+  "options": [
+   "whom",
+   "which",
+   "that",
+   "who"
+  ],
+  "answer": 2,
+  "explanation": "先行词既有人又有物时，用 that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-088",
+  "topic": "定语从句",
+  "point": "从句谓语与先行词一致",
+  "level": "提升",
+  "prompt": "The girls who ____ in the school choir are from Class 2.",
+  "options": [
+   "sings",
+   "sing",
+   "to sing",
+   "singing"
+  ],
+  "answer": 1,
+  "explanation": "关系代词作主语时，从句谓语与先行词 the girls（复数）一致。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-089",
+  "topic": "定语从句",
+  "point": "whom 作宾语",
+  "level": "基础",
+  "prompt": "The boy ____ you met yesterday is my cousin.",
+  "options": [
+   "whom",
+   "what",
+   "which",
+   "whose"
+  ],
+  "answer": 0,
+  "explanation": "先行词是人，在从句中作宾语，用 whom / who / that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-090",
+  "topic": "定语从句",
+  "point": "序数词后用 that",
+  "level": "易错",
+  "prompt": "The first thing ____ we should do is to save the trapped people.",
+  "options": [
+   "what",
+   "which",
+   "that",
+   "who"
+  ],
+  "answer": 2,
+  "explanation": "先行词被序数词修饰时，关系代词用 that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-091",
+  "topic": "定语从句",
+  "point": "who 作主语",
+  "level": "基础",
+  "prompt": "Do you know the man ____ is talking to our headteacher?",
+  "options": [
+   "which",
+   "whose",
+   "who",
+   "whom"
+  ],
+  "answer": 2,
+  "explanation": "先行词是人，在从句中作主语，用 who。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-092",
+  "topic": "定语从句",
+  "point": "that 指物",
+  "level": "基础",
+  "prompt": "I like music ____ I can dance to.",
+  "options": [
+   "who",
+   "what",
+   "whose",
+   "that"
+  ],
+  "answer": 3,
+  "explanation": "先行词 music 是物，在从句中作 dance to 的宾语，用 that / which。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-093",
+  "topic": "定语从句",
+  "point": "where 与 that 辨析",
+  "level": "易错",
+  "prompt": "Beijing is a city ____ has a history of more than 3,000 years.",
+  "options": [
+   "where",
+   "who",
+   "what",
+   "that"
+  ],
+  "answer": 3,
+  "explanation": "从句缺主语（___ has a history），用关系代词 that / which，不用关系副词 where。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-094",
+  "topic": "定语从句",
+  "point": "where 与 that 辨析",
+  "level": "易错",
+  "prompt": "Is this the museum ____ you visited last summer?",
+  "options": [
+   "where",
+   "who",
+   "what",
+   "that"
+  ],
+  "answer": 3,
+  "explanation": "visited 后缺宾语，用 that / which；where 在从句中作状语，不能作宾语。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-095",
+  "topic": "定语从句",
+  "point": "whose + 名词",
+  "level": "提升",
+  "prompt": "The book ____ cover is red is mine.",
+  "options": [
+   "whose",
+   "which",
+   "that",
+   "who"
+  ],
+  "answer": 0,
+  "explanation": "“它的封面”表示所属关系，用 whose。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-096",
+  "topic": "定语从句",
+  "point": "the only 后用 that",
+  "level": "易错",
+  "prompt": "He is the only student ____ passed the maths exam.",
+  "options": [
+   "that",
+   "which",
+   "what",
+   "whom"
+  ],
+  "answer": 0,
+  "explanation": "先行词被 the only 修饰时，关系代词常用 that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-097",
+  "topic": "定语从句",
+  "point": "everyone 后用 who",
+  "level": "基础",
+  "prompt": "Everyone ____ wants to join the club should sign up before Friday.",
+  "options": [
+   "who",
+   "what",
+   "whose",
+   "which"
+  ],
+  "answer": 0,
+  "explanation": "先行词 everyone 指人，在从句中作主语，用 who / that。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-098",
+  "topic": "定语从句",
+  "point": "whose 表所属",
+  "level": "提升",
+  "prompt": "The man ____ car was stolen called the police at once.",
+  "options": [
+   "who",
+   "that",
+   "whose",
+   "which"
+  ],
+  "answer": 2,
+  "explanation": "“他的车”表示所属关系，用 whose。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-099",
+  "topic": "定语从句",
+  "point": "when 与 that 辨析",
+  "level": "易错",
+  "prompt": "I'll never forget the day ____ we spent together at the beach.",
+  "options": [
+   "when",
+   "that",
+   "where",
+   "what"
+  ],
+  "answer": 1,
+  "explanation": "spent 后缺宾语，关系代词用 that / which；when 只能作状语。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-100",
+  "topic": "主谓一致与特殊句式",
+  "point": "each of 作主语",
+  "level": "基础",
+  "prompt": "Each of the students ____ a dictionary.",
+  "options": [
+   "are having",
+   "have",
+   "having",
+   "has"
+  ],
+  "answer": 3,
+  "explanation": "each of + 复数名词作主语，谓语用单数。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-101",
+  "topic": "主谓一致与特殊句式",
+  "point": "either...or 就近原则",
+  "level": "提升",
+  "prompt": "Either you or he ____ going to clean the classroom today.",
+  "options": [
+   "am",
+   "is",
+   "are",
+   "be"
+  ],
+  "answer": 1,
+  "explanation": "either...or... 连接主语时，谓语与靠近的主语 he 一致。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-102",
+  "topic": "主谓一致与特殊句式",
+  "point": "the number of",
+  "level": "易错",
+  "prompt": "The number of students in our school ____ about 2,000.",
+  "options": [
+   "is",
+   "are",
+   "have",
+   "has"
+  ],
+  "answer": 0,
+  "explanation": "the number of + 复数名词“……的数量”，谓语用单数。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-103",
+  "topic": "主谓一致与特殊句式",
+  "point": "a number of",
+  "level": "易错",
+  "prompt": "A number of students ____ planting trees on the hill now.",
+  "options": [
+   "is",
+   "are",
+   "was",
+   "has"
+  ],
+  "answer": 1,
+  "explanation": "a number of + 复数名词“许多……”，谓语用复数；now 提示现在进行时。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-104",
+  "topic": "主谓一致与特殊句式",
+  "point": "everyone 作主语",
+  "level": "基础",
+  "prompt": "Everyone in our class ____ the music lesson.",
+  "options": [
+   "looks forward to",
+   "look forward to",
+   "are looking forward",
+   "looking forward to"
+  ],
+  "answer": 0,
+  "explanation": "everyone 作主语，谓语用单数；look forward to 意为“期待”。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-105",
+  "topic": "主谓一致与特殊句式",
+  "point": "how 引导感叹句",
+  "level": "基础",
+  "prompt": "____ fast the high-speed train runs!",
+  "options": [
+   "What a",
+   "What",
+   "How a",
+   "How"
+  ],
+  "answer": 3,
+  "explanation": "How + 形容词 / 副词 + 主语 + 谓语！fast 在这里是副词。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-106",
+  "topic": "主谓一致与特殊句式",
+  "point": "what a 引导感叹句",
+  "level": "基础",
+  "prompt": "____ beautiful day it is today! Let's go for a picnic.",
+  "options": [
+   "What a",
+   "What",
+   "How",
+   "How a"
+  ],
+  "answer": 0,
+  "explanation": "What + a / an + 形容词 + 单数可数名词 + 主语 + 谓语！",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-107",
+  "topic": "主谓一致与特殊句式",
+  "point": "反意疑问句（情态动词）",
+  "level": "基础",
+  "prompt": "Your brother can swim, ____?",
+  "options": [
+   "isn't he",
+   "doesn't he",
+   "can he",
+   "can't he"
+  ],
+  "answer": 3,
+  "explanation": "前肯后否；陈述部分有 can，疑问部分用 can't。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-108",
+  "topic": "主谓一致与特殊句式",
+  "point": "反意疑问句（前否后肯）",
+  "level": "提升",
+  "prompt": "Lucy didn't go to the party, ____?",
+  "options": [
+   "did she",
+   "was she",
+   "didn't she",
+   "does she"
+  ],
+  "answer": 0,
+  "explanation": "前否后肯；陈述部分用 didn't，疑问部分用 did。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-109",
+  "topic": "主谓一致与特殊句式",
+  "point": "there be 就近原则",
+  "level": "易错",
+  "prompt": "There ____ a pen and two books on the desk.",
+  "options": [
+   "is",
+   "have",
+   "are",
+   "has"
+  ],
+  "answer": 0,
+  "explanation": "there be 句型的 be 与最近的主语 a pen 一致。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-110",
+  "topic": "主谓一致与特殊句式",
+  "point": "金钱作主语",
+  "level": "易错",
+  "prompt": "Ten yuan ____ enough for the lunch.",
+  "options": [
+   "be",
+   "is",
+   "have",
+   "are"
+  ],
+  "answer": 1,
+  "explanation": "表示时间、金钱、距离的名词作整体看待，谓语用单数。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-111",
+  "topic": "主谓一致与特殊句式",
+  "point": "So + 助动词 + 主语",
+  "level": "提升",
+  "prompt": "— I like the movie very much.\n— ____. It's really moving.",
+  "options": [
+   "So do I",
+   "So I do",
+   "Neither do I",
+   "So am I"
+  ],
+  "answer": 0,
+  "explanation": "“我也是”：So + 助动词 + 主语；前句实义动词 like 为一般现在时，用 do。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-112",
+  "topic": "主谓一致与特殊句式",
+  "point": "Neither + 情态动词 + 主语",
+  "level": "提升",
+  "prompt": "— I can't swim.\n— ____. Let's learn together this summer.",
+  "options": [
+   "Neither can I",
+   "Neither I can",
+   "So can I",
+   "So I can't"
+  ],
+  "answer": 0,
+  "explanation": "“我也不”：Neither / Nor + 情态动词 / 助动词 + 主语。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-113",
+  "topic": "主谓一致与特殊句式",
+  "point": "both...and 作主语",
+  "level": "基础",
+  "prompt": "Both Lily and Lucy ____ good at singing.",
+  "options": [
+   "is",
+   "am",
+   "be",
+   "are"
+  ],
+  "answer": 3,
+  "explanation": "both...and... 连接两个主语，谓语用复数。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-114",
+  "topic": "主谓一致与特殊句式",
+  "point": "集体名词 police",
+  "level": "易错",
+  "prompt": "The police ____ looking for the lost child now.",
+  "options": [
+   "has",
+   "are",
+   "was",
+   "is"
+  ],
+  "answer": 1,
+  "explanation": "police 作主语时谓语总是用复数。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-115",
+  "topic": "形容词与副词",
+  "point": "形容词原级比较",
+  "level": "提升",
+  "prompt": "This dictionary is as ____ as that one, but it is much cheaper.",
+  "options": [
+   "usefully",
+   "useful",
+   "most useful",
+   "more useful"
+  ],
+  "answer": 1,
+  "explanation": "as + 形容词原级 + as，表示“和……一样”；系动词 is 后用形容词。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ },
+ {
+  "id": "g20-116",
+  "topic": "宾语从句",
+  "point": "whether 与 or not 连用",
+  "level": "提升",
+  "prompt": "I haven't decided ____ to go to the art exhibition or not.",
+  "options": [
+   "if",
+   "that",
+   "whether",
+   "what"
+  ],
+  "answer": 2,
+  "explanation": "与 or not 直接连用、或后接不定式时，只能用 whether，不用 if。",
+  "source": "补充练习（按北京中考考点原创，老师审核后使用）",
+  "enabled": true
+ }
+]

@@ -1,19 +1,26 @@
 import {randomUUID} from 'node:crypto';
 import {openDatabase} from './runtime.mjs';
 import seed from '../data-content/grammar-bank.json';
+import supplement from '../data-content/grammar-supplement.json';
 import {today,offsetDate} from './course';
 import {ApiError} from './storage';
 import {grammarMastered,grammarQuestionSchema,grammarTopics,planGrammar,scheduleGrammar,type GrammarFeedback,type GrammarItem,type GrammarMistake,type GrammarProgress,type GrammarQuestion,type GrammarState,type GrammarTopic,type GrammarTopicStat} from './grammar-bank';
 const database=()=>openDatabase() as any;
 function atomic<T>(fn:(d:any)=>T):T{const d=database();d.exec('BEGIN IMMEDIATE');try{const result=fn(d);d.exec('COMMIT');return result}catch(e){d.exec('ROLLBACK');throw e}}
 
+const GRAMMAR_SEED_VERSION=2;
 // 首次使用时导入随应用打包的题库，并默认开放全部语法类别；之后老师的修改保存在数据库中。
 export function ensureGrammar(){atomic(d=>{
  d.prepare('INSERT OR IGNORE INTO grammar_settings(id) VALUES(1)').run();
- if(d.prepare('SELECT seed_version FROM grammar_settings WHERE id=1').get().seed_version>=1)return;
+ const version=d.prepare('SELECT seed_version FROM grammar_settings WHERE id=1').get().seed_version as number;
+ if(version>=GRAMMAR_SEED_VERSION)return;
+ // 版本 1：首次导入全部题目；版本 2：导入 grammar-supplement.json 的补充题，各类别可用题至少 20 道。已有题目（含老师修改）不覆盖。
  const insert=d.prepare('INSERT OR IGNORE INTO grammar_questions(id,data,topic,position,enabled,updated) VALUES(?,?,?,?,?,?)'),now=new Date().toISOString();
- for(const [i,value] of (seed as unknown[]).entries()){const q=grammarQuestionSchema.parse(value);insert.run(q.id,JSON.stringify(q),q.topic,i,q.enabled?1:0,now)}
- d.prepare('UPDATE grammar_settings SET seed_version=1,topics=? WHERE id=1').run(JSON.stringify(grammarTopics));
+ const base=version>=1?(d.prepare('SELECT COALESCE(MAX(position),-1)+1 AS n FROM grammar_questions').get().n as number):0;
+ const items=[...(version<1?seed as unknown[]:[]),...(supplement as unknown[])].map(v=>grammarQuestionSchema.parse(v));
+ for(const [i,q] of items.entries())insert.run(q.id,JSON.stringify(q),q.topic,base+i,q.enabled?1:0,now);
+ if(version<1)d.prepare('UPDATE grammar_settings SET seed_version=?,topics=? WHERE id=1').run(GRAMMAR_SEED_VERSION,JSON.stringify(grammarTopics));
+ else d.prepare('UPDATE grammar_settings SET seed_version=? WHERE id=1').run(GRAMMAR_SEED_VERSION);
 })}
 
 const settings=(d:any)=>{const s=d.prepare('SELECT daily_count,topics FROM grammar_settings WHERE id=1').get();return {dailyCount:s.daily_count as number,topics:(JSON.parse(s.topics) as GrammarTopic[]).filter(t=>grammarTopics.includes(t))}};
