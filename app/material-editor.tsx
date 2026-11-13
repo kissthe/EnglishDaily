@@ -9,6 +9,7 @@ import {toast} from 'sonner';
 import {ListeningSentences} from './listening-sentences';
 import {KnowledgeHtmlFields} from './knowledge-html-editor';
 import {Button,Choice} from './daily-app';
+import {parseMindMap,retellQuestion} from '@/lib/retell';
 import {parseQuestions,parseSolutions,questionTemplate,solutionTemplate,aiPrompt,importError} from '@/lib/material-import';
 import {cultureCategories,type Material,type Question,type RetellConfig,type RetellStage,type CultureConfig,type CultureQuestion} from '@/lib/course';
 
@@ -17,10 +18,9 @@ const structuredKinds=new Set<Material['kind']>(['阅读','听力']);
 const completionKinds=new Set<Material['kind']>(['语法','视频','知识拓展']);
 const blankQuestion=(id:string):Question=>({id,type:'choice',prompt:'',options:['',''],answer:'',explanation:'',tag:'细节理解'});
 const writingQuestion=():Question=>({id:'writing',type:'writing',prompt:'',options:[],answer:'',explanation:'',tag:'书面表达',maxScore:10});
-const blankRetell=():RetellConfig=>({stage:1,slots:'Time: \nPlace: \nActivity: ',guidedKeywords:'',referenceRetell:'',responseMode:'text',practiceMode:'learning',revisionPolicy:'missing'});
+const blankRetell=():RetellConfig=>({version:2,stage:3,slots:'# Time and place\nTime: \nPlace: \n# Activities\nActivity: \n# Requirements\nWhat to bring: ',opening:'I\'ve got some information about ',guidedKeywords:'',referenceRetell:'',responseMode:'text',practiceMode:'learning',revisionPolicy:'missing'});
 const cultureQuestion=(id:string):CultureQuestion=>({id,prompt:'',options:['',''],answer:''});
 const blankCulture=():CultureConfig=>({category:'人物故事',tagline:'',explore:'',fastFacts:'',vocabulary:'',cultureNotes:'',checkQuestions:[cultureQuestion('c1'),cultureQuestion('c2'),cultureQuestion('c3')],expressPrompt:''});
-function retellQuestion(c:RetellConfig):Question{const stage=c.stage===1?'请按要听出的信息填写关键词。可以使用缩写，不要求完整句。':c.stage===2?`请根据下面的关键词，用完整、简单、连贯的英语完成转述。\n\n${c.guidedKeywords}`:'请先整理听到的关键词，再用完整、简单、连贯的英语完成转述。';return {id:'retell',type:'writing',prompt:stage,options:[],answer:c.referenceRetell,explanation:c.stage===1?'本阶段只评价信息获取，不要求完整句。':'AI 将核对信息，并从顺序、语言和连贯性给出具体修改建议。',tag:'听力转述',maxScore:100}}
 const blank=():Material=>({id:'',title:'',subtitle:'',kind:'阅读',level:'',minutes:0,body:'',source:'',sourceUrl:'',rights:'',audio:'',reviewed:false,questions:[blankQuestion('q1'),blankQuestion('q2')],playLimit:3,allowSeek:false,allowSpeed:false,explanationVisibility:'submitted'});
 
 function legacyStandaloneBody(m:Material){
@@ -86,8 +86,21 @@ function Review({m,setM,missing}:{m:Material;setM:(m:Material)=>void;missing:num
 function RetellEditor({m,patch,upload,uploading}:{m:Material;patch:(p:Partial<Material>)=>void;upload:(f:File,video?:boolean)=>Promise<void>;uploading:boolean}){
  const cfg=m.retellConfig||blankRetell();
  function update(p:Partial<RetellConfig>){const next={...cfg,...p};patch({retellConfig:next,questions:[retellQuestion(next)],completionOnly:false,playLimit:next.stage===2?0:(m.playLimit||3),allowSeek:next.practiceMode==='learning',allowSpeed:next.practiceMode==='learning'})}
+ if(cfg.version===2)return <RetellV2Editor m={m} cfg={cfg} patch={patch} update={update} upload={upload} uploading={uploading}/>;
  const stageLabel=cfg.stage===1?'阶段一 · 听懂并记要点':cfg.stage===2?'阶段二 · 看要点组织表达':'阶段三 · 听后独立转述';
  return <><section className="review-checklist"><h3>听懂 → 记要点 → 组织表达 → 根据反馈再练</h3><p>当前使用文字练习内容组织，不评测发音。三个阶段是训练重点，不要求一次全部完成。</p></section><label>练习方式<Choice label="练习方式" value={cfg.practiceMode==='learning'?'学习练习':'限次练习'} items={['学习练习','限次练习']} onChange={v=>update({practiceMode:v==='学习练习'?'learning':'simulation'})}/></label><p className="helper">学习练习可重听、调整速度和进度；限次练习遵守下面设置的次数，不等同于完整口语考试。</p><label>订正规则<Choice label="订正规则" value={cfg.revisionPolicy==='teacher'?'由老师决定':'遗漏或错误信息需要订正'} items={['遗漏或错误信息需要订正','由老师决定']} onChange={v=>update({revisionPolicy:v==='由老师决定'?'teacher':'missing'})}/></label><label>训练阶段<Choice label="转述训练阶段" value={stageLabel} items={['阶段一 · 听懂并记要点','阶段二 · 看要点组织表达','阶段三 · 听后独立转述']} onChange={v=>update({stage:(v.startsWith('阶段一')?1:v.startsWith('阶段二')?2:3) as RetellStage})}/></label><p className="helper">{cfg.stage===1?'学生听音频后填写捕捉到的关键词，AI 重点评价信息获取。':cfg.stage===2?'学生直接根据老师提供的关键词完成文本转述，不播放音频。':'学生先听音记要点，再独立组织转述；分别保留笔记和正式答案。'}</p>{cfg.stage!==2&&<><label>上传音频（20MB 以内）<input type="file" accept="audio/*" disabled={uploading} onChange={e=>{if(e.target.files?.[0])upload(e.target.files[0])}}/></label>{m.audio&&<audio controls src={m.audio}/>}<label>限次练习允许听几遍（学习练习不限）<input type="number" min={1} max={20} value={m.playLimit||3} onChange={e=>patch({playLimit:Number(e.target.value)})}/></label></>}<label>听力原文<textarea required rows={8} maxLength={120000} value={m.body} onChange={e=>patch({body:e.target.value})}/></label><label>要听出的信息与标准答案<textarea required rows={7} maxLength={10000} value={cfg.slots} onChange={e=>update({slots:e.target.value})} placeholder={'Time: 8:00 | eight o’clock\nPlace: Science Museum\nActivity: visit an exhibition'}/></label><p className="helper">每行一个信息槽；可用“|”填写可接受的同义表达。内容只发送给 AI 评测，不会在提交前展示标准答案。</p>{cfg.stage===2&&<label>提供给学生的关键词<textarea required rows={6} maxLength={10000} value={cfg.guidedKeywords} onChange={e=>update({guidedKeywords:e.target.value})} placeholder={'8:00 / hotel / breakfast\n8:30 / Science Museum'}/></label>}<label>参考转述<textarea required rows={8} maxLength={20000} value={cfg.referenceRetell} onChange={e=>update({referenceRetell:e.target.value})}/></label><p className="helper">阶段一只评价信息获取；阶段二、三评价内容和表达。订正后会再次评测，保留首次成绩。</p></>;
+}
+
+function RetellV2Editor({m,cfg,patch,update,upload,uploading}:{m:Material;cfg:RetellConfig;patch:(p:Partial<Material>)=>void;update:(p:Partial<RetellConfig>)=>void;upload:(f:File,video?:boolean)=>Promise<void>;uploading:boolean}){
+ const groups=parseMindMap(cfg.slots),points=groups.reduce((n,g)=>n+g.items.length,0);
+ return <><section className="review-checklist"><h3>北京中考 · 听后转述（思维导图 + 给定开头）</h3><p>训练方式在<b>布置作业时</b>选择：</p><p>① 转述训练：听音记导图要点 → AI 核对并给出标准要点 → 用开头句组织转述 → AI 点评。</p><p>② 全真模拟：看导图 1 分钟 → 原文连放 3 遍 → 限时整理并作答 → AI 按 10 分制评分。</p></section>
+ <label>上传音频（20MB 以内）<input type="file" accept="audio/*" disabled={uploading} onChange={e=>{if(e.target.files?.[0])upload(e.target.files[0])}}/></label>{m.audio&&<audio controls src={m.audio}/>}
+ <label>听力原文（约 150 词的独白）<textarea required rows={8} maxLength={120000} value={m.body} onChange={e=>patch({body:e.target.value})}/></label>
+ <label>思维导图与标准要点<textarea required rows={10} maxLength={10000} value={cfg.slots} onChange={e=>update({slots:e.target.value})} placeholder={'# Time and place\nTime: next Monday, 6:30 p.m. | half past six\nPlace: the school main hall\n# Activities\nActivities: sing songs, play games'}/></label>
+ <p className="helper">以 # 开头的行是一级提纲；其余每行“要点名称: 标准信息”，可用“|”写可接受的其他说法。学生作答前只看到提纲和要点名称。当前 {groups.filter(g=>g.title).length} 个一级提纲、{points} 个要点。</p>
+ <label>给定开头句<input required maxLength={500} value={cfg.opening||''} onChange={e=>update({opening:e.target.value})} placeholder="I've got some information about the welcoming party."/></label>
+ <label>参考转述<textarea required rows={8} maxLength={20000} value={cfg.referenceRetell} onChange={e=>update({referenceRetell:e.target.value})}/></label>
+ <label>订正规则<Choice label="订正规则" value={cfg.revisionPolicy==='teacher'?'由老师决定':'遗漏或错误信息需要订正'} items={['遗漏或错误信息需要订正','由老师决定']} onChange={v=>update({revisionPolicy:v==='由老师决定'?'teacher':'missing'})}/></label></>;
 }
 
 function CultureEditor({m,patch,setM,uploading,onUploading}:{m:Material;patch:(p:Partial<Material>)=>void;setM:(m:Material)=>void;uploading:boolean;onUploading:(v:boolean)=>void}){

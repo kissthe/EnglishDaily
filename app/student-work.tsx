@@ -4,7 +4,7 @@ import {VocabularyReminder} from './vocabulary-reminder';
 import {GrammarReminder} from './grammar-ui';
 import {MessageBoard} from './message-board';
 import {DailyPickCard} from './daily-pick';
-import {retellTitles} from '@/lib/retell';
+import {retellTaskLabel} from '@/lib/retell';
 import {Tabs,TabsList,TabsTrigger,TabsContent} from '@/components/ui/tabs';
 import {today,offsetDate,taskStatus,type CourseData,type Task} from '@/lib/course';
 export function StudentWork({data}:{data:CourseData}){
@@ -14,7 +14,7 @@ export function StudentWork({data}:{data:CourseData}){
  const overdue=data.tasks.filter(t=>t.date<today()&&(!sub(t)||sub(t)?.state==='draft'));
  const corrections=data.tasks.filter(t=>taskStatus(sub(t))==='待订正');
  const unread=data.tasks.filter(t=>sub(t)?.unreadFeedback);
- function row(t:Task){const s=sub(t),status=taskStatus(s);return <a className="student-task" href={'/practice/'+encodeURIComponent(t.id)} key={t.id}><div><span className="helper">{t.material.retellConfig?'听力 · '+retellTitles[t.material.retellConfig.stage]:t.material.kind} · {t.date}</span><h2>{t.material.title}</h2><span className={'task-status status-'+status}>{status}{s?.unreadFeedback?' · 新反馈':''}</span></div><span className="student-task-action">{s?.unreadFeedback?'查看反馈':status==='待订正'?'开始订正':status==='进行中'?'继续作答':status==='待完成'?'开始练习':'查看作业'} →</span></a>}
+ function row(t:Task){const s=sub(t),status=taskStatus(s);return <a className="student-task" href={'/practice/'+encodeURIComponent(t.id)} key={t.id}><div><span className="helper">{t.material.retellConfig?'听力 · '+retellTaskLabel(t.material.retellConfig):t.material.kind} · {t.date}</span><h2>{t.material.title}</h2><span className={'task-status status-'+status}>{status}{s?.unreadFeedback?' · 新反馈':''}</span></div><span className="student-task-action">{s?.unreadFeedback?'查看反馈':status==='待订正'?'开始订正':status==='进行中'?'继续作答':status==='待完成'?'开始练习':'查看作业'} →</span></a>}
  const completed=todayTasks.filter(t=>sub(t)&&sub(t)?.state!=='draft').length;
  return <><div className="page-heading student-heading"><div><h1>我的作业</h1><p>今天已提交 {completed}/{todayTasks.length} 项</p></div></div>
  <DailyPickCard/><div className="home-reminders"><VocabularyReminder/><GrammarReminder/></div>{unread.length>0&&<section className="student-notice"><b>你有 {unread.length} 份新反馈</b><div>{unread.map(t=><a href={'/practice/'+encodeURIComponent(t.id)} key={t.id}>{t.material.title} →</a>)}</div></section>}
