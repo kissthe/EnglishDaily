@@ -6,6 +6,7 @@ import {z} from 'zod';
 import {db,context,identity,ApiError,failure,sameOrigin} from '@/lib/server';
 import {today,objectiveScore,normalizeMaterial,correct,cultureCategories,studentKnowledge,type Material,type Settings} from '@/lib/course';
 import {INTERACTIVE_HTML_LIMIT,assetNamePattern} from '@/lib/interactive-html';
+import {aiErrorText} from '@/lib/ai-client';
 import {assessNotes,assessRetell,assessmentFeedback,retellScenario} from '@/lib/retell-ai';
 export const dynamic='force-dynamic';
 const question=questionSchema.extend({prompt:z.string().max(2000),options:z.array(z.string().max(500)).max(8)});
@@ -41,7 +42,7 @@ async function state(c:any){
  const ts=await db().prepare(c.role==='teacher'?'SELECT * FROM tasks ORDER BY date DESC,created ASC':'SELECT * FROM tasks WHERE date <= ? ORDER BY date DESC,created ASC');
  const tasks=(await (c.role==='teacher'?ts:ts.bind(today())).all()).results.map((r:any)=>({...r,material:normalizeMaterial(JSON.parse(r.material))}));
  const submissions=(await (c.role==='teacher'?db().prepare('SELECT * FROM submissions ORDER BY updated DESC'):db().prepare('SELECT * FROM submissions WHERE student = ? ORDER BY updated DESC').bind(c.id)).all()).results.map(decoded);
- for(const s of submissions){const rows=(await db().prepare('SELECT question,state,data FROM assessments WHERE submission=?').bind(s.id).all()).results;for(const row of rows){const field=({'retell':['aiAssessment','assessmentState'],'retell-revision':['revisionAssessment','revisionAssessmentState'],'retell-notes':['notesAssessment','notesAssessmentState']} as Record<string,string[]>)[row.question];if(!field)continue;s[field[1]]=row.state;if(row.state==='complete')s[field[0]]=JSON.parse(row.data);}}
+ for(const s of submissions){const rows=(await db().prepare('SELECT question,state,data FROM assessments WHERE submission=?').bind(s.id).all()).results;for(const row of rows){const field=({'retell':['aiAssessment','assessmentState'],'retell-revision':['revisionAssessment','revisionAssessmentState'],'retell-notes':['notesAssessment','notesAssessmentState']} as Record<string,string[]>)[row.question];if(!field)continue;s[field[1]]=row.state;if(row.state==='complete')s[field[0]]=JSON.parse(row.data);else if(row.state==='failed'&&c.role==='teacher'){try{s[field[0]+'Error']=JSON.parse(row.data).error||''}catch{/* 旧记录没有原因 */}}}}
  const tagStats:Record<string,{total:number;wrong:number}>={};
  for(const s of submissions){const m=tasks.find((t:any)=>t.id===s.task)?.material;if(!m||s.state==='draft')continue;const released=c.role==='teacher'||m.explanationVisibility!=='reviewed'||s.state==='reviewed';s.unreadFeedback=!!s.feedback_updated&&s.feedback_updated!==s.feedback_read;s.workflow=m.completionOnly?'已完成':s.state!=='reviewed'||s.correction_status==='pending'?'待批改':m.questions.some((q:any)=>q.type==='writing'?s.correction_status==='required':!correct(q,s.corrections[q.id]??s.answers[q.id]))?'待订正':'已完成';if(released)for(const q of m.questions){if(q.type==='writing')continue;tagStats[q.tag]??={total:0,wrong:0};tagStats[q.tag].total++;if(!correct(q,s.answers[q.id]))tagStats[q.tag].wrong++;}}
  if(c.role==='student')for(const t of tasks){const s=submissions.find((s:any)=>s.task===t.id&&s.state!=='draft');if(!s||(t.material.explanationVisibility==='reviewed'&&s.state!=='reviewed')){t.material.subtitles='';t.material.questions=t.material.questions.map(({answer,explanation,...q}:any)=>q);if(t.material.kind==='听力')t.material.body='';if(t.material.retellConfig){const cfg=t.material.retellConfig,draft=submissions.find((s:any)=>s.task===t.id);const checked=cfg.mode==='guided'&&draft?.answers.notesChecked==='1';t.material.retellConfig={...cfg,slots:checked?cfg.slots:cfg.version===2?publicSlots(cfg.slots):slotLabels(cfg.slots).join('\n'),referenceRetell:'',guidedKeywords:cfg.stage===2&&!cfg.mode?cfg.guidedKeywords:''}}}}
@@ -59,8 +60,9 @@ async function evaluateRetell(settings:Settings,m:Material,answers:Record<string
   const status=m.retellConfig?.revisionPolicy==='teacher'?'pending':needsRevision?'required':'reviewed',feedback=(revision?'订正反馈（首次成绩保留）\n':'')+assessmentFeedback(result,m.retellConfig?.stage),version=now+'-'+crypto.randomUUID();
   const update=revision?db().prepare("UPDATE submissions SET state='reviewed',feedback=?,feedback_updated=?,correction_status=?,updated=? WHERE id=?").bind(feedback,version,status,now,id):db().prepare("UPDATE submissions SET state='reviewed',score=?,total=100,feedback=?,grades=?,feedback_updated=?,correction_status=?,updated=? WHERE id=?").bind(result.score,feedback,JSON.stringify({retell:result.score}),version,status,now,id);
   await db().batch([db().prepare("UPDATE assessments SET state='complete',data=?,updated=? WHERE submission=? AND question=?").bind(JSON.stringify(result),Date.now(),id,question),update]);
- }catch{
-  await db().prepare("UPDATE assessments SET state='failed',data='{}',updated=? WHERE submission=? AND question=?").bind(Date.now(),id,question).run();
+ }catch(e){
+  console.error('AI retell assessment failed',aiErrorText(e));
+  await db().prepare("UPDATE assessments SET state='failed',data=?,updated=? WHERE submission=? AND question=?").bind(JSON.stringify({error:aiErrorText(e)}),Date.now(),id,question).run();
  }
 }
 export async function GET(){try{const c=await context();if(c.role==='teacher')await importRetellBank(c.settings);return Response.json(await state(c),{headers:{'Cache-Control':'no-store'}})}catch(e){return failure(e)}}
@@ -96,7 +98,7 @@ else if(p.op==='checkNotes'){
  await db().prepare("INSERT INTO submissions (id,task,student,answers,state,score,total,feedback,grades,corrections,submitted,updated) VALUES (?,?,?,?,'draft',0,0,'','{}','{}',NULL,?) ON CONFLICT(task,student) DO UPDATE SET answers=excluded.answers,updated=excluded.updated WHERE submissions.state='draft'").bind(id,r.id,c.id,JSON.stringify(answers),now).run();
  await db().prepare("INSERT INTO assessments(id,submission,question,state,data,attempts,updated) VALUES(?,?,'retell-notes','running','{}',1,?) ON CONFLICT(submission,question) DO UPDATE SET state='running',attempts=attempts+1,updated=excluded.updated").bind(crypto.randomUUID(),id,Date.now()).run();
  let stateValue='paused',data='{}';
- if(resolveAiConfig(c.settings.aiConfig).scenarios.retell1.enabled){try{data=JSON.stringify(await assessNotes(c.settings,m,JSON.stringify(readNotes(answers.retellNotes).map((n,i)=>({item:slotLabels(m.retellConfig!.slots)[i],...n})))));stateValue='complete'}catch{stateValue='failed'}}
+ if(resolveAiConfig(c.settings.aiConfig).scenarios.retell1.enabled){try{data=JSON.stringify(await assessNotes(c.settings,m,JSON.stringify(readNotes(answers.retellNotes).map((n,i)=>({item:slotLabels(m.retellConfig!.slots)[i],...n})))));stateValue='complete'}catch(e){stateValue='failed';data=JSON.stringify({error:aiErrorText(e)});console.error('AI notes check failed',aiErrorText(e))}}
  await db().prepare('UPDATE assessments SET state=?,data=?,updated=? WHERE submission=? AND question=?').bind(stateValue,data,Date.now(),id,'retell-notes').run();
 }
 else if(['draft','submit','correct'].includes(p.op)){if(c.role!=='student')throw new ApiError('老师预览不会写入学生成绩。',403);const r=await db().prepare('SELECT * FROM tasks WHERE id = ? AND date <= ?').bind(String(p.task),today()).first();if(!r)throw new ApiError('作业尚未开放或不存在',404);const m=JSON.parse(r.material) as Material;const a=answersSchema.parse(p.answers);

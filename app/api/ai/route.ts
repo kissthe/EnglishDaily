@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {context,db,ApiError,failure,sameOrigin} from '@/lib/server';
-import {aiJson} from '@/lib/ai-client';
+import {aiJson,aiErrorText} from '@/lib/ai-client';
 import {aiScenarios,type AiScenario} from '@/lib/ai-config';
 import {parseQuestions} from '@/lib/material-import';
 import type {Material} from '@/lib/course';
@@ -27,4 +27,4 @@ export async function POST(req:Request){try{
  const result=z.object({feedback:z.string().min(1).max(5000),grades:z.record(z.number().int().min(0).max(100)),requestRevision:z.boolean()}).parse(await aiJson(c.settings,'writing',{title:material.title,questions,answers:{...JSON.parse(row.answers),...JSON.parse(row.corrections)}},'返回 {"feedback":"给学生的具体中文反馈","grades":{"题号":本题建议整数分},"requestRevision":true或false}。每题分数必须在0与该题maxScore之间（未设置时满分1）。'));
  if(questions.some(q=>result.grades[q.id]===undefined||result.grades[q.id]>(q.maxScore||1)))throw new ApiError('AI 建议分数超出题目范围，请重试');
  return Response.json(result);
-}catch(e){if(e instanceof z.ZodError)return Response.json({error:'AI 输入或结果格式不正确，请检查后重试'},{status:400});if(e instanceof ApiError)return failure(e);return Response.json({error:e instanceof Error?e.message:'AI 服务暂时不可用'},{status:502})}}
+}catch(e){if(e instanceof z.ZodError)return Response.json({error:'AI 输入或结果格式不正确，请检查后重试'},{status:400});if(e instanceof ApiError)return failure(e);console.error('AI request failed',aiErrorText(e));return Response.json({error:aiErrorText(e)},{status:502})}}

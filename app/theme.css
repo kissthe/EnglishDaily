@@ -160,3 +160,5 @@ input,textarea,select,.field-select{background:#fff!important;color:var(--ink)!i
 @media print{.topbar,.app-sidebar,.tips-tabs,.page-heading .btn,footer,[data-sonner-toaster]{display:none!important}.tips-block{break-inside:avoid;box-shadow:none}.tips-steps li{background:none;border:1px solid #ccc}}
 
 .tips-content .tips-block{display:block!important}.tips-content .tips-block>h3{grid-column:auto}
+
+.ai-failure{background:#fff4ec;border:1px solid #f3c79b;border-radius:12px;padding:12px 14px;margin:0 0 14px;font-size:14px;line-height:1.7;overflow-wrap:anywhere}.dark .ai-failure{background:#2c2216;border-color:#6b4a26}

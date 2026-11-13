@@ -4,16 +4,23 @@ import {z} from 'zod';
 import type {AiAssessment,Material,RetellConfig,Settings} from './course';
 import {notesText,parseMindMap,readNotes,slotLabels} from './retell';
 
+// 模型输出常有小偏差（字段略长、数字写成字符串、状态写成中文）：截断、换算后接受，而不是让整次评测失败。
+const str=(max:number,fallback='')=>z.preprocess(v=>v==null?fallback:typeof v==='string'?v:String(v),z.string()).transform(s=>s.trim().slice(0,max));
+const list=<T extends z.ZodTypeAny>(item:T,max:number)=>z.preprocess(v=>Array.isArray(v)?v:v==null?[]:[v],z.array(item)).transform(a=>a.slice(0,max));
+const num=(min:number,max:number,int=false)=>z.preprocess(v=>typeof v==='string'?Number(v.replace(/[^\d.\-]/g,'')):v,z.number().finite()).transform(n=>{const c=Math.min(max,Math.max(min,n));return int?Math.round(c):Math.round(c*2)/2});
+const bool=z.preprocess(v=>typeof v==='string'?/^(true|yes|ok|是|对|√|✓)/i.test(v.trim()):!!v,z.boolean());
+const status=z.preprocess(v=>{const t=String(v??'').toLowerCase();return /correct|right|ok|正确|已表达|准确/.test(t)?'correct':/miss|遗漏|缺|没有|未/.test(t)?'missing':'incorrect'},z.enum(['correct','missing','incorrect']));
+const dim=num(0,100,true).catch(0);
 const assessment=z.object({
- points:z.array(z.object({label:z.string().max(200),status:z.enum(['correct','missing','incorrect']),studentEvidence:z.string().max(1000),sourceEvidence:z.string().max(1000),advice:z.string().max(300)})).max(100).optional(),
- checks:z.array(z.object({item:z.string().max(60),ok:z.boolean(),note:z.string().max(300)})).max(8).optional(),
- exam:z.object({content:z.number().min(0).max(6),language:z.number().min(0).max(4)}).optional(),
- score:z.number().int().min(0).max(100),
- summary:z.string().min(1).max(1200),
- strengths:z.array(z.string().min(1).max(300)).max(6),
- improvements:z.array(z.string().min(1).max(300)).max(6),
- missingPoints:z.array(z.string().min(1).max(300)).max(12),
- dimensions:z.object({information:z.number().int().min(0).max(100),organization:z.number().int().min(0).max(100),language:z.number().int().min(0).max(100),coherence:z.number().int().min(0).max(100)})
+ points:list(z.object({label:str(200),status,studentEvidence:str(1000),sourceEvidence:str(1000),advice:str(300)}),100).optional(),
+ checks:list(z.object({item:str(60),ok:bool,note:str(300)}),8).optional(),
+ exam:z.object({content:num(0,6),language:num(0,4)}).optional(),
+ score:num(0,100,true).catch(0),
+ summary:str(1200,'已完成评测。').transform(s=>s||'已完成评测。'),
+ strengths:list(str(300),6).transform(a=>a.filter(Boolean)),
+ improvements:list(str(300),6).transform(a=>a.filter(Boolean)),
+ missingPoints:list(str(300),12).transform(a=>a.filter(Boolean)),
+ dimensions:z.object({information:dim,organization:dim,language:dim,coherence:dim}).catch({information:0,organization:0,language:0,coherence:0})
 });
 
 export const retellCheckItems=['使用给定开头','人称转换','时态一致','完整句表达','连接与顺序'];
