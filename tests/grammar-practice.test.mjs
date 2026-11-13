@@ -22,6 +22,12 @@ test('grammar daily practice: bank import, daily plan, instant feedback and spac
  const seed=JSON.parse(await readFile('data-content/grammar-bank.json','utf8'));
  for(const [file,n] of [['北京中考核心语法选择题100题.md',100],['北京中考语法选择题60题.md',60]]){const {questions,errors}=parseGrammarMarkdown(await readFile('data-content/grammar/'+file,'utf8'));assert.deepEqual(errors,[]);assert.equal(questions.length,n)}
  assert.equal(seed.length,160);assert.equal(new Set(seed.map(q=>q.id)).size,160);
+ // 补充题：116 道，与原题库不重复；每个类别可用题至少 20 道。
+ const supplement=JSON.parse(await readFile('data-content/grammar-supplement.json','utf8'));
+ assert.equal(supplement.length,116);assert.equal(new Set([...seed,...supplement].map(q=>q.id)).size,276);assert.equal(new Set([...seed,...supplement].map(q=>q.prompt)).size,276);
+ assert.ok(supplement.every(q=>q.options.length===4&&new Set(q.options).size===4&&q.answer>=0&&q.answer<4&&q.explanation&&q.point&&grammarTopics.includes(q.topic)&&q.enabled));
+ const bankAll=[...seed,...supplement];
+ for(const topic of grammarTopics)assert.ok([...seed,...supplement].filter(q=>q.enabled&&q.topic===topic).length>=20,topic);
  assert.ok(seed.every(q=>q.options.length===4&&q.answer>=0&&q.answer<4&&q.explanation&&grammarTopics.includes(q.topic)));
  assert.deepEqual(seed.filter(q=>!q.enabled).map(q=>q.id),['g100-042','g100-095']);
  assert.equal(seed.find(q=>q.id==='g60-054').topic,'定语从句');assert.equal(seed.find(q=>q.id==='g60-051').topic,'宾语从句');
@@ -51,21 +57,21 @@ test('grammar daily practice: bank import, daily plan, instant feedback and spac
  // 接口：学生开始今日练习，作答前看不到答案，作答后立即得到对错与解析。
  identify();await post('auth',{op:'login',username:'teacher',password:'teacher-long-password'});const teacher=globalThis.__headers.get('cookie');
  await post('auth',{op:'saveStudent',username:'student',password:'student-long-password',teacherPassword:'teacher-long-password'});
- let t=await get();assert.equal(t.role,'teacher');assert.equal(t.questions.length,160);assert.equal(t.available,158);assert.equal(t.dailyCount,10);
+ let t=await get();assert.equal(t.role,'teacher');assert.equal(t.questions.length,276);assert.equal(t.available,274);assert.equal(t.dailyCount,10);
  await post('grammar',{op:'start'},403);
  identify();await post('auth',{op:'login',username:'student',password:'student-long-password'});
- assert.deepEqual(await get('?summary=1'),{day:t.day,dailyCount:10,started:false,total:0,done:0,correct:0,due:0,available:158});
+ assert.deepEqual(await get('?summary=1'),{day:t.day,dailyCount:10,started:false,total:0,done:0,correct:0,due:0,available:274});
  await post('grammar',{op:'settings',dailyCount:5,topics:['动词时态']},403);
  let st=await post('grammar',{op:'start'});
  assert.equal(st.items.length,10);assert.ok(st.items.every(i=>!i.result&&i.answer===undefined&&i.explanation===undefined&&i.topic===undefined&&i.options.length===4));
  assert.equal((await post('grammar',{op:'start'})).items.length,10);
  await post('grammar',{op:'more'},409);
- const first=st.items[0],q1=seed.find(q=>q.prompt===first.prompt);
+ const first=st.items[0],q1=bankAll.find(q=>q.prompt===first.prompt);
  const wrongChoice=(q1.answer+1)%4;
  let fb=(await post('grammar',{op:'answer',id:first.id,choice:wrongChoice})).feedback;
  assert.equal(fb.correct,false);assert.equal(fb.answer,q1.answer);assert.equal(fb.explanation,q1.explanation);assert.equal(fb.topic,q1.topic);assert.ok(fb.nextDue>t.day);
  assert.deepEqual((await post('grammar',{op:'answer',id:first.id,choice:q1.answer})).feedback,fb);
- for(const item of st.items.slice(1)){const q=seed.find(x=>x.prompt===item.prompt);fb=(await post('grammar',{op:'answer',id:item.id,choice:q.answer,unsure:item===st.items[1]})).feedback;assert.equal(fb.correct,true)}
+ for(const item of st.items.slice(1)){const q=bankAll.find(x=>x.prompt===item.prompt);fb=(await post('grammar',{op:'answer',id:item.id,choice:q.answer,unsure:item===st.items[1]})).feedback;assert.equal(fb.correct,true)}
  st=await get();assert.equal(st.done,10);assert.equal(st.correct,9);assert.equal(st.streakDays,1);
  assert.deepEqual(st.mistakes.map(m=>m.prompt).sort(),[first.prompt,st.items[1].prompt].sort());
  const topicStat=st.stats.find(x=>x.topic===q1.topic);assert.ok(topicStat.total>=1&&topicStat.pending>=1);
@@ -86,7 +92,7 @@ test('grammar daily practice: bank import, daily plan, instant feedback and spac
  t=await post('grammar',{op:'settings',dailyCount:6,topics:['被动语态']});assert.equal(t.dailyCount,6);assert.deepEqual(t.topics,['被动语态']);
  await post('grammar',{op:'settings',dailyCount:6,topics:[]},400);
  const day3=new Date(new Date(day2+'T12:00:00Z').getTime()+86400000).toISOString().slice(0,10);
- const passive=seed.filter(q=>q.topic==='被动语态');
+ const passive=bankAll.filter(q=>q.topic==='被动语态');
  const paused={...passive[0],enabled:false};await post('grammar',{op:'save',question:paused});
  const day3State=startGrammar(sid,false,day3);
  assert.ok(day3State.items.filter(i=>i.kind!=='review').every(i=>passive.some(q=>q.prompt===i.prompt)));assert.ok(!day3State.items.some(i=>i.prompt===passive[0].prompt));
@@ -95,7 +101,7 @@ test('grammar daily practice: bank import, daily plan, instant feedback and spac
  const md='## 被动语态\n\n### 第 1 题｜基础\n\nThe song ______ by many people.\n\nA. loves\nB. is loved\nC. loved\nD. loving\n\n**答案：B**\n\n**考点：** 一般现在时被动语态\n\n**解析：** 歌曲被人喜爱。';
  const preview=await post('grammar',{op:'import',markdown:md});assert.equal(preview.questions.length,1);assert.equal(preview.questions[0].answer,1);
  assert.equal((await post('grammar',{op:'import',markdown:md,preview:false})).added,1);
- t=await get();assert.equal(t.questions.length,161);assert.match(t.questions.at(-1).id,/^t[a-z0-9]+-1$/);assert.match(t.questions.at(-1).source,/^老师导入/);
+ t=await get();assert.equal(t.questions.length,277);assert.match(t.questions.at(-1).id,/^t[a-z0-9]+-1$/);assert.match(t.questions.at(-1).source,/^老师导入/);
  assert.equal((await post('grammar',{op:'import',markdown:'## 动词时态\n\n**1. Broken**',preview:false})).errors.length,1);
  assert.equal(t.recent.length,7);assert.ok(t.recent.at(-1).total===0||t.recent.some(x=>x.total>0));
 });
