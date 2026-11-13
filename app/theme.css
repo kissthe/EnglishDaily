@@ -128,3 +128,35 @@ input,textarea,select,.field-select{background:#fff!important;color:var(--ink)!i
 @media(max-width:1000px){.home-data{grid-template-columns:1fr}.overview-charts{grid-template-columns:1fr}}
 @media(max-width:700px){.overview-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-tile strong{font-size:22px}.checkin-review-layout{grid-template-columns:1fr}.checkin-comment-form{flex-direction:column}}
 .dark .checkin-card.done{border-color:#2b5c46}.dark .checkin-flame{background:#3a2616;color:#fdba74}.dark .overview-tile.warn{background:#2c2216;border-color:#6b4a26}.dark .activity-cell.on,.dark .cal-day.done,.dark .score-fill{background:#8b80f0}.dark .cal-day.today{outline-color:#8b80f0}.dark .score-bar:hover .score-fill{background:#a79ff5}
+
+/* Retell: reference pane (mind map + audio) beside the work pane. */
+.retell-practice.has-split{max-width:1380px}
+.retell-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+.retell-ref-slot{position:sticky;top:16px;align-self:start;min-width:0}.retell-ref{max-height:calc(100dvh - 130px);overflow:auto;display:flex;flex-direction:column;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:16px;overscroll-behavior:contain}
+.retell-ref .lesson-audio-bar{margin:0}.retell-ref .retell-opening{margin:0}.retell-ref .tips-button{align-self:flex-start}
+.retell-ref-image{margin:0}.retell-ref-image button{display:block;width:100%;border:0;padding:0;background:none;position:relative;cursor:zoom-in}.retell-ref-image img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--border);background:#fff}
+.retell-ref-zoom{position:absolute;right:8px;bottom:8px;display:inline-flex;align-items:center;gap:4px;background:#1c2435cc;color:#fff;font-size:12px;padding:4px 8px;border-radius:999px}
+.retell-ref-outline{border:1px dashed var(--border);border-radius:12px;padding:12px 14px;font-size:14px}.retell-ref-outline ul{margin:4px 0 8px;padding-left:20px}.retell-ref-branch{margin:6px 0 0;font-weight:650;color:var(--primary)}
+.retell-work>section:first-child,.retell-work>ol:first-child{margin-top:0}
+.retell-ref-bar{display:none}.retell-ref-fab{display:none}
+.retell-lightbox{position:fixed;inset:0;z-index:200;background:#0b0f18e6;display:flex;flex-direction:column}.retell-lightbox-tools{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:12px;color:#fff}.retell-lightbox-tools button{border:0;background:#ffffff26;color:#fff;width:40px;height:40px;border-radius:50%;display:grid;place-items:center}.retell-lightbox-tools span{min-width:48px;text-align:center;font-variant-numeric:tabular-nums}
+.retell-lightbox-scroll{flex:1;overflow:auto;padding:0 12px 24px;display:flex;align-items:flex-start;justify-content:center}.retell-lightbox-scroll img{max-width:none;height:auto;background:#fff;border-radius:8px}
+@media(max-width:900px){
+ .retell-split{grid-template-columns:1fr;gap:16px}.retell-ref-slot{position:static}.retell-ref{max-height:none;overflow:visible}
+ .retell-ref.pinned{position:fixed;top:0;left:0;right:0;z-index:45;max-height:46dvh;overflow:auto;border-radius:0 0 16px 16px;border-width:0 0 1px;box-shadow:0 10px 30px #1c243533;padding:8px 12px 12px;gap:8px}
+ .retell-ref.pinned .retell-ref-image img{max-height:28dvh;object-fit:contain}.retell-ref.pinned .tips-button{display:none}
+ .retell-ref.pinned .retell-ref-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:-8px;background:var(--surface);padding:6px 0;z-index:1;font-size:14px;font-variant-numeric:tabular-nums}.retell-ref-bar .btn{min-height:34px!important;padding:4px 12px!important}
+ .retell-ref-fab{display:inline-flex;align-items:center;gap:6px;position:fixed;right:14px;bottom:120px;z-index:30;border:0;border-radius:999px;padding:12px 16px;background:#5346eb;color:#fff;font-weight:650;box-shadow:0 8px 24px #5346eb55}
+}
+.dark .retell-ref-fab{background:#8b80f0;color:#141024}
+/* Tips page and dialog */
+.tips-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 20px}.tips-tabs button{border:1px solid var(--border);background:var(--surface);color:var(--muted-foreground);border-radius:999px;padding:8px 16px;font-size:14px}.tips-tabs button.active{background:var(--primary);border-color:var(--primary);color:var(--primary-foreground)}
+.tips-head h2{font-size:24px;margin:0 0 4px}.tips-head p{color:var(--muted-foreground);margin:0 0 18px}
+.tips-content{display:grid;gap:16px}.tips-block{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 20px;min-width:0}.tips-block h3{font-size:16px;margin:0 0 12px;color:var(--ink)}
+.tips-steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}.tips-steps li{counter-increment:s;position:relative;padding:12px 12px 12px 46px;border-radius:12px;background:var(--muted)}.tips-steps li:before{content:counter(s);position:absolute;left:12px;top:12px;width:24px;height:24px;border-radius:50%;background:var(--primary);color:var(--primary-foreground);display:grid;place-items:center;font-size:13px;font-weight:700}.tips-steps b{display:block;margin-bottom:2px}.tips-steps p{margin:0;font-size:14px;line-height:1.7;color:var(--muted-foreground)}
+.tips-list{margin:0;padding-left:20px;display:grid;gap:6px;line-height:1.7}
+.tips-table-wrap{overflow-x:auto}.tips-block table{width:100%;border-collapse:collapse;font-size:14px;min-width:420px}.tips-block th{text-align:left;font-size:13px;color:var(--muted-foreground);font-weight:600;border-bottom:2px solid var(--border);padding:8px 10px}.tips-block td{border-bottom:1px solid var(--border);padding:8px 10px;vertical-align:top;line-height:1.6}.tips-block td[lang=en]{font-family:Georgia,"Times New Roman",serif}
+.tips-dialog{max-height:90dvh;overflow:auto}.tips-button{min-height:38px!important;padding:6px 14px!important;font-size:14px}
+@media print{.topbar,.app-sidebar,.tips-tabs,.page-heading .btn,footer,[data-sonner-toaster]{display:none!important}.tips-block{break-inside:avoid;box-shadow:none}.tips-steps li{background:none;border:1px solid #ccc}}
+
+.tips-content .tips-block{display:block!important}.tips-content .tips-block>h3{grid-column:auto}
