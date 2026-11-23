@@ -6,14 +6,17 @@ export const dynamic='force-dynamic';
 const selection=z.object({task:z.string().min(1).max(100),section:z.string().max(100),start:z.number().int().min(0).max(120000),end:z.number().int().min(1).max(120000),text:z.string().trim().min(1).max(3000)});
 export async function POST(req:Request){try{
  sameOrigin(req);const c=await context();
- if(c.role!=='student')throw new ApiError('请在学生已提交的阅读作业中使用翻译',403);
+ if(c.role!=='student')throw new ApiError('请在学生账号中使用翻译',403);
  const p=selection.parse(await req.json());
- const row=await db().prepare('SELECT t.material,s.state FROM tasks t JOIN submissions s ON s.task=t.id AND s.student=? WHERE t.id=? AND t.date<=?').bind(c.id,p.task,today()).first();
- if(!row||row.state==='draft')throw new ApiError('提交阅读作业后才能使用 AI 翻译',403);
+ const row=await db().prepare('SELECT t.material,s.state FROM tasks t LEFT JOIN submissions s ON s.task=t.id AND s.student=? WHERE t.id=? AND t.date<=?').bind(c.id,p.task,today()).first();
+ if(!row)throw new ApiError('作业尚未开放',403);
  const m=normalizeMaterial(JSON.parse(row.material));
- if(m.kind!=='阅读')throw new ApiError('翻译仅用于阅读作业',400);
+ // 阅读作业提交后才能翻译（避免借翻译答题）；精读是课上讲解，随时可用。
+ if(m.kind!=='阅读'&&m.kind!=='精读')throw new ApiError('翻译仅用于阅读和精读',400);
+ if(m.kind==='阅读'&&(!row.state||row.state==='draft'))throw new ApiError('提交阅读作业后才能使用 AI 翻译',403);
  let original:string|undefined;
  if(p.section==='body')original=m.body;
+ else if(p.section.startsWith('para:'))original=m.closeReading?.paragraphs[Number(p.section.slice(5))]?.text;
  else for(const q of m.questions){if(p.section==='question:'+q.id)original=q.prompt;for(const [i,option] of q.options.entries())if(p.section===`option:${q.id}:${i}`)original=option}
  if(original===undefined||p.end<=p.start||original.slice(p.start,p.end)!==p.text)throw new ApiError('选区与原文不一致，请重新选择',400);
  const result=z.object({translation:z.string().trim().min(1).max(4000),notes:z.string().max(2000).default('')}).parse(await aiJson(c.settings,'translation',{selectedText:p.text,context:original.slice(Math.max(0,p.start-800),Math.min(original.length,p.end+800))},'返回 {"translation":"选中文字的自然中文翻译","notes":"必要时简要解释语境词义或句子结构，否则为空字符串"}。只翻译 selectedText，context 仅用于消除歧义；不要回答阅读题目或提供选项答案。'));
