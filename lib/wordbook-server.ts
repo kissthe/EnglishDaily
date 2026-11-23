@@ -20,7 +20,7 @@ export async function syncAnnotation(student:string,a:{id:string;kind:string;tex
  if(a.kind!=='word'&&a.kind!=='sentence')return;
  let context='';
  if(a.kind==='word'){
-  let text='';if(a.section==='body')text=m.contentFormat==='html'?'':m.body;else if(a.section.startsWith('question:'))text=m.questions.find(q=>'question:'+q.id===a.section)?.prompt||'';
+  let text='';if(a.section==='body')text=m.contentFormat==='html'?'':m.body;else if(a.section.startsWith('question:'))text=m.questions.find(q=>'question:'+q.id===a.section)?.prompt||'';else if(a.section.startsWith('para:'))text=m.closeReading?.paragraphs[Number(a.section.slice(5))]?.text||'';
   if(text&&text.slice(a.start,a.end)===a.text)context=sentenceAround(text,a.start,a.end);
   else if(m.contentFormat==='html'){const t=plain(m.body).replace(/\s+/g,' '),i=t.indexOf(a.text);if(i>=0)context=sentenceAround(t,i,i+a.text.length)}
  }

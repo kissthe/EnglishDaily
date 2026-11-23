@@ -8,14 +8,15 @@ import {Switch} from '@/components/ui/switch';
 import {toast} from 'sonner';
 import {ListeningSentences} from './listening-sentences';
 import {KnowledgeHtmlFields} from './knowledge-html-editor';
+import {CloseReadingEditor} from './close-reading-editor';
 import {Button,Choice} from './daily-app';
 import {parseMindMap,retellQuestion} from '@/lib/retell';
 import {parseQuestions,parseSolutions,questionTemplate,solutionTemplate,aiPrompt,importError} from '@/lib/material-import';
 import {cultureCategories,type Material,type Question,type RetellConfig,type RetellStage,type CultureConfig,type CultureQuestion} from '@/lib/course';
 
-const kinds=['阅读','听力','语法','视频','知识拓展','写作'];
+const kinds=['阅读','精读','听力','语法','视频','知识拓展','写作'];
 const structuredKinds=new Set<Material['kind']>(['阅读','听力']);
-const completionKinds=new Set<Material['kind']>(['语法','视频','知识拓展']);
+const completionKinds=new Set<Material['kind']>(['语法','视频','知识拓展','精读']);
 const blankQuestion=(id:string):Question=>({id,type:'choice',prompt:'',options:['',''],answer:'',explanation:'',tag:'细节理解'});
 const writingQuestion=():Question=>({id:'writing',type:'writing',prompt:'',options:[],answer:'',explanation:'',tag:'书面表达',maxScore:10});
 const blankRetell=():RetellConfig=>({version:2,stage:3,slots:'# Time and place\nTime: \nPlace: \n# Activities\nActivity: \n# Requirements\nWhat to bring: ',opening:'I\'ve got some information about ',guidedKeywords:'',referenceRetell:'',responseMode:'text',practiceMode:'learning',revisionPolicy:'missing'});
@@ -48,7 +49,7 @@ export function MaterialEditor({open,material,onClose,onSave}:{open:boolean;mate
  function patchQ(i:number,p:Partial<Question>){patch({questions:m.questions.map((q,j)=>i===j?{...q,...p}:q)})}
  function changeKind(kind:Material['kind']){
   const common={kind,reviewed:false,contentFormat:kind==='知识拓展'?'html':'text',...(kind==='知识拓展'?{}:{interactive:undefined,assets:undefined,category:undefined})} as Partial<Material>;
-  if(completionKinds.has(kind))setM(s=>({...s,...common,questions:[],completionOnly:true,retellConfig:undefined,cultureConfig:kind==='知识拓展'?blankCulture():undefined}));
+  if(completionKinds.has(kind))setM(s=>({...s,...common,questions:[],completionOnly:true,retellConfig:undefined,cultureConfig:kind==='知识拓展'?blankCulture():undefined,closeReading:kind==='精读'?s.closeReading:undefined,...(kind==='精读'&&s.kind!=='精读'?{body:''}:{})}));
   else if(kind==='听力'){const retellConfig=blankRetell();setM(s=>({...s,...common,questions:[retellQuestion(retellConfig)],completionOnly:false,retellConfig,playLimit:3,allowSeek:false,allowSpeed:false}));}
   else if(kind==='写作')setM(s=>({...s,...common,body:'',questions:[writingQuestion()],completionOnly:false}));
   else setM(s=>({...s,...common,questions:s.questions.length?s.questions:[blankQuestion('q1')],completionOnly:false,retellConfig:undefined}));
@@ -63,7 +64,7 @@ export function MaterialEditor({open,material,onClose,onSave}:{open:boolean;mate
  <TabsContent value="content"><StructuredContent m={m} patch={patch} upload={upload} uploading={uploading}/></TabsContent>
  <TabsContent value="questions"><Questions m={m} patch={patch} patchQ={patchQ} raw={raw} setRaw={setRaw} pending={pending} setPending={setPending} err={err} setErr={setErr} copy={copy}/></TabsContent>
  <TabsContent value="solutions"><Solutions m={m} patch={patch} patchQ={patchQ} solutions={solutions} setSolutions={setSolutions} err={err} setErr={setErr}/></TabsContent>
- <TabsContent value="review"><Review m={m} setM={setM} missing={missing}/></TabsContent></Tabs>:m.kind==='知识拓展'?(m.cultureConfig?<CultureEditor m={m} patch={patch} setM={setM} uploading={uploading} onUploading={setUploading}/>:<div className="form-stack"><section className="review-checklist"><h3>升级为 Culture Lab</h3><p>现有 HTML 可以继续使用，也可以加入 Explore、Culture Notes、理解检测和表达任务。</p><Button secondary onClick={()=>patch({cultureConfig:blankCulture()})}>启用五步学习流程</Button></section><StandaloneEditor m={m} patch={patch} setM={setM} upload={upload} uploading={uploading} onUploading={setUploading}/></div>):<StandaloneEditor m={m} patch={patch} setM={setM} upload={upload} uploading={uploading} onUploading={setUploading}/>}
+ <TabsContent value="review"><Review m={m} setM={setM} missing={missing}/></TabsContent></Tabs>:m.kind==='精读'?<CloseReadingEditor m={m} patch={patch}/>:m.kind==='知识拓展'?(m.cultureConfig?<CultureEditor m={m} patch={patch} setM={setM} uploading={uploading} onUploading={setUploading}/>:<div className="form-stack"><section className="review-checklist"><h3>升级为 Culture Lab</h3><p>现有 HTML 可以继续使用，也可以加入 Explore、Culture Notes、理解检测和表达任务。</p><Button secondary onClick={()=>patch({cultureConfig:blankCulture()})}>启用五步学习流程</Button></section><StandaloneEditor m={m} patch={patch} setM={setM} upload={upload} uploading={uploading} onUploading={setUploading}/></div>):<StandaloneEditor m={m} patch={patch} setM={setM} upload={upload} uploading={uploading} onUploading={setUploading}/>}
  <div className="dialog-actions"><Button secondary disabled={saving||uploading} onClick={onClose}>取消</Button><Button type="submit" disabled={saving||uploading}>{uploading?'正在上传…':saving?'正在保存…':m.reviewed?'保存并发布':'保存草稿'}</Button></div></form></DialogContent></Dialog>;
 }
 
