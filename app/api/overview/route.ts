@@ -12,7 +12,7 @@ export async function GET(){try{
  if(!student)return Response.json(empty,{headers:{'Cache-Control':'no-store'}});
  const all=async(sql:string,...args:unknown[])=>(await db().prepare(sql).bind(...args).all()).results as any[];
 
- const tasks=(await all('SELECT id,date,material FROM tasks WHERE date<=?',now)).map(t=>({...t,material:normalizeMaterial(JSON.parse(t.material))}));
+ const tasks=(await all('SELECT id,date,material FROM tasks WHERE date<=?',now)).map(t=>({...t,material:normalizeMaterial(JSON.parse(t.material))})).filter(t=>t.material.kind!=='精读');
  const subs=await all('SELECT task,state,score,total,submitted,correction_status FROM submissions WHERE student=?',student);
  const subOf=new Map(subs.map(s=>[s.task,s]));
  const done=(id:string)=>{const s=subOf.get(id);return !!s&&s.state!=='draft'};

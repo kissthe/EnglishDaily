@@ -14,7 +14,7 @@ import {parseMindMap,retellQuestion} from '@/lib/retell';
 import {parseQuestions,parseSolutions,questionTemplate,solutionTemplate,aiPrompt,importError} from '@/lib/material-import';
 import {cultureCategories,type Material,type Question,type RetellConfig,type RetellStage,type CultureConfig,type CultureQuestion} from '@/lib/course';
 
-const kinds=['阅读','精读','听力','语法','视频','知识拓展','写作'];
+const kinds=['阅读','听力','语法','视频','知识拓展','写作'];
 const structuredKinds=new Set<Material['kind']>(['阅读','听力']);
 const completionKinds=new Set<Material['kind']>(['语法','视频','知识拓展','精读']);
 const blankQuestion=(id:string):Question=>({id,type:'choice',prompt:'',options:['',''],answer:'',explanation:'',tag:'细节理解'});

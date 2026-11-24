@@ -35,12 +35,17 @@ export function closeReadingIssues(cr:CloseReading){
  return issues;
 }
 
+// AI 草稿：标题与中文副标题（老师没填时使用），以及每段的讲解。
+export const crDraftSchema=z.object({title:z.string().trim().max(150).default(''),subtitle:z.string().trim().max(200).default(''),paragraphs:z.array(z.object({words:z.array(crWordSchema).max(8).default([]),sentences:z.array(crSentenceSchema).max(3).default([]),practice:z.array(crPracticeSchema).max(3).default([])}))});
+// 学生端的精读列表条目。
+export type ReadingStatus='未开始'|'在读'|'已读';
+export type ReadingSummary={id:string;title:string;subtitle:string;source:string;date:string;paragraphs:number;words:number;sentences:number;status:ReadingStatus;card:string|null;archived:boolean};
 export type CRProgress={paragraph:number;answers:Record<string,string>;comments:Record<string,string>;finished:string|null;updated?:string};
 export const practiceKey=(p:number,i:number)=>`${p}-${i}`;
 
 // ---------- 学习卡片 ----------
 export const cardThemes=['violet','ocean','forest','sunset','rose','slate'] as const;
-export const cardItemSchema=z.object({id:z.string().min(1).max(40),type:z.enum(['word','sentence','practice','note']),text:z.string().trim().min(1,'卡片内容不能为空').max(1500),meaning:z.string().trim().max(1500).default(''),note:z.string().trim().max(2000).default('')});
+export const cardItemSchema=z.object({id:z.string().min(1).max(40),type:z.enum(['word','sentence','practice','note']),text:z.string().trim().min(1,'卡片内容不能为空').max(1500),meaning:z.string().trim().max(1500).default(''),note:z.string().trim().max(2000).default(''),recite:z.boolean().default(false)});
 export const cardDataSchema=z.object({title:z.string().trim().min(1,'请填写卡片标题').max(120),subtitle:z.string().trim().max(200).default(''),theme:z.enum(cardThemes).default('violet'),items:z.array(cardItemSchema).max(120)});
 export type CardItem=z.infer<typeof cardItemSchema>;
 export type CardData=z.infer<typeof cardDataSchema>;
@@ -50,7 +55,7 @@ export const cardTypeLabels={word:'单词',sentence:'句子',practice:'我的仿
 // 默认卡片：老师给的重点词和重点句，加上学生自己收藏的单词/句子（带批注）和写过的仿写。
 export function buildCard(title:string,source:string,cr:CloseReading,progress:CRProgress|null,annotations:{kind:string;text:string;note:string}[],newId:()=>string):CardData{
  const items:CardItem[]=[],seen=new Set<string>(),key=(t:string)=>t.trim().toLowerCase();
- const add=(i:Omit<CardItem,'id'>)=>{const k=i.type+':'+key(i.text);if(seen.has(k))return;seen.add(k);items.push({...i,id:newId()})};
+ const add=(i:Omit<CardItem,'id'|'recite'>&{recite?:boolean})=>{const k=i.type+':'+key(i.text);if(seen.has(k))return;seen.add(k);items.push({recite:false,...i,id:newId()})};
  for(const p of cr.paragraphs)for(const w of p.words)add({type:'word',text:w.word,meaning:[w.phonetic,w.meaning].filter(Boolean).join('  '),note:w.usage});
  for(const a of annotations)if(a.kind==='word')add({type:'word',text:a.text,meaning:a.note,note:''});
  for(const p of cr.paragraphs)for(const s of p.sentences)add({type:'sentence',text:s.text,meaning:s.translation,note:s.grammar});
